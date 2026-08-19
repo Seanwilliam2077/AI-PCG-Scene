@@ -25,7 +25,7 @@ miss 显式报错。每次运行的逐调用记录在 `output/run_*/api_calls.js
 
 | 方案原设计 | 本实现 | 原因 |
 |---|---|---|
-| google-genai SDK `client.interactions.create` | **云端 VLM 网关**（OpenAI 兼容 `/v1/chat/completions`） | 本机只有 OpenAI 兼容网关通路，没有直连 Google 的通道 |
+| 厂商原生 SDK `client.interactions.create` | **云端 VLM 网关**（OpenAI 兼容 `/v1/chat/completions`） | 本机只有 OpenAI 兼容网关通路，没有直连厂商的通道 |
 | `response_schema` 硬约束结构化输出 | prompt 约定 + 本地校验 + 一次修复重试 | 代理不透传 schema 约束 |
 | 云端图生 3D `SubmitImageTo3DJob` 四段链 | **v2 默认 `library`：外部预生成的 40 模块资产库 + VLM 打标 + 四级瀑布匹配**；云端 provider（`cloud_text2gen`/`gen3d_cloud`/`gen3d`）实现保留可切 | 高模资产已离线生成完毕，现场生成改为现场匹配 |
 
@@ -33,7 +33,7 @@ miss 显式报错。每次运行的逐调用记录在 `output/run_*/api_calls.js
 
 | 服务 | 状态 | 位置 |
 |---|---|---|
-| **云端 VLM 网关**（Gemini 文本/视觉/图像） | ✅ 可用 | `VLM_API_KEY` 环境变量，或工程 `Config/DefaultEditor.ini` 的 `[AISceneBuilder.Gateway] ApiKey`（与插件 C++ 同源；旧 LegacyProject 路径保留垫底） |
+| **云端 VLM 网关**（云端视觉模型 文本/视觉/图像） | ✅ 可用 | `VLM_API_KEY` 环境变量，或工程 `Config/DefaultEditor.ini` 的 `[AISceneBuilder.Gateway] ApiKey`（与插件 C++ 同源；旧 LegacyProject 路径保留垫底） |
 | **云端文生 3D** | ❌ 缺凭证 | 需 `GEN3D_API_KEY` + `GEN3D_DOMAIN`；未配置时自动回落 proxy |
 | **云端图生 3D 服务**（图生高模/贴图） | ❌ 缺凭证 | 需 `GEN3D_APP_ID` / `GEN3D_SECRET_KEY` / `GEN3D_USER` |
 | 云端图生 3D（智能减面） | ❌ 缺 | 需 `GEN3D_API_KEY` |
@@ -59,9 +59,9 @@ single isolated game asset, neutral studio lighting, no background, no base plat
 | 阶段 | 输入 → 输出 | 用到的 AI |
 |---|---|---|
 | `s00`（离线一次性） | `Asset\` 原始模块 → `AssetLib_processed/` + `library_registry.json` | `tools/build_assetlib.py` 减面/缩图（无 AI）；`tools/register_library.py` **VLM 打标**（受控词表 `taxonomy.yaml`，与 s01 感知共用） |
-| `s01_perceive` | `ref.jpg` → `calib.json` `perception.json` | Gemini 解析/检测/分割；**标定是纯 OpenCV，无 AI** |
+| `s01_perceive` | `ref.jpg` → `calib.json` `perception.json` | 云端视觉模型 解析/检测/分割；**标定是纯 OpenCV，无 AI** |
 | `s02_layout` | 上二者 → `scene_layout.json` | 无（纯 numpy 地面射线法） |
-| `s03_gen2d` | layout + ref → `gen2d/` | Gemini 图像：无缝材质 / 海报与屏幕文字 / **氛围估计**（主光色温/雾/曝光）。库模式下 hero 清理图与 turnaround 关闭 |
+| `s03_gen2d` | layout + ref → `gen2d/` | 云端视觉模型 图像：无缝材质 / 海报与屏幕文字 / **氛围估计**（主光色温/雾/曝光）。库模式下 hero 清理图与 turnaround 关闭 |
 | `s04_gen3d` | layout + 库 → `asset_registry.json` `match_report.json` | **库匹配四级瀑布**：人工覆盖 → 类别命中+变体轮换 → VLM 图像相似度兜底 → proxy 盒。云端生成路径保留可切 |
 | `s05_build_scene` | 全部 → `build_manifest.json` + UE 关卡 | 无（UE5 Python 确定性装配；库资产走 load_asset 快路径） |
 
@@ -86,7 +86,7 @@ python pipeline.py --ref refs/server_room.jpg --config configs/smoke.yaml   # �
 | 阶段指纹 | `cache/stages/` | 输入/代码（**含 core/**）/prompt/配置没变就跳过整个阶段；`unreal` 段只进 s05 指纹，`vlm_gateway.offline` 不进指纹 |
 | 请求哈希 | `cache/vlm_gateway/` | 同一请求不再花钱；**复跑字节一致**；也是离线回放的数据源 |
 
-Gemini 没有 seed，采样级复现不可能。请求哈希缓存把可复现性兑现在**产物级**：
+云端视觉模型 没有 seed，采样级复现不可能。请求哈希缓存把可复现性兑现在**产物级**：
 只要 `cache/vlm_gateway/` 随交付保留，任何机器复跑得到完全相同的资产。**这个目录要一起交付。**
 
 ## 标定失败怎么办
@@ -125,7 +125,7 @@ Gemini 没有 seed，采样级复现不可能。请求哈希缓存把可复现�
 pipeline/                      ← canonical，改这里，tools/sync_plugin.py 同步进插件
 ├── configs/pipeline.yaml     全局配置（凭证一律走环境变量/工程 ini，不入库）
 ├── taxonomy.yaml             受控类别词表：s01 感知 / s00 打标 / s04 匹配共用
-├── prompts/                  Gemini prompt 模板 —— 改模板即失效阶段缓存
+├── prompts/                  云端视觉模型 prompt 模板 —— 改模板即失效阶段缓存
 ├── core/
 │   ├── vlm_gateway.py              云端 VLM 网关 客户端：哈希缓存 / 离线回放 / api_calls.jsonl
 │   ├── libmatch.py           资产库匹配引擎（四级瀑布 + 缩放畸形保护，纯函数）
@@ -153,7 +153,7 @@ pipeline/                      ← canonical，改这里，tools/sync_plugin.py 
 
 ## 实测状态（2026-08-06 全链路验证）
 
-用 `refs/server_room.jpg`（Gemini 生成的赛博朋克机房测试图，与原题参考图构图一致）
+用 `refs/server_room.jpg`（云端视觉模型 生成的赛博朋克机房测试图，与原题参考图构图一致）
 端到端跑通 s01→s05，UE 关卡已落盘：
 
 | 阶段 | 结果 |

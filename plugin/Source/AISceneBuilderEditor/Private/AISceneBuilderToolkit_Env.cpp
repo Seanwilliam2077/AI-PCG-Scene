@@ -169,7 +169,7 @@ void FAISceneBuilderToolkit::CheckEnvironment()
 	const FString ApiInfo = ExtractMarker(TEXT("ASB_API:"));
 	MissingPackages = Missing;
 
-	const bool b云端 VLM 网关Key = !FAISceneBuilderKeys::Read云端 VLM 网关Key().IsEmpty();
+	const bool bGatewayKey = !FAISceneBuilderKeys::ReadGatewayKey().IsEmpty();
 
 	FString Report;
 	FLinearColor Color;
@@ -191,10 +191,10 @@ void FAISceneBuilderToolkit::CheckEnvironment()
 			TEXT("✓ 内嵌 Python 就绪  |  API：%s  |  Key %s%s\n")
 			TEXT("   逐调用记录见 run 目录 api_calls.jsonl（阶段/模型/缓存命中/耗时）"),
 			ApiInfo.IsEmpty() || ApiInfo == TEXT("?") ? TEXT("（配置读取失败）") : *ApiInfo,
-			b云端 VLM 网关Key ? TEXT("已配置") : TEXT("缺失"),
+			bGatewayKey ? TEXT("已配置") : TEXT("缺失"),
 			Settings.bOfflineReplay ? TEXT("  |  离线回放开") :
-				(b云端 VLM 网关Key ? TEXT("") : TEXT(" → 建议开离线回放")));
-		Color = (b云端 VLM 网关Key || Settings.bOfflineReplay)
+				(bGatewayKey ? TEXT("") : TEXT(" → 建议开离线回放")));
+		Color = (bGatewayKey || Settings.bOfflineReplay)
 			? FLinearColor(0.4f, 0.85f, 0.45f) : FLinearColor(1.f, 0.75f, 0.35f);
 	}
 

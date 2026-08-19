@@ -1,7 +1,7 @@
 """云端 VLM 网关客户端：本管线唯一的 AI 入口。
 
-网关是 OpenAI 兼容的（`/v1/chat/completions`），后面转发 Gemini
-系列。它与 Google 原生 google-genai SDK 的差异是本文件存在的全部理由：
+网关是 OpenAI 兼容的（`/v1/chat/completions`），后面转发 云端视觉模型
+系列。它与 厂商原生 SDK 的差异是本文件存在的全部理由：
 
   * 调用形态是 chat/completions，不是 `client.interactions.create`；
   * 没有 `response_schema` 硬约束 —— 结构化输出只能靠 prompt 约定 + 本地校验 +
@@ -160,7 +160,7 @@ class GatewayClient:
     """带哈希缓存与退避重试的 云端 VLM 网关 客户端。
 
     offline=True 是**离线回放模式**：只许缓存命中，miss 即显式报错——评审机
-    没有云端 云端网关访问权限时，凭随工程附带的 cache/vlm_gateway 也能整条复跑。
+    没有云端网关访问权限时，凭随工程附带的 cache/vlm_gateway 也能整条复跑。
     log_path 是逐调用 JSONL 日志（阶段/模型/缓存命中/耗时），既是排障现场，
     也是测试题"AI 使用标注"的机器可读证据，UE 面板直接展示它。
     """
@@ -268,7 +268,7 @@ class GatewayClient:
 
     # ---------------- 文本 / 视觉 ----------------
     def chat(self, prompt: str, images: list[str | Path] | None = None,
-             model: str = "gemini-2.5-flash", temperature: float = 0.2,
+             model: str = "cloud-vlm-vision", temperature: float = 0.2,
              max_tokens: int = 16384, use_cache: bool = True) -> str:
         images = [str(p) for p in (images or [])]
         img_bytes = [Path(p).read_bytes() for p in images]
@@ -304,7 +304,7 @@ class GatewayClient:
         return text
 
     def chat_json(self, prompt: str, images: list[str | Path] | None = None,
-                  model: str = "gemini-2.5-flash", validator=None,
+                  model: str = "cloud-vlm-vision", validator=None,
                   **kw) -> Any:
         """要 JSON 的 chat。代理无 schema 约束，故本地校验 + 一次修复重试。
 
@@ -337,7 +337,7 @@ class GatewayClient:
 
     # ---------------- 图像生成 ----------------
     def gen_image(self, prompt: str, ref_images: list[str | Path] | None = None,
-                  model: str = "gemini-3-pro-image", temperature: float = 0.2,
+                  model: str = "cloud-vlm-image", temperature: float = 0.2,
                   max_tokens: int = 8192, use_cache: bool = True) -> bytes:
         """返回 PNG/JPEG 原始字节。ref_images 作为参考图一并送入（image editing）。"""
         refs = [str(p) for p in (ref_images or [])]
@@ -397,7 +397,7 @@ def _message_text(data: dict) -> str:
 
 
 def _extract_images(data: dict) -> list[str]:
-    """图片部件有两种 type：Nanobanana 走 vlm_gateway_multimodal_url，OpenAI 兼容走 image_url。"""
+    """图片部件有两种 type：云端图像模型 走 vlm_gateway_multimodal_url，OpenAI 兼容走 image_url。"""
     out: list[str] = []
     try:
         content = data["choices"][0]["message"]["content"]

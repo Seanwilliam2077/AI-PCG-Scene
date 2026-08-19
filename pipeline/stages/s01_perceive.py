@@ -2,14 +2,14 @@
 
 两件事并行不悖地做：
   * 相机标定：纯 OpenCV 消失点法，不花一分钱、不依赖任何模型；
-  * 语义解析：Gemini（经 云端 VLM 网关）出对象清单、灯光、色板、attached_to、text_content，
+  * 语义解析：云端视觉模型（经云端 VLM 网关）出对象清单、灯光、色板、attached_to、text_content，
     以及 box_2d + 多边形 mask。
 
-Gemini 响应格式有一对必须写死在解析里的陷阱：**box_2d 是 (ymin,xmin,ymax,xmax)
+云端视觉模型 响应格式有一对必须写死在解析里的陷阱：**box_2d 是 (ymin,xmin,ymax,xmax)
 即 (y,x) 序，而 mask 多边形顶点是 (x,y) 序**，两者相反，且都归一化到 0-1000。
 本阶段一次性把它们转成下游统一消费的标准形（xyxy + (x,y)，均 0~1）。
 
-box_3d 是 Gemini 未进正式文档的实验能力，可能整批只回 2D 框。它只作 yaw/尺寸的
+box_3d 是 云端视觉模型 未进正式文档的实验能力，可能整批只回 2D 框。它只作 yaw/尺寸的
 交叉证据，拿不到不影响主干（见 solver.resolve_yaw 的优先级设计）。
 """
 
@@ -41,7 +41,7 @@ def _prompt_detect(prompts_dir: Path) -> str:
 
 
 def _norm_detections(items: list[dict], w: int, h: int) -> list[dict]:
-    """消化 Gemini 的双序陷阱，输出标准形。顺带丢掉退化框。"""
+    """消化 云端视觉模型 的双序陷阱，输出标准形。顺带丢掉退化框。"""
     out: list[dict] = []
     for it in items:
         box = it.get("box_2d")
@@ -101,7 +101,7 @@ def _hotspot_crops(dets: list[dict], w: int, h: int,
                    max_crops: int = 2) -> list[tuple[float, float, float, float]]:
     """热区：大件家具（桌/柜/架）的框外扩一圈。
 
-    Gemini 3 的图像输入有 token 硬上限（ultra_high 也只 2240），4K 图必被降采样，
+    云端视觉模型 3 的图像输入有 token 硬上限（ultra_high 也只 2240），4K 图必被降采样，
     桌面上的键盘/软盘这类小件容易整个漏掉。第二遍只喂热区的高清 crop 补检。
     """
     spots = []

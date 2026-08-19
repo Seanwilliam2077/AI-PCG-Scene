@@ -4,7 +4,7 @@
 
 ## 安装
 
-插件已在 `NetEast_TA_Test/Plugins/` 下，编辑器启动时自动发现，`.uproject` 无需改动。
+插件已在 `AISceneBuilderDemo/Plugins/` 下，编辑器启动时自动发现，`.uproject` 无需改动。
 换到别的工程只要整个 `AISceneBuilder/` 目录拷过去即可——管线 Python 副本、prompt 模板、
 云端 VLM 网关 请求缓存都在插件内，是自包含的。
 
@@ -21,7 +21,7 @@
 
 **离线回放**：Project Settings → AI Scene Builder → 「离线回放」。开启后 AI 调用
 只允许命中随插件附带的 `Python/cache/vlm_gateway/`，缓存 miss 显式报错而不发请求——
-评审机没有云端 云端网关访问权限也能整条复跑。逐调用记录（阶段/模型/缓存命中/耗时）
+评审机没有云端网关访问权限也能整条复跑。逐调用记录（阶段/模型/缓存命中/耗时）
 写在 `output/run_*/api_calls.jsonl`，面板环境行也会显示当前 API 端点与模型。
 
 ### API Key 配置
@@ -41,9 +41,9 @@
 
 | 步骤 | 做什么 | 在哪跑 | 典型耗时 |
 |---|---|---|---|
-| 1 场景理解 | OpenCV 消失点标定（无 AI）+ Gemini 检测/分割 | 内嵌 Python 后台线程 | 1–3 min（温缓存秒级） |
+| 1 场景理解 | OpenCV 消失点标定（无 AI）+ 云端视觉模型 检测/分割 | 内嵌 Python 后台线程 | 1–3 min（温缓存秒级） |
 | 2 布局求解 | 地面射线法分层求解，纯 numpy | 内嵌 Python 后台线程 | 秒级 |
-| 3 二维素材生成 | Gemini：无缝材质 / 海报文字 / **氛围估计**（库模式下 hero/turnaround 关闭） | 内嵌 Python 后台线程 | 2–8 min（温缓存秒级） |
+| 3 二维素材生成 | 云端视觉模型：无缝材质 / 海报文字 / **氛围估计**（库模式下 hero/turnaround 关闭） | 内嵌 Python 后台线程 | 2–8 min（温缓存秒级） |
 | 4 三维资产匹配 | **资产库四级瀑布匹配**（未命中降级代理盒），产出 match_report.json | 内嵌 Python 后台线程 | 秒级 |
 | 5 装配到关卡 | 库资产 load_asset 快路径、摆放、材质、灯光、贴花、相机 | **编辑器内 GameThread** | 10–60 s |
 

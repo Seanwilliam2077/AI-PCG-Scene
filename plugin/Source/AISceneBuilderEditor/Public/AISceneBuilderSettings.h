@@ -10,7 +10,7 @@
  * 插件设置。存的都是**机器相关**的路径，所以走 EditorPerProjectUserSettings
  * （落在 Saved/Config/，不会被提交进仓库）。
  *
- * API Key 刻意不在这里 —— 见 FAISceneBuilderKeys::Read云端 VLM 网关Key() 的三级回退。
+ * API Key 刻意不在这里 —— 见 FAISceneBuilderKeys::ReadGatewayKey() 的三级回退。
  */
 UCLASS(config = EditorPerProjectUserSettings, meta = (DisplayName = "AI Scene Builder"))
 class AISCENEBUILDEREDITOR_API UAISceneBuilderSettings : public UDeveloperSettings
@@ -49,7 +49,7 @@ public:
 
 	/**
 	 * 离线回放：AI 调用只允许命中随工程附带的 cache/vlm_gateway，缓存 miss 显式报错
-	 * 而不是发请求。评审机没有云端 云端网关访问权限/API Key 时开着它整条复跑。
+	 * 而不是发请求。评审机没有云端网关访问权限/API Key 时开着它整条复跑。
 	 */
 	UPROPERTY(config, EditAnywhere, Category = "Run",
 		meta = (DisplayName = "离线回放（只用缓存，不发真实 API 请求）"))
@@ -80,7 +80,7 @@ struct AISCENEBUILDEREDITOR_API FAISceneBuilderKeys
 	static const TCHAR* GatewayEnvVar;
 	static const TCHAR* Gen3DEnvVar;
 
-	static FString Read云端 VLM 网关Key();
-	static FString Read云端图生 3DKey();
-	static bool Has云端 VLM 网关Key() { return !Read云端 VLM 网关Key().IsEmpty(); }
+	static FString ReadGatewayKey();
+	static FString ReadGen3DKey();
+	static bool HasGatewayKey() { return !ReadGatewayKey().IsEmpty(); }
 };

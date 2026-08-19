@@ -4,7 +4,7 @@
     "coordinate_system": "UE_LHS_Zup",
     "units": "cm",
     "pipeline_version": "2.0",
-    "perception_backend": "gemini-3-pro-image",
+    "perception_backend": "cloud-vlm-image",
     "scale_calibration": 1.0,
     "fov_search": null
   },

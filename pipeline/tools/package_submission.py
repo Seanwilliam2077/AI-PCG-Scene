@@ -22,12 +22,12 @@ from collections import defaultdict
 from pathlib import Path
 
 PIPE = Path(r"C:\AI Pipeline Test\pipeline")
-PROJ = Path(r"C:\AI Pipeline Test\NetEast_TA_Test")
-OUT_ZIP = Path(r"C:\AI Pipeline Test\NetEast_TA_Test_submission.zip")
+PROJ = Path(r"C:\AI Pipeline Test\AISceneBuilderDemo")
+OUT_ZIP = Path(r"C:\AI Pipeline Test\AISceneBuilderDemo_submission.zip")
 
 # ---------------- 白名单（相对工程根） ----------------
 INCLUDE = [
-    "NetEast_TA_Test.uproject",
+    "AISceneBuilderDemo.uproject",
     "QUICKSTART.md",
     "SKILL.md",                  # 评审辅助：丢给任意 coding agent 即可引导跑通全流程
     "技术方案报告.pdf",
@@ -169,7 +169,7 @@ def main() -> int:
 
     with zipfile.ZipFile(OUT_ZIP, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
         for f in files:
-            zf.write(f, f"NetEast_TA_Test/{f.relative_to(PROJ).as_posix()}")
+            zf.write(f, f"AISceneBuilderDemo/{f.relative_to(PROJ).as_posix()}")
     print(f"[ ok ] {OUT_ZIP}（{OUT_ZIP.stat().st_size / 1e6:,.1f} MB 压缩后）")
     return 0
 

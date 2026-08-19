@@ -40,7 +40,7 @@
 <div class="cover">
   <h1>AI 驱动的自动化场景建构管线</h1>
   <div class="sub">技术方案报告 · 测试题 2 —— 一张参考图 → UE5 编辑器内自动搭建的完整关卡</div>
-  <div class="meta">Unreal Engine 5.5.4（内嵌 Python 3.11）· 云端 VLM 网关（Gemini 3 Pro）· 云端图像拆分工具 + 云端图生 3D<br>
+  <div class="meta">Unreal Engine 5.5.4（内嵌 Python 3.11）· 云端 VLM 网关· 云端图像拆分工具 + 云端图生 3D<br>
   全管线运行于编辑器 Mode 内 · 评审机零环境依赖 · 离线可复现 · 2026 年 8 月</div>
 </div>
 <div class="figure">
@@ -186,11 +186,11 @@
 <table>
   <tr><th style="width:17%">环节</th><th style="width:20%">模型/服务</th><th>对 AI 输出的后处理与逻辑控制</th></tr>
   <tr><td>资产生成（离线）</td><td>云端图像拆分工具 + 云端图生 3D</td><td>减面/降采样/通道重打包/坐标系归位——全确定性脚本</td></tr>
-  <tr><td>资产打标（离线）</td><td>Gemini 3 Pro（经 云端 VLM 网关）</td><td>闭集词表钳制；估计尺寸 vs 实测交叉校验；人工核对位不被重打标覆盖</td></tr>
-  <tr><td>s01 感知</td><td>Gemini 3 Pro</td><td>JSON 校验+修复重试；分块检测统一 NMS；<b>相机标定不用 AI</b></td></tr>
-  <tr><td>s03 材质/海报</td><td>Gemini 3 Pro（图像）</td><td>取样滑窗选亮；ECC 对齐回原图；接缝分数质检循环；<b>法线/粗糙度/AO 确定性推导</b></td></tr>
-  <tr><td>s03 氛围估计</td><td>Gemini 3 Pro</td><td>白平衡钳 [6500,8000]、曝光/雾密度钳制；失败回默认值不断链</td></tr>
-  <tr><td>s04 视觉兜底</td><td>Gemini 3 Pro</td><td>置信度 ≥0.6 才采纳；缩放畸形四档保护，误匹配直接拒绝</td></tr>
+  <tr><td>资产打标（离线）</td><td>云端视觉模型（经 云端 VLM 网关）</td><td>闭集词表钳制；估计尺寸 vs 实测交叉校验；人工核对位不被重打标覆盖</td></tr>
+  <tr><td>s01 感知</td><td>云端视觉模型</td><td>JSON 校验+修复重试；分块检测统一 NMS；<b>相机标定不用 AI</b></td></tr>
+  <tr><td>s03 材质/海报</td><td>云端视觉模型（图像）</td><td>取样滑窗选亮；ECC 对齐回原图；接缝分数质检循环；<b>法线/粗糙度/AO 确定性推导</b></td></tr>
+  <tr><td>s03 氛围估计</td><td>云端视觉模型</td><td>白平衡钳 [6500,8000]、曝光/雾密度钳制；失败回默认值不断链</td></tr>
+  <tr><td>s04 视觉兜底</td><td>云端视觉模型</td><td>置信度 ≥0.6 才采纳；缩放畸形四档保护，误匹配直接拒绝</td></tr>
   <tr><td>s05 装配</td><td>—（无 AI）</td><td>100% 确定性；布局规则链 + AABB 去穿插 + 穿模检测报告</td></tr>
 </table>
 <p style="font-size:9pt; color:#555;">每次运行逐调用留痕于 <code>output/run_*/api_calls.jsonl</code>（阶段/模型/缓存命中/耗时）；离线回放模式下全部命中随工程附带的缓存，评审机无 Key 可完整复跑。</p>
@@ -210,7 +210,7 @@
 <table>
   <tr><th style="width:26%">项目/服务</th><th style="width:18%">性质</th><th>用途</th></tr>
   <tr><td>云端图像拆分 / 图生 3D 服务</td><td>云服务</td><td>参考图拆分 42 单件；图生 3D 高模 + PBR 贴图</td></tr>
-  <tr><td>云端 VLM 网关 → Gemini 3 Pro</td><td>云端网关</td><td>感知/打标/氛围/兜底匹配与图像生成</td></tr>
+  <tr><td>云端 VLM 网关 → 云端视觉模型</td><td>云端网关</td><td>感知/打标/氛围/兜底匹配与图像生成</td></tr>
   <tr><td>NumPy / OpenCV / PyYAML</td><td>BSD / Apache / MIT</td><td>布局求解、标定、图像处理、配置</td></tr>
   <tr><td>PyMeshLab</td><td>GPL-3（仅作者侧）</td><td>保 UV 减面，不随工程分发</td></tr>
   <tr><td>UE5.5 PythonScriptPlugin 等</td><td>引擎自带</td><td>内嵌 Python、编辑器脚本化</td></tr>
@@ -254,7 +254,7 @@
 
 <h1>附录：评审快速上手（约 5 分钟）</h1>
 <ol>
-  <li>UE <b>5.5.4</b> 打开 <code>NetEast_TA_Test.uproject</code>（含预编译二进制；首开等 shader 编译 5–15 分钟）。</li>
+  <li>UE <b>5.5.4</b> 打开 <code>AISceneBuilderDemo.uproject</code>（含预编译二进制；首开等 shader 编译 5–15 分钟）。</li>
   <li>Project Settings → Plugins → AI Scene Builder → 勾选<b>「离线回放」</b>（无网/无 Key 必开）。</li>
   <li><b>Tools → AI Scene Builder</b>：选参考图 <code>Plugins/AISceneBuilder/Python/refs/ref_original.jpg</code> → 依次五步 → 装配。</li>
   <li>产物：关卡 <code>/Game/Maps/GenScene</code>；回执/对比图/调用留痕在 <code>.../Python/output/run_*/</code>。</li>

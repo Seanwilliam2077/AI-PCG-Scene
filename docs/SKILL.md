@@ -1,12 +1,12 @@
 ---
-name: netease-ta-scene-builder
+name: ai-scene-builder
 description: 评审辅助 Skill——把本文件整体丢给任意 coding agent（Claude Code / Cursor / Copilot 等），它就能带你完成本工程包的解压校验、UE 打开、离线复跑整条 AI 场景管线、以及产物核对。人工直接照做也完全可行。
 ---
 
 # AI 场景建构管线 · 评审一键上手
 
-> 你是一个 coding agent，用户刚拿到网易 TA 测试题 2 的提交工程包
-> `NetEast_TA_Test_submission.zip`。按下面的步骤帮用户跑通全流程；
+> 你是一个 coding agent，用户刚拿到本管线的交付工程包
+> `AISceneBuilderDemo_submission.zip`。按下面的步骤帮用户跑通全流程；
 > 每步都有"预期结果"，不符时看最后的《故障排查》。
 > **全程无需外网、无需任何 API Key**——AI 调用凭随包缓存离线回放。
 
@@ -25,12 +25,12 @@ description: 评审辅助 Skill——把本文件整体丢给任意 coding agent
 ## 1. 解压与校验
 
 ```powershell
-Expand-Archive NetEast_TA_Test_submission.zip -DestinationPath .
+Expand-Archive AISceneBuilderDemo_submission.zip -DestinationPath .
 ```
 
-解压后应有 `NetEast_TA_Test/` 目录，关键内容：
+解压后应有 `AISceneBuilderDemo/` 目录，关键内容：
 
-- `NetEast_TA_Test.uproject` — 工程入口
+- `AISceneBuilderDemo.uproject` — 工程入口
 - `QUICKSTART.md` / `技术方案报告.pdf` — 评审文档
 - `Plugins/AISceneBuilder/` — 管线插件（含内嵌 Python 管线 + vendor 依赖 + 离线缓存）
 - `Plugins/AISceneBuilder/Python/cache/vlm_gateway/` — **离线回放缓存（约 69MB，生命线）**
@@ -39,7 +39,7 @@ Expand-Archive NetEast_TA_Test_submission.zip -DestinationPath .
 
 ## 2. 打开工程
 
-双击 `NetEast_TA_Test.uproject`（或 Launcher 里 5.5.4 → Open）。
+双击 `AISceneBuilderDemo.uproject`（或 Launcher 里 5.5.4 → Open）。
 
 - 首次打开会编译 shader，**等 5–15 分钟属正常**（右下角有进度）。
 - 若弹"插件是新版本引擎构建"之类提示，选择继续加载即可。

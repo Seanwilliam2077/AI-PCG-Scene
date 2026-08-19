@@ -56,7 +56,7 @@ HEIGHT_CLAMP: dict[str, tuple[float, float]] = {
 
 
 def _canon(category: str) -> str:
-    """类别词归一：Gemini 给的是自由文本 label，先落到先验表的键上。
+    """类别词归一：云端视觉模型 给的是自由文本 label，先落到先验表的键上。
 
     子串匹配必须限定最小长度：空串或极短串对任何键都「包含成立」，会把所有未知
     类别静默归到先验表的第一项上——先验、钳制、尺度锚点会一起错，且不报错。
@@ -95,7 +95,7 @@ class LayoutSolver:
 
     # ---------------- 基础 ----------------
     def bbox_px(self, bbox: list[float]) -> tuple[float, float, float, float]:
-        """标准 xyxy(0~1) → 像素。感知层已把 Gemini 的 (y,x) 序转成标准形。"""
+        """标准 xyxy(0~1) → 像素。感知层已把 云端视觉模型 的 (y,x) 序转成标准形。"""
         x0, y0, x1, y1 = bbox
         return x0 * self.W, y0 * self.H, x1 * self.W, y1 * self.H
 
@@ -341,7 +341,7 @@ def resolve_yaw(inst: dict, walls: list[dict], support: dict | None,
                 room: dict) -> tuple[float, str]:
     """yaw 优先级：box_3d(带校验) → 贴墙法线 → 随支撑物 → 长轴贴墙 → 面向相机。
 
-    box_3d 是 Gemini 未文档化的实验能力，随时可能失效；因此它只做增益不做依赖，
+    box_3d 是 云端视觉模型 未文档化的实验能力，随时可能失效；因此它只做增益不做依赖，
     完全拿不到时下面四条规则照样给出可用朝向。
     """
     b3d = inst.get("box3d_raw")

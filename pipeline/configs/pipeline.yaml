@@ -7,10 +7,10 @@ vlm_gateway:
   min_interval_seconds: 1.0
   offline: false               # true = 离线回放：只许缓存命中，miss 报错不发请求
 models:
-  vision: gemini-3-pro-image     # 全线升级：感知/打标/氛围/视觉匹配统一用 Pro 级
-  image: gemini-3-pro-image
-  image_fast: gemini-3-pro-image
-  box3d: gemini-3-pro-image
+  vision: cloud-vlm-image     # 全线升级：感知/打标/氛围/视觉匹配统一用 Pro 级
+  image: cloud-vlm-image
+  image_fast: cloud-vlm-image
+  box3d: cloud-vlm-image
   box3d_enabled: true
 calibration:
   prior_hfov_deg: 60.0
@@ -35,7 +35,7 @@ gen3d:
   text2gen_style: ''
 unreal:
   editor_cmd: C:/Program Files/Epic Games/UE_5.5/Engine/Binaries/Win64/UnrealEditor-Cmd.exe
-  uproject: C:/AI Pipeline Test/NetEast_TA_Test/NetEast_TA_Test.uproject
+  uproject: C:/AI Pipeline Test/AISceneBuilderDemo/AISceneBuilderDemo.uproject
   level: /Game/Maps/GenScene
   content_dir: /Game/AutoScene
   timeout_seconds: 2400

@@ -11,8 +11,8 @@
 namespace
 {
 	const TCHAR* const KeySection = TEXT("AISceneBuilder.Gateway");
-	const TCHAR* const 云端 VLM 网关KeyName = TEXT("ApiKey");
-	const TCHAR* const 云端图生 3DKeyName = TEXT("Gen3DApiKey");
+	const TCHAR* const GatewayKeyName = TEXT("ApiKey");
+	const TCHAR* const Gen3DKeyName = TEXT("Gen3DApiKey");
 
 	/** 依次读三级来源，命中即返回。 */
 	FString ReadKeyWithFallback(const TCHAR* EnvVar, const TCHAR* IniKeyName)
@@ -44,14 +44,14 @@ namespace
 const TCHAR* FAISceneBuilderKeys::GatewayEnvVar = TEXT("VLM_API_KEY");
 const TCHAR* FAISceneBuilderKeys::Gen3DEnvVar = TEXT("GEN3D_API_KEY");
 
-FString FAISceneBuilderKeys::Read云端 VLM 网关Key()
+FString FAISceneBuilderKeys::ReadGatewayKey()
 {
-	return ReadKeyWithFallback(GatewayEnvVar, 云端 VLM 网关KeyName);
+	return ReadKeyWithFallback(GatewayEnvVar, GatewayKeyName);
 }
 
-FString FAISceneBuilderKeys::Read云端图生 3DKey()
+FString FAISceneBuilderKeys::ReadGen3DKey()
 {
-	return ReadKeyWithFallback(Gen3DEnvVar, 云端图生 3DKeyName);
+	return ReadKeyWithFallback(Gen3DEnvVar, Gen3DKeyName);
 }
 
 // ---------------------------------------------------------------------------

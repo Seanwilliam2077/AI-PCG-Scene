@@ -23,7 +23,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PLUGIN_PY = Path(r"C:\AI Pipeline Test\NetEast_TA_Test\Plugins\AISceneBuilder\Python")
+PLUGIN_PY = Path(r"C:\AI Pipeline Test\AISceneBuilderDemo\Plugins\AISceneBuilder\Python")
 
 # 白名单：目录整树 + 单文件
 SYNC_DIRS = ["stages", "core", "ue", "prompts", "configs", "tools"]

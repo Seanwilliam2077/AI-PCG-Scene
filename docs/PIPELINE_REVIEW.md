@@ -1,6 +1,6 @@
 # AI 场景自动化管线 —— 现状分析与改进空间报告
 
-> 审阅日期：2026-08-10。范围：`C:\AI Pipeline Test\pipeline`（主管线）、`NetEast_TA_Test\Plugins\AISceneBuilder`（UE5.5 插件及其内嵌管线副本）。
+> 审阅日期：2026-08-10。范围：`C:\AI Pipeline Test\pipeline`（主管线）、`AISceneBuilderDemo\Plugins\AISceneBuilder`（UE5.5 插件及其内嵌管线副本）。
 > 所有结论均基于对源码的直接阅读与两次实跑产物（`output\run_a5d94e7d`、`output\run_fd6e434f`）的核对，每条问题附 `文件:行号`。
 > 本报告为纯分析，未修改任何代码。
 
@@ -24,7 +24,7 @@
 参考图 (refs/*.jpg)
    │  run_id = sha256(图片字节)[:8] → output/run_<id>/
    ▼
-┌─ s01_perceive ──── 云端 VLM 网关(Gemini) 场景语义/检测 + 本地消失点标定(LSD/RANSAC)
+┌─ s01_perceive ──── 云端 VLM 网关 场景语义/检测 + 本地消失点标定(LSD/RANSAC)
 │     产出 calib.json / perception.json（可被 calib_manual.json 人工覆盖）
 ├─ s02_layout ────── LayoutSolver 反投影 → scene_layout.json / cameras.json
 ├─ s03_gen2d ─────── 逐个生成 hero 视图(≤24次调用) / 可平铺材质(含修缝循环) / 贴花
@@ -45,7 +45,7 @@
   - 云端 VLM 网关 请求哈希（`vlm_gateway.py:151-156`）：`sha256(model+params+prompt+图片字节)` → `cache/vlm_gateway/`（现存 130 文件 68.85MB，随交付提交，承诺"复跑零成本"）。
   - README 宣称的第三层 `gen3d_state.json` 云任务断点（`README.md:73`）**实际不存在**——全仓库无任何代码引用。
 - **UE 调用链有两条**：CLI 链 `UnrealEditor-Cmd -ExecutePythonScript`（`s05_build_scene.py:72-77`，冷启动 ~32s）与插件编辑器内链 `IPythonScriptPlugin::ExecPythonCommandEx`（`AISceneBuilderToolkit_Env.cpp:257-262`）。两条链共用同一个 `build_scene.py` 与 `%TEMP%\ue_autoscene\args.json` 传参旁路（规避 UE 命令行按空格截断路径的问题）。插件驱动 s01–s04 时另起 Python 子进程 + 每 0.5s 轮询进度文件（`PipelineRunner.cpp:244-269`），理由是 `ExecPythonCommandEx` 在 GameThread 同步执行会把编辑器冻死 20–40 分钟。
-- **外部 AI 依赖单一入口**：唯一 AI 入口是 OpenAI 兼容的云端 VLM 网关（`vlm_gateway.py:1-14`），转发 `gemini-2.5-flash`（视觉）与 `gemini-3-pro-image`（图像生成）；3D 侧有 4 个 provider（云端文生 3D / 云端图生 3D / 云端减面 / 本地 proxy），凭证缺失时自动降级 proxy（`providers3d.py:427-459`）。
+- **外部 AI 依赖单一入口**：唯一 AI 入口是 OpenAI 兼容的云端 VLM 网关（`vlm_gateway.py:1-14`），转发 `cloud-vlm-vision`（视觉）与 `cloud-vlm-image`（图像生成）；3D 侧有 4 个 provider（云端文生 3D / 云端图生 3D / 云端减面 / 本地 proxy），凭证缺失时自动降级 proxy（`providers3d.py:427-459`）。
 - **凭证管理**：无硬编码密钥；全部走环境变量（`VLM_API_KEY`、`GEN3D_*`、`GEN3D_API_KEY`），带 ini 回退链。
 
 ### 1.2 实测运行数据（run_fd6e434f，参考图 ref_original.jpg）

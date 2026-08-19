@@ -11,9 +11,9 @@ class SNotificationItem;
 /** 管线的五个步骤。顺序即依赖顺序。 */
 enum class EPipelineStage : uint8
 {
-	Perceive = 0,   // s01 感知：标定 + Gemini 检测/分割
+	Perceive = 0,   // s01 感知：标定 + 云端视觉模型 检测/分割
 	Layout,         // s02 布局：地面射线法（纯 numpy，秒级）
-	Gen2D,          // s03 二维生成：Gemini 图像（最慢，20–40 分钟）
+	Gen2D,          // s03 二维生成：云端视觉模型 图像（最慢，20–40 分钟）
 	Gen3D,          // s04 三维生成：文生 3D / proxy
 	Assemble,       // s05 装配：编辑器内 Python
 	Count
