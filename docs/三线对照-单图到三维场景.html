@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>三线对照 — 同一个模型，三种软件环境下的单图三维重建</title>
+<style>
+  :root{
+    --acc:#E87722; --acc2:#B45309; --ink:#1a1a1a; --mut:#6b6459; --faint:#9a9287;
+    --rule:#e2ddd2; --paper:#fdfcfa; --chip:#FDF3E7; --panel:#f7f5f0;
+    --ai:#3B76B8; --det:#3B8A3E; --hum:#A33B6B;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","Noto Sans SC",sans-serif;font-size:15px;line-height:1.75;
+       color:var(--ink);margin:0;background:var(--paper)}
+  .wrap{max-width:1080px;margin:0 auto;padding:34px 24px 90px}
+  h1{font-size:27px;line-height:1.35;margin:38px 0 10px;padding-bottom:8px;
+     border-bottom:2.5px solid var(--acc)}
+  h2{font-size:19px;margin:26px 0 8px;color:var(--acc2)}
+  h3{font-size:15.5px;margin:16px 0 5px;color:#333}
+  p{margin:9px 0;text-align:justify}
+  a{color:var(--acc2)}
+  code{font-family:Consolas,monospace;font-size:.88em;background:#f1efe9;padding:1px 4px;border-radius:3px}
+  pre{font-family:Consolas,monospace;font-size:12.6px;background:#f6f4ef;border:1px solid var(--rule);
+      border-left:3px solid var(--acc);border-radius:4px;padding:11px 14px;overflow-x:auto;line-height:1.6}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.4px}
+  th,td{border:1px solid #d5cfc4;padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:var(--chip);font-weight:600}
+  .kv{background:var(--chip);border-left:4px solid var(--acc);padding:11px 15px;margin:14px 0;font-size:14.2px}
+  .note{background:#f2f1ee;border-left:4px solid #9a9287;padding:11px 15px;margin:14px 0;
+        font-size:13.4px;color:#57524a}
+  ul,ol{margin:8px 0;padding-left:23px} li{margin:5px 0}
+  figure{margin:14px 0}
+  figure img{width:100%;border:1px solid var(--rule);border-radius:3px;display:block}
+  figcaption{font-size:12.6px;color:var(--faint);margin-top:5px}
+  figcaption b{color:var(--acc2)}
+
+  /* ---------- 头部 ---------- */
+  .hero{padding:14px 0 4px}
+  .hero .t{font-size:34px;font-weight:700;line-height:1.25;letter-spacing:-.01em}
+  .hero .s{font-size:16px;color:var(--mut);margin-top:8px}
+  .hero .m{font-size:12.6px;color:var(--faint);margin-top:12px;line-height:1.9}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 6px}
+  .card{border:1px solid var(--rule);border-radius:5px;overflow:hidden;background:#fff;
+        display:flex;flex-direction:column}
+  .card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+  .card .b{padding:10px 12px 13px;flex:1}
+  .card .n{font-size:11px;letter-spacing:.1em;font-weight:700}
+  .card .h{font-size:15px;font-weight:700;margin:3px 0 5px}
+  .card .d{font-size:12.6px;color:var(--mut);line-height:1.6}
+  .card.l1 .n{color:var(--acc)} .card.l2 .n{color:var(--det)} .card.l3 .n{color:var(--ai)}
+
+  /* ---------- 标签页 ---------- */
+  .tabs{display:flex;gap:6px;margin:18px 0 0;flex-wrap:wrap}
+  .tabs button{font:inherit;font-size:13.6px;padding:9px 15px;border:1px solid var(--rule);
+    border-bottom:none;border-radius:5px 5px 0 0;background:#efece5;color:var(--mut);cursor:pointer;
+    transition:.13s}
+  .tabs button:hover{background:#e6e2d9;color:var(--ink)}
+  .tabs button[aria-selected=true]{background:#fff;color:var(--ink);font-weight:700;
+    box-shadow:inset 0 3px 0 var(--acc)}
+  .panes{border:1px solid var(--rule);border-radius:0 5px 5px 5px;background:#fff;padding:20px 22px 24px}
+  .pane[hidden]{display:none}
+
+  /* ---------- 管线图 ---------- */
+  .flowhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+            margin:6px 0 10px}
+  .legend{display:flex;gap:14px;font-size:12.4px;color:var(--mut);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none;
+               padding:2px 6px;border-radius:3px}
+  .legend span:hover{background:#f2f0ea}
+  .legend i{width:11px;height:11px;border-radius:2px;display:inline-block}
+  .legend span.off{opacity:.34}
+  .flow{display:flex;gap:0;overflow-x:auto;padding:4px 0 10px}
+  .stg{flex:1 1 0;min-width:132px;position:relative;padding-right:16px}
+  .stg:last-child{padding-right:0}
+  .stg::after{content:"";position:absolute;right:5px;top:26px;width:7px;height:7px;
+    border-top:2px solid #bdb5a8;border-right:2px solid #bdb5a8;transform:rotate(45deg)}
+  .stg:last-child::after{display:none}
+  .box{border:1.5px solid;border-radius:5px;padding:8px 9px;height:100%;background:#fff;
+       transition:opacity .16s, box-shadow .16s}
+  .box .r{font-size:10px;letter-spacing:.08em;font-weight:700;text-transform:uppercase}
+  .box .t{font-size:13.4px;font-weight:700;margin:2px 0 4px;line-height:1.35}
+  .box .d{font-size:11.8px;color:var(--mut);line-height:1.55}
+  .box .m{font-size:11.4px;margin-top:6px;padding-top:5px;border-top:1px dashed #ddd8cd;color:#57524a}
+  .box.warn .m{color:#a8442a;font-weight:600}
+  .box.dim{opacity:.2}
+  .r-ai{border-color:var(--ai)} .r-ai .r{color:var(--ai)} .r-ai{background:#f4f8fd}
+  .r-det{border-color:var(--det)} .r-det .r{color:var(--det)} .r-det{background:#f4faf4}
+  .r-hum{border-color:var(--hum)} .r-hum .r{color:var(--hum)} .r-hum{background:#fdf4f8}
+  .loopbadge{display:inline-block;font-size:11.6px;padding:3px 9px;border-radius:11px;
+    background:var(--chip);color:var(--acc2);border:1px solid #ecd9bd;font-weight:600}
+
+  /* ---------- 位姿放大器 ---------- */
+  .lab{border:1px solid var(--rule);border-radius:6px;background:#fff;padding:18px 20px;margin:16px 0}
+  .labgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}
+  .ctrls{display:flex;flex-direction:column;gap:11px;margin:4px 0 12px}
+  .ctl{display:flex;align-items:center;gap:10px;font-size:13px}
+  .ctl label{flex:0 0 92px;color:var(--mut)}
+  .ctl input[type=range]{flex:1;accent-color:var(--acc)}
+  .ctl output{flex:0 0 74px;text-align:right;font-family:Consolas,monospace;font-size:12.6px}
+  .presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+  .presets button{font:inherit;font-size:12.4px;padding:6px 11px;border-radius:4px;cursor:pointer;
+    border:1px solid var(--rule);background:#f4f2ec;transition:.13s}
+  .presets button:hover{background:#eae7de}
+  .presets button.a{border-color:#c98a4a;background:#fdf1e4;color:#8a4f16;font-weight:600}
+  .presets button.b{border-color:#6ba46e;background:#eef7ee;color:#2c6630;font-weight:600}
+  .readout{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;font-size:12.8px}
+  .readout div{background:var(--panel);border-radius:4px;padding:7px 10px}
+  .readout .k{color:var(--faint);font-size:11.4px}
+  .readout .v{font-family:Consolas,monospace;font-size:14px;color:var(--ink)}
+  canvas{width:100%;display:block;border:1px solid var(--rule);border-radius:4px;background:#fff}
+
+  .why{border-left:4px solid var(--acc);padding-left:16px;margin:22px 0}
+  .why .n{font-size:11.6px;letter-spacing:.1em;color:var(--acc);font-weight:700}
+  .why h2{margin-top:2px}
+  .ev{background:#fbfaf7;border:1px solid var(--rule);border-radius:4px;padding:10px 13px;
+      margin:10px 0;font-size:13px}
+  .ev .lbl{font-size:11.2px;letter-spacing:.08em;color:var(--faint);font-weight:700;margin-bottom:4px}
+  @media (max-width:860px){
+    .cards{grid-template-columns:1fr} .labgrid{grid-template-columns:1fr} .flow{display:block}
+    .stg{padding:0 0 18px} .stg::after{right:auto;left:50%;top:auto;bottom:5px;transform:rotate(135deg)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ==================== 头部 ==================== -->
+<div class="hero">
+  <div class="t">同一个模型，三种软件环境<br>三条从单张图到三维场景的路</div>
+  <div class="s">为什么位姿估计和三维语义理解的结果差这么多 —— 逐条走查管线，然后回答这个问题</div>
+  <div class="m">
+    本页把仓库里三条并行路线放在一起走查：UE5 资产库管线（主线）、three.js 程序化生成、Blender + Cycles 度量闭环。<br>
+    所有数字来自仓库内的机器留痕（<code>calib.json</code> / <code>run_summary.json</code> / 装配回执）与各线文档，可复核。
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card l1">
+    <img src="../process/figures/tri/ue_shot.jpg" alt="UE5 重建结果">
+    <div class="b">
+      <div class="n">线 1 · UE5</div>
+      <div class="h">资产库匹配管线</div>
+      <div class="d">VLM 感知 → 射线布局 → 库匹配 → 编辑器内装配。<b>单向前馈</b>，可交付、可离线复跑。</div>
+    </div>
+  </div>
+  <div class="card l2">
+    <img src="../process/figures/fob/iter4_final.jpg" alt="three.js 程序化生成结果">
+    <div class="b">
+      <div class="n">线 2 · three.js</div>
+      <div class="h">程序化生成</div>
+      <div class="d">零资源文件，几何与贴图全部由代码算出。<b>目视闭环</b>八轮，换种子 4 秒出新场景。</div>
+    </div>
+  </div>
+  <div class="card l3">
+    <img src="../process/figures/tri/bl_final.jpg" alt="Blender 重建结果">
+    <div class="b">
+      <div class="n">线 3 · Blender</div>
+      <div class="h">度量驱动闭环</div>
+      <div class="d">先把「像不像」变成可测量的量，再让循环去优化它。<b>度量闭环</b>九步。</div>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+<b>关于本页的立场与边界。</b>三条线里只有<b>线 2 是本文作者亲手做的</b>；线 1 与线 3 的分析全部基于仓库内的
+源码、机器留痕与各自文档，不是参与者视角。另外必须先说清楚一件事：<b>线 1 与线 3 用的是同一张室内参考图，
+线 2 用的是另一张（沙漠基地）</b>——所以三条线之间<b>不能直接比还原度</b>，能比的是方法结构。
+下文的定量对照全部限制在共用同一张图的线 1 与线 3 之间。
+</div>
+
+<!-- ==================== 管线走查 ==================== -->
+<h1>一、逐条走查管线</h1>
+
+<p>点标签切换。图例里的三个角色可以点击<b>过滤</b> —— 这是本页最关键的一个视角：
+把每条管线里「模型自己判断的环节」和「确定性算法判断的环节」分开看，差别立刻浮出来。</p>
+
+<div class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-p="ue5">线 1 · UE5 资产库管线</button>
+  <button role="tab" aria-selected="false" data-p="three">线 2 · three.js 程序化生成</button>
+  <button role="tab" aria-selected="false" data-p="bl">线 3 · Blender 度量闭环</button>
+</div>
+<div class="panes">
+  <div class="pane" id="pane-ue5"></div>
+  <div class="pane" id="pane-three" hidden></div>
+  <div class="pane" id="pane-bl" hidden></div>
+</div>
+
+<!-- ==================== 位姿放大器 ==================== -->
+<h1>二、位姿放大器：9.4° 是怎么变成 2.7 倍的</h1>
+
+<p>线 1 和线 3 面对<b>同一张 1024×572 的参考图</b>，解出了<b>完全一致的内参</b>
+（<code>hfov 95.0°</code>、<code>f 469.16 px</code>、<code>roll −0.35°</code>），
+但外参差得很远：</p>
+
+<table>
+<tr><th style="width:26%">量</th><th>线 1 · UE5（<code>calib.json</code>）</th><th>线 3 · Blender（文档）</th><th style="width:16%">差</th></tr>
+<tr><td>俯仰 pitch</td><td>−0.8°</td><td>−10.2°</td><td><b>9.4°</b></td></tr>
+<tr><td>相机高度</td><td>0.78 m</td><td>1.18 m</td><td><b>0.40 m</b></td></tr>
+<tr><td>解算来源</td><td><code>fov_source: "manual"</code>（自动标定失败，fSpy 手标）</td>
+    <td>LSD + RANSAC 消失点，61 条纵深族线段</td><td>—</td></tr>
+<tr><td>是否验算</td><td>无</td><td>房间线框投影回参考图：后墙两角 <b>378 / 668 px</b>，实测 <b>370 / 670 px</b></td><td>—</td></tr>
+<tr><td>最终房间尺寸</td><td>10.84 × 7.23 × 2.85 m</td><td>3.95 × 7.00 × 2.55 m</td>
+    <td><b>宽 2.7×</b></td></tr>
+</table>
+
+<p>纵深两条线基本一致（7.23 对 7.00 m），<b>宽度却差了 2.7 倍</b>。下面这个小工具解释为什么：
+拖动俯仰角，看地平线怎么移动、以及地面每一行像素对应的纵深怎么被放大。</p>
+
+<div class="lab">
+  <div class="presets">
+    <button class="a" data-preset="ue5">载入线 1 标定（pitch −0.8°，h 0.78 m）</button>
+    <button class="b" data-preset="bl">载入线 3 标定（pitch −10.2°，h 1.18 m）</button>
+  </div>
+  <div class="labgrid">
+    <div>
+      <canvas id="cv1" width="1024" height="572"></canvas>
+      <div class="ctrls" style="margin-top:12px">
+        <div class="ctl"><label>俯仰 pitch</label>
+          <input type="range" id="sPitch" min="0" max="20" step="0.1" value="10.2">
+          <output id="oPitch">−10.2°</output></div>
+        <div class="ctl"><label>相机高度</label>
+          <input type="range" id="sH" min="0.4" max="2.0" step="0.01" value="1.18">
+          <output id="oH">1.18 m</output></div>
+      </div>
+      <div class="readout">
+        <div><div class="k">地平线所在行 v<sub>h</sub></div><div class="v" id="rHz">—</div></div>
+        <div class="k" style="display:none"></div>
+        <div><div class="k">画面底边 (v=572) 的地面纵深</div><div class="v" id="rNear">—</div></div>
+        <div><div class="k">v=320 处的地面纵深</div><div class="v" id="rFar">—</div></div>
+      </div>
+    </div>
+    <div>
+      <canvas id="cv2" width="620" height="430"></canvas>
+      <p style="font-size:12.6px;color:var(--mut);margin-top:9px">
+        纵轴是地面纵深（对数），横轴是图像行。两条虚线是两组真实标定。
+        <b>底部两条曲线几乎重合</b>——近处地面两种标定给出的纵深差不多；
+        但越靠近地平线，曲线越陡，两者的差距被无限放大。
+        后墙是画面里最远的东西，正好落在这个发散区。
+      </p>
+      <div class="ev">
+        <div class="lbl">公式（可自行核对）</div>
+        地平线行 <code>v_h = cy − f·tan(pitch)</code>，地面纵深 <code>d = h·f / (v − v_h)</code>。<br>
+        代入线 3 的 <code>pitch=10.2°</code>、<code>f=469.16</code>、<code>cy=286</code> 得
+        <code>v_h = 201.6</code> —— 而线 3 文档里 LSD+RANSAC 实测的消失点是
+        <b>(517.4, 201.5)</b>。公式与它的实测吻合到 0.1 px，这也是这个小工具可信的依据。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="kv">
+<b>机制说清楚就一句话：</b>地面纵深是 <code>d = h·f / (v − v_h)</code>，分母是「该像素行离地平线多远」。
+俯仰越接近水平，地平线越往画面中间压，靠近它的那些行分母趋近于零，纵深就被推向无穷。
+线 1 的 pitch 只有 −0.8°，地平线落在 v≈279；线 3 的 −10.2° 把地平线抬到 v≈202。
+同一排后墙脚像素，在前者眼里远得多 —— 于是房间被解得又宽又大。
+<b>这不是模型「看错了」，是一个没有被验算的外参在下游被几何放大了。</b>
+</div>
+
+<!-- ==================== 对照矩阵 ==================== -->
+<h1>三、三条线的结构对照</h1>
+
+<table>
+<tr><th style="width:15%"></th>
+  <th style="width:28%">线 1 · UE5 资产库管线</th>
+  <th style="width:28%">线 2 · three.js 程序化</th>
+  <th>线 3 · Blender 度量闭环</th></tr>
+<tr><td><b>参考图</b></td><td>室内机房（1024×572）</td><td>沙漠基地（另一张）</td><td>室内机房（同线 1）</td></tr>
+<tr><td><b>内容来源</b></td><td>39 模块预制资产库 + 图生 3D 兜底</td><td>全部运行时算出，零资源文件</td><td>手工建模 + 本地资产库，逐件实测尺寸</td></tr>
+<tr><td><b>相机位姿</b></td><td>消失点自动解<b>失败</b> → fSpy 人工标定，<b>未验算</b></td>
+    <td>由取景约束<b>闭式解</b>（无感知环节）</td>
+    <td>LSD+RANSAC 消失点 + 地平线比例法，<b>投影回图验算</b></td></tr>
+<tr><td><b>布局表示</b></td><td>三维坐标（地面射线求解）</td><td>院落网格规则</td><td><b>图像空间</b>锚点像素 + 支撑面名</td></tr>
+<tr><td><b>流程形态</b></td><td>单向前馈五阶段</td><td><b>目视</b>闭环八轮</td><td><b>度量</b>闭环九步</td></tr>
+<tr><td><b>判据</b></td><td>装配回执（穿模 / 悬空）</td><td>肉眼并排比对</td><td>边缘 F、16 分区曝光、直方图交集、逐物体互相关</td></tr>
+<tr><td><b>一轮成本</b></td><td>分钟级（编辑器内装配 + 开关卡查看）</td><td><b>约 4 秒</b>（整场重建，画面即时）</td><td>38 秒 / 帧（480 spp）+ 量分</td></tr>
+<tr><td><b>语义精度需求</b></td><td><b>款式级</b>（要「就是这把椅子」）</td><td>无实例语义（只需类别规则）</td><td>类别级 + <b>朝向</b>（被朝向咬过一次）</td></tr>
+<tr><td><b>实测结果</b></td><td>127 actors / 0 error；21 命中<b>全为类别级，0 款式级</b></td>
+    <td>13 draw call / 1.69 M 顶点 / 24 ms 帧</td>
+    <td>边缘 F 0.260 → <b>0.650</b>；16 分区曝光误差和 5.62 → <b>2.44</b> 档</td></tr>
+<tr><td><b>回答的问题</b></td><td>能不能<b>可交付、可复跑</b></td><td>能不能长出<b>一类</b>场景</td><td>还原度<b>上限</b>在哪</td></tr>
+</table>
+
+<!-- ==================== 核心分析 ==================== -->
+<h1>四、为什么同一个模型，差距这么大</h1>
+
+<p>先给结论：<b>差距的主因不是软件环境，而是「把哪一部分交给模型判断」以及「判断完有没有人核对」。</b>
+环境确实起了作用，但它是通过第四条间接起的作用。四条按影响大小排列。</p>
+
+<div class="why">
+<div class="n">① 主 因</div>
+<h2>位姿不是「估」出来的，是「解 + 验」出来的</h2>
+<p>两条线其实<b>用了同一个方法</b>。线 1 的 <code>pipeline/core/calib_vp.py</code> 开头写得很清楚：
+「相机标定：消失点法。全程 OpenCV + numpy，<b>不含任何 AI 模型</b>」——
+和线 3 的做法在原理上是一回事。所以差距不在「谁用了 AI 谁没用」。</p>
+<div class="ev">
+<div class="lbl">线 1 · 该次交付 run 的 calib.json notes（原文）</div>
+<pre>"vp2_plus_zenith 解出 hfov=15°，越界弃用"
+"无可信消失点对，退回 hfov=60.0° 先验"
+"相机高度估计离散（MAD/median=0.35）"
+"已由 calib_manual.json 覆盖（fSpy 人工标定，派生量已重算）"</pre>
+</div>
+<p>自动解的两条通道都失败了：正交水平消失点对找不到（一点透视的第二个水平消失点在无穷远，本就退化），
+救命通道「水平 VP + 天顶 VP」解出 hfov=15° 越界。高度那一路也散了 —— 而它散的原因值得记下来：
+高度先验来自 <code>KNOWN_HEIGHTS_CM</code> 按<b>模型给的标签</b>去查表、再套在<b>模型给的框</b>上，
+两层模型误差叠在一起，多个先验物彼此矛盾（MAD/median 0.35）。</p>
+<p>于是退回人工标定。<b>问题不在于用了人工</b>——问题在于人工给完就直接用了，<b>没有任何一步把它投影回参考图核对</b>。
+线 3 恰恰做了这一步：把解出来的房间线框、0.5 m 地面栅格与地平线画回参考图，
+后墙两角落在 378 / 668 px，参考图实测 370 / 670 px —— 误差 2–8 px 才算通过。</p>
+<figure>
+  <img src="../process/figures/tri/bl_calib.jpg" alt="线 3 的标定验算：房间线框与地面栅格投影回参考图">
+  <figcaption><b>线 3 的验收方式</b>　把解出来的房间线框、0.5 m 地面栅格与地平线画回参考图逐点核对。
+  这一步的成本只是画几条线，收益是拦住一个会被下游几何放大的外参误差 —— 线 1 缺的就是这张图。</figcaption>
+</figure>
+<div class="kv">同一个几何量，一条线上是「填进配置文件的数字」，另一条线上是「必须过验收的结论」。
+第二节那个放大器演示的就是这个差别的下游代价。</div>
+</div>
+
+<div class="why">
+<div class="n">② 次 因</div>
+<h2>让模型「估计」和让模型「写解算器」，是两种能力</h2>
+<p>线 1 里确实有一处直接让模型做位姿估计 —— <code>prompts/s01_box3d.txt</code> 要 9 自由度三维盒：</p>
+<pre>{"label": "...", "box_3d": [x,y,z, sx,sy,sz, roll,pitch,yaw]}</pre>
+<p>值得称道的是，这条线自己也不信它。<code>core/solver.py</code> 里写着「box_3d 是未文档化的实验能力，
+随时可能失效；因此它<b>只做增益不做依赖</b>」，yaw 的优先级链是
+<code>box_3d(带校验) → 贴墙法线 → 随支撑物 → 长轴贴墙 → 面向相机</code>。
+这是对的工程判断。而《复现差距分析》给出的量是：<b>单目绝对深度误差 ±30–50%</b>。</p>
+<p>对照另外两条线：线 3 的相机来自 LSD 线段检测 + RANSAC，线 2 的相机来自一组取景约束的闭式三角解 ——
+两条线里模型的角色都不是「看图报数」，而是<b>写出那个解算器</b>。</p>
+<div class="kv">同一个模型：当<b>度量估计器</b>用，误差 ±30–50%；当<b>解算器作者</b>用，精度取决于所选方法本身，
+可以做到像素级。这是本页最可迁移的一条 —— 不要把可解的几何量交给模型去估。</div>
+</div>
+
+<div class="why">
+<div class="n">③ 架 构</div>
+<h2>「三维语义理解差」，很大程度是架构提出的要求太高</h2>
+<p>三条线对语义精度的需求量完全不同，而这是<b>架构选的</b>，不是模型决定的：</p>
+<table>
+<tr><th style="width:15%">线</th><th style="width:34%">架构要求的语义精度</th><th>实测结果</th></tr>
+<tr><td>线 1 · UE5</td><td><b>款式级</b>：要在 39 模块库里找到「就是这一件」</td>
+    <td>21 件命中<b>全部只到类别级，0 件款式级</b>；17/30 带质量 flag</td></tr>
+<tr><td>线 2 · three.js</td><td><b>无实例语义</b>：只需要「这一类院子里该有什么」</td>
+    <td>不适用 —— 这个需求被架构消掉了</td></tr>
+<tr><td>线 3 · Blender</td><td>类别级 + <b>朝向</b>：布局写在图像空间，绕开了绝对坐标</td>
+    <td>朝向仍出过大错：整排左墙 CRT 偏航反了 90°+</td></tr>
+</table>
+<p>线 3 那个朝向错误特别说明问题：它<b>不是靠看图发现的</b>，是因为
+<code>crt_L1</code> 长期报「无匹配」这个<b>数字不肯改善</b>才被挖出来。
+原因也很具体——他们用「投影宽度」去拟合，而<b>宽度这一项是退化的</b>：
+一个侧视的深显示器和一个正视的浅显示器可以投出同样的宽度。观测量太少，两个自由度一起错还能自洽。</p>
+<div class="note">所以「三维语义理解」在这三条线上的表现差异，读作「<b>架构对语义的依赖程度</b>」比读作「模型的语义能力」更准确。
+线 1 最惨，是因为只有它把款式对应设成了必要条件；线 2 看起来没问题，是因为它根本不需要。</div>
+</div>
+
+<div class="why">
+<div class="n">④ 环 境</div>
+<h2>软件环境真正起作用的地方：它给闭环定了价</h2>
+<p>这是唯一一条「环境」确实起作用的路径，而且它起作用的方式是<b>间接</b>的 —— 通过决定一轮迭代有多贵：</p>
+<table>
+<tr><th style="width:15%">环境</th><th style="width:26%">一轮的代价</th><th>结果</th></tr>
+<tr><td>UE5 编辑器内</td><td>分钟级；要开关卡才能看到结果</td>
+    <td>贵 → 被设计成<b>单向前馈</b> → 没有验算环节 → 位姿错误一路活到底</td></tr>
+<tr><td>Blender + Cycles</td><td>38 秒 / 帧，但可脚本化出图并直接量分</td>
+    <td>可承受 → 九步闭环，指标全程可追</td></tr>
+<tr><td>three.js / WebGL</td><td><b>约 4 秒</b>整场重建，画面就在眼前</td>
+    <td>极便宜 → 八轮闭环，但也<b>因为太便宜而懒得建立量</b></td></tr>
+</table>
+<p>注意最后一格 —— 便宜不等于好。线 2 八轮全靠肉眼，代价写在它自己的文档里：
+第 3、5、6 三轮都在「取景」同一条轴上反复横跳（fov 26°→38°→34°），
+因为<b>没有一个量告诉它离目标还有多远</b>。而所需的判据其实只是一个布尔量
+「画面顶边的射线是否仍落在基地范围内」。</p>
+<div class="kv">环境决定了你<b>能</b>迭代多少轮；判据决定了每一轮<b>算不算数</b>。
+线 1 缺前者，线 2 缺后者，线 3 两样都有 —— 这才是三条线结果分层的真实原因。</div>
+</div>
+
+<h2>一条必须补上的自我警告</h2>
+<p>把「建立度量」说成万灵药也是错的。线 3 自己踩到过：
+逐物体互相关的<b>噪声地板高达 10.2 px</b>（12 个可证明没动过的锚定物体，在一次 A/B 里报出的位移均值），
+而且在一排几乎一样的米色 CRT 里，相关器会<b>锁到邻居身上</b>（<code>crt_R2</code> 报 −39 px、
+<code>crt_R3</code> 报 +33 px，那是误配不是位移）。它自己的总结是：<b>度量工具本身也要被审查</b>。</p>
+
+<!-- ==================== 结论 ==================== -->
+<h1>五、可以直接搬走的结论</h1>
+<ol>
+<li><b>可解的几何量不要交给模型估。</b>相机内外参、房间尺度这类有确定性解法的量，
+让模型去写解算器，不要让它看图报数 —— 同一个模型在这两种用法下的精度差一个量级。</li>
+<li><b>任何解算出来的位姿都必须投影回原图验收。</b>成本极低（画几条线），
+收益是拦住一个会被下游几何放大的误差。线 1 与线 3 的全部差距几乎都能追到这一步的有无。</li>
+<li><b>先定判据，再动手。</b>判据的质量决定闭环的价值上限，循环次数不决定。
+没有判据的闭环会在同一条轴上来回走。</li>
+<li><b>让架构少要一点语义。</b>把布局写在图像空间（线 3）或写成生成规则（线 2），
+都能把「款式级识别」这个模型做不好的要求从关键路径上拿掉。</li>
+<li><b>判据也要被审查。</b>先测噪声地板，再用它下结论。</li>
+</ol>
+
+<h1>六、源码与复现</h1>
+<table>
+<tr><th style="width:30%">路径</th><th>内容</th></tr>
+<tr><td><code>pipeline/</code></td><td>线 1 全部源码；标定见 <code>core/calib_vp.py</code>，布局求解见 <code>core/solver.py</code></td></tr>
+<tr><td><code>process/run_fd6e434f/</code></td><td>线 1 一次完整运行的机器留痕，本页所有线 1 数字出自这里</td></tr>
+<tr><td><code>process/threejs_fob/</code></td><td>线 2 完整可运行源码（3 163 行，唯一依赖 three.js）</td></tr>
+<tr><td><code>docs/对照实验-程序化场景重建.html</code></td><td>线 2 的设计推理与八轮迭代记录</td></tr>
+<tr><td><code>docs/还原度闭环迭代.html</code></td><td>线 3 的四个前置判断、九步迭代与指标轨迹</td></tr>
+</table>
+<pre>cd process/threejs_fob &amp;&amp; npm i     # 线 2：唯一依赖 three.js
+python process/threejs_fob/serve.py 8177</pre>
+
+<p style="margin-top:30px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--faint)">
+三条线用的是同一个模型。真正把结果拉开的，是<b>交给它判断的东西是什么</b>，
+以及<b>判断完谁来核对</b>。
+</p>
+
+</div>
+
+<script>
+/* ============================ 管线数据 ============================ */
+const R = { ai:['AI','r-ai'], det:['确定性','r-det'], hum:['人工','r-hum'] };
+
+const PIPES = {
+  ue5: {
+    loop: '单向前馈 · 无回路',
+    stages: [
+      {r:'ai',  t:'s01 感知', d:'VLM 四象限分块召回，JSON 本地校验 + 修复重试', m:'70 检测 / 12 对象'},
+      {r:'det', t:'相机标定', d:'消失点法，全程 OpenCV，不含 AI 模型', m:'两条通道均失败', warn:1},
+      {r:'hum', t:'fSpy 手标', d:'人工给 hfov / pitch / roll / 相机高', m:'未投影回图验算', warn:1},
+      {r:'det', t:'s02 布局', d:'地面射线求解，纯 numpy，无 AI 参与', m:'解出 10.84 × 7.23 m', warn:1},
+      {r:'ai',  t:'s03 素材', d:'无缝材质 / 海报 / 氛围，参数钳制', m:'白平衡 4000K 被钳到 6500'},
+      {r:'det', t:'s04 匹配', d:'资产库四级瀑布匹配，畸形缩放保护', m:'21 命中 · 0 款式级', warn:1},
+      {r:'det', t:'s05 装配', d:'去穿插 → 重力吸附 → 微推挤 → 回执', m:'127 actors / 0 error'},
+    ]
+  },
+  three: {
+    loop: '闭环 · 目视判据 · 八轮',
+    stages: [
+      {r:'ai',  t:'拆解参考图', d:'把画面拆成一份「可生成的清单」，不是物体列表', m:'7 类 · 含氛围约束'},
+      {r:'det', t:'相机闭式解', d:'由取景约束列方程反解机位，无感知环节', m:'h≈100 m / fov 34°'},
+      {r:'ai',  t:'写生成规则', d:'总平面网格、构件库、载具、材质分桶', m:'3 163 行 / 13 材质桶'},
+      {r:'det', t:'运行时生成', d:'变换栈就地生成 → 按材质合并 → 地面烘焙', m:'44 441 构件 / 4 秒'},
+      {r:'hum', t:'目视比对', d:'渲染图与参考图并排看，挑最刺眼的一条', m:'无量化判据', warn:1},
+      {r:'ai',  t:'改规则', d:'回到上游改参数或改规则，再渲', m:'八轮 · 3 轮在同一轴横跳', warn:1},
+    ]
+  },
+  bl: {
+    loop: '闭环 · 度量判据 · 九步',
+    stages: [
+      {r:'det', t:'定目标函数', d:'先选判据：边缘 F、16 分区曝光、直方图交集', m:'实测否掉了 SSIM'},
+      {r:'det', t:'解相机', d:'LSD + RANSAC 消失点；地平线比例法解机高', m:'VP (517.4, 201.5)'},
+      {r:'det', t:'投影验算', d:'房间线框 + 地面栅格画回参考图逐点核对', m:'378/668 对实测 370/670'},
+      {r:'ai',  t:'图像空间布局', d:'每个物体记「接触像素 + 支撑面名」，不写坐标', m:'对相机变化不变'},
+      {r:'ai',  t:'建模与配光', d:'五模块分建；按分区表配光调色', m:'166 物体 / 568 万面'},
+      {r:'det', t:'渲染 + 量分', d:'Cycles 480 spp 出图，逐项算指标', m:'38 秒 / 帧'},
+      {r:'hum', t:'独立复测', d:'整合者不采信自我归因，做 2×2 消融并有权回滚', m:'挖出 6 个隐形 bug'},
+    ]
+  }
+};
+
+function renderPipe(key){
+  const p = PIPES[key];
+  const flow = p.stages.map(s=>{
+    const [rl, cls] = R[s.r];
+    return `<div class="stg"><div class="box ${cls}${s.warn?' warn':''}" data-role="${s.r}">
+      <div class="r">${rl}</div><div class="t">${s.t}</div><div class="d">${s.d}</div>
+      <div class="m">${s.m}</div></div></div>`;
+  }).join('');
+  return `<div class="flowhead">
+      <span class="loopbadge">${p.loop}</span>
+      <div class="legend" data-legend>
+        <span data-role="ai"><i style="background:var(--ai)"></i>模型判断</span>
+        <span data-role="det"><i style="background:var(--det)"></i>确定性算法</span>
+        <span data-role="hum"><i style="background:var(--hum)"></i>人工介入</span>
+        <span style="color:var(--faint)">（点击过滤 · 红字为该环节的问题点）</span>
+      </div></div>
+    <div class="flow">${flow}</div>`;
+}
+
+const PANE_EXTRA = {
+  ue5: `<figure><img src="../process/figures/tri/ue_compare.jpg" alt="参考图与 UE5 重建对照">
+    <figcaption><b>左：参考图　右：管线自动搭建的 UE5 场景（同一机位）</b>　
+    结构对应成立（三排桌骨架、CRT 阵列、海报墙、立柱都在），但逐件款式与光影未复原。</figcaption></figure>
+    <h3>这条线的取舍</h3>
+    <p>它是三条里<b>唯一以交付为目标</b>的：全流程跑在 UE 编辑器进程内，评审机零 pip、零外网、零 API Key
+    即可字节级复跑。为此付出的代价是把流程压成一次前馈 —— 而正是这个选择让第二节那个位姿误差没有任何机会被发现。</p>
+    <ul><li><b>强</b>：可交付、可复现、有装配回执（0 穿模 / 0 悬空，由独立会话复测）</li>
+    <li><b>弱</b>：位姿未验算；款式级匹配为 0；误差逐级放大无法回收</li></ul>`,
+  three: `<h3>这条线的取舍</h3>
+    <p>它把问题换了个问法：不追求「像这一张图」，而追求「长出这一类图」。代价是<b>放弃了逐件对应</b> ——
+    画面里的每一辆卡车都不是原图那一辆。收益是换个种子 4 秒出一座新基地。</p>
+    <ul><li><b>强</b>：零资源文件；13 次 draw call 跑 1.69 M 顶点；结构规则可复用</li>
+    <li><b>弱</b>：判据全在眼睛里，三轮浪费在同一条轴上；不适用于要求复刻的场合</li></ul>`,
+  bl: `<h3>这条线的取舍</h3>
+    <p>它是三条里<b>唯一先定目标函数再动手</b>的。第一版渲染很难看，但它跑通了闭环 ——
+    此后每一个改动都能立刻被量化。九步里边缘 F 从 0.260 涨到 0.650。</p>
+    <ul><li><b>强</b>：位姿验算到像素；指标全程可追；独立复测挖出 6 个肉眼看不见的 bug</li>
+    <li><b>弱</b>：针对单图调优，不可迁移；度量工具本身也会骗人（互相关噪声地板 10.2 px）</li></ul>`
+};
+
+for (const k of Object.keys(PIPES)){
+  document.getElementById('pane-'+k).innerHTML = renderPipe(k) + PANE_EXTRA[k];
+}
+
+document.querySelectorAll('.tabs button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected', x===b));
+    for (const k of Object.keys(PIPES)) document.getElementById('pane-'+k).hidden = (k!==b.dataset.p);
+  };
+});
+
+// 图例过滤：点一下把该角色以外的环节压暗
+document.addEventListener('click', e=>{
+  const sp = e.target.closest('.legend span[data-role]');
+  if (!sp) return;
+  const lg = sp.closest('[data-legend]');
+  sp.classList.toggle('off');
+  const off = [...lg.querySelectorAll('span.off')].map(s=>s.dataset.role);
+  lg.closest('.pane').querySelectorAll('.box').forEach(bx=>{
+    bx.classList.toggle('dim', off.includes(bx.dataset.role));
+  });
+});
+
+/* ============================ 位姿放大器 ============================ */
+const F = 469.1615610969207, CX = 512, CY = 286, W = 1024, H = 572;
+const PRESETS = { ue5:{pitch:0.8, h:0.78}, bl:{pitch:10.2, h:1.18} };
+const horizon = p => CY - F * Math.tan(p * Math.PI/180);
+const depth = (v, p, h) => { const dv = v - horizon(p); return dv > 0.5 ? h*F/dv : Infinity; };
+
+const refImg = new Image();
+refImg.src = '../process/figures/tri/ref_interior.jpg';
+
+const cv1 = document.getElementById('cv1'), g1 = cv1.getContext('2d');
+const cv2 = document.getElementById('cv2'), g2 = cv2.getContext('2d');
+const sPitch = document.getElementById('sPitch'), sH = document.getElementById('sH');
+
+function drawScene(){
+  const p = +sPitch.value, h = +sH.value, vh = horizon(p);
+  g1.clearRect(0,0,W,H);
+  if (refImg.complete && refImg.naturalWidth) g1.drawImage(refImg,0,0,W,H);
+  else { g1.fillStyle='#eee'; g1.fillRect(0,0,W,H); }
+  g1.fillStyle = 'rgba(255,255,255,.30)'; g1.fillRect(0,0,W,H);
+
+  // 地面等深线
+  g1.lineWidth = 2; g1.font = '600 15px Consolas, monospace'; g1.textBaseline = 'bottom';
+  for (const d of [1,2,3,5,8,14]){
+    const v = vh + h*F/d;
+    if (v < vh+2 || v > H) continue;
+    g1.strokeStyle = 'rgba(232,119,34,.85)';
+    g1.beginPath(); g1.moveTo(0,v); g1.lineTo(W,v); g1.stroke();
+    g1.fillStyle = 'rgba(232,119,34,.95)';
+    g1.fillText(d+' m', 10, v-3);
+  }
+  // 地平线
+  if (vh > -40 && vh < H+40){
+    g1.strokeStyle = '#1b4f8a'; g1.lineWidth = 3; g1.setLineDash([11,7]);
+    g1.beginPath(); g1.moveTo(0,vh); g1.lineTo(W,vh); g1.stroke(); g1.setLineDash([]);
+    g1.fillStyle = '#1b4f8a'; g1.font = '700 17px Consolas, monospace';
+    g1.fillText('地平线  v = '+vh.toFixed(1), 10, vh-6);
+  }
+  document.getElementById('oPitch').textContent = '−'+p.toFixed(1)+'°';
+  document.getElementById('oH').textContent = h.toFixed(2)+' m';
+  document.getElementById('rHz').textContent = vh.toFixed(1);
+  const f = x => x===Infinity ? '∞' : (x>=100 ? x.toFixed(0) : x.toFixed(2))+' m';
+  document.getElementById('rNear').textContent = f(depth(572,p,h));
+  document.getElementById('rFar').textContent  = f(depth(320,p,h));
+  drawCurve(p,h);
+}
+
+function drawCurve(p,h){
+  const w = cv2.width, hh = cv2.height, PAD = {l:56,r:14,t:14,b:34};
+  const x0=PAD.l, y0=hh-PAD.b, x1=w-PAD.r, y1=PAD.t;
+  const vMin=200, vMax=572, dMin=0.5, dMax=200;
+  const X = v => x0 + (v-vMin)/(vMax-vMin)*(x1-x0);
+  const Y = d => { const t=(Math.log10(Math.max(dMin,Math.min(dMax,d)))-Math.log10(dMin))
+                              /(Math.log10(dMax)-Math.log10(dMin)); return y0-t*(y0-y1); };
+  g2.clearRect(0,0,w,hh);
+  g2.fillStyle='#fff'; g2.fillRect(0,0,w,hh);
+  // 网格
+  g2.strokeStyle='#eee'; g2.lineWidth=1; g2.font='11px Consolas, monospace'; g2.fillStyle='#999';
+  g2.textAlign='right'; g2.textBaseline='middle';
+  for (const d of [1,2,5,10,20,50,100,200]){
+    g2.beginPath(); g2.moveTo(x0,Y(d)); g2.lineTo(x1,Y(d)); g2.stroke();
+    g2.fillText(d+'m', x0-6, Y(d));
+  }
+  g2.textAlign='center'; g2.textBaseline='top';
+  for (let v=200; v<=572; v+=62){
+    g2.beginPath(); g2.moveTo(X(v),y1); g2.lineTo(X(v),y0); g2.stroke();
+    g2.fillText('v='+v, X(v), y0+6);
+  }
+  const curve=(pp,hVal,color,dash,wdt)=>{
+    g2.strokeStyle=color; g2.lineWidth=wdt; g2.setLineDash(dash);
+    g2.beginPath(); let started=false;
+    for (let v=vMin; v<=vMax; v+=1){
+      const d=depth(v,pp,hVal);
+      if (!isFinite(d)||d>dMax){ started=false; continue; }
+      const px=X(v), py=Y(d);
+      started ? g2.lineTo(px,py) : (g2.moveTo(px,py), started=true);
+    }
+    g2.stroke(); g2.setLineDash([]);
+  };
+  curve(PRESETS.ue5.pitch, PRESETS.ue5.h, 'rgba(200,120,60,.55)', [6,4], 2);
+  curve(PRESETS.bl.pitch,  PRESETS.bl.h,  'rgba(80,150,85,.55)',  [6,4], 2);
+  curve(p, h, '#E87722', [], 3);
+  g2.textAlign='left'; g2.textBaseline='top'; g2.font='600 11.5px "Microsoft YaHei"';
+  g2.fillStyle='rgba(200,120,60,.95)'; g2.fillText('线 1 标定', x1-86, y1+2);
+  g2.fillStyle='rgba(60,130,70,.95)';  g2.fillText('线 3 标定', x1-86, y1+18);
+  g2.fillStyle='#E87722';              g2.fillText('当前设置', x1-86, y1+34);
+}
+
+sPitch.oninput = drawScene; sH.oninput = drawScene;
+document.querySelectorAll('.presets button').forEach(b=>{
+  b.onclick = ()=>{ const p = PRESETS[b.dataset.preset];
+    sPitch.value = p.pitch; sH.value = p.h; drawScene(); };
+});
+refImg.onload = drawScene;
+drawScene();
+</script>
+</body>
+</html>

@@ -23,3 +23,8 @@ cache/vlm_gateway/
 Thumbs.db
 .vs/
 .idea/
+
+# 归档的 three.js 线：依赖与本地截图不入库
+process/threejs_fob/node_modules/
+process/threejs_fob/_shots/
+process/threejs_fob/package-lock.json

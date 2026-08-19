@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FOB — 程序化前进作战基地 (three.js)</title>
+<style>
+  :root{
+    --bg:#12100d; --panel:rgba(18,17,14,.86); --line:#3a352b;
+    --fg:#d8cfbc; --dim:#8b8271; --hi:#c8a24a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;
+    font:12px/1.5 "Consolas","SF Mono",Menlo,monospace;color:var(--fg)}
+  #app{position:fixed;inset:0}
+  canvas{display:block}
+
+  /* ---------- 侧栏 ---------- */
+  #hud{position:fixed;top:0;left:0;bottom:0;width:264px;padding:14px 14px 18px;
+    background:var(--panel);backdrop-filter:blur(10px);
+    border-right:1px solid var(--line);overflow-y:auto;z-index:10;
+    transition:transform .22s ease}
+  #hud.hide{transform:translateX(-100%)}
+  #hud h1{margin:0 0 2px;font-size:13px;letter-spacing:.14em;color:var(--hi)}
+  #hud .sub{color:var(--dim);font-size:10.5px;letter-spacing:.05em;margin-bottom:14px}
+  .grp{border-top:1px solid var(--line);padding:11px 0 3px}
+  .grp>.t{color:var(--dim);font-size:10px;letter-spacing:.16em;margin-bottom:8px}
+  .row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .row label{flex:0 0 62px;color:var(--dim);font-size:11px}
+  .row output{flex:0 0 46px;text-align:right;color:var(--fg);font-size:11px}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:2px;
+    background:#4a4437;border-radius:2px;outline:0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;
+    border-radius:50%;background:var(--hi);cursor:pointer}
+  input[type=number],input[type=text]{flex:1;min-width:0;background:#0d0c0a;color:var(--fg);
+    border:1px solid var(--line);border-radius:3px;padding:4px 6px;font:inherit}
+  button{background:#221f19;color:var(--fg);border:1px solid var(--line);border-radius:3px;
+    padding:6px 8px;font:inherit;cursor:pointer;transition:.12s}
+  button:hover{background:#2f2b22;border-color:#5d5544}
+  button.pri{background:#3a2f14;border-color:#6b551f;color:#e9d49a}
+  button.pri:hover{background:#4a3c19}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:7px}
+  .btns.b3{grid-template-columns:1fr 1fr 1fr}
+  .chk{display:flex;align-items:center;gap:7px;margin-bottom:6px;cursor:pointer;color:var(--dim)}
+  .chk input{accent-color:var(--hi);cursor:pointer}
+  .chk:hover{color:var(--fg)}
+  #stat{color:var(--dim);font-size:10.5px;line-height:1.7;white-space:pre}
+  #stat b{color:var(--fg);font-weight:400}
+
+  /* ---------- 折叠按钮 ---------- */
+  #toggle{position:fixed;top:10px;left:274px;z-index:11;width:26px;height:26px;
+    padding:0;line-height:24px;text-align:center;transition:left .22s ease}
+  #toggle.hide{left:10px}
+
+  /* ---------- 加载 ---------- */
+  #load{position:fixed;inset:0;z-index:40;background:#12100d;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    transition:opacity .45s ease}
+  #load.done{opacity:0;pointer-events:none}
+  #load .ttl{letter-spacing:.3em;color:var(--hi);font-size:13px}
+  #bar{width:280px;height:2px;background:#2b271f;overflow:hidden}
+  #bar i{display:block;height:100%;width:0;background:var(--hi);transition:width .2s}
+  #load .msg{color:var(--dim);font-size:11px;letter-spacing:.06em;height:16px}
+
+  /* ---------- 右下角比例尺 / 视角提示 ---------- */
+  #tip{position:fixed;right:12px;bottom:10px;z-index:10;color:var(--dim);
+    font-size:10.5px;text-align:right;line-height:1.7;text-shadow:0 1px 3px #000}
+  #tip b{color:var(--fg);font-weight:400}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<button id="toggle" title="折叠面板">‹</button>
+
+<div id="hud">
+  <h1>F O B &nbsp;S I T E</h1>
+  <div class="sub">程序化前进作战基地 · three.js WebGL2</div>
+
+  <div class="grp">
+    <div class="t">生 成</div>
+    <div class="row">
+      <label>种子</label>
+      <input type="number" id="seed" value="20260813" step="1">
+    </div>
+    <div class="btns">
+      <button class="pri" id="regen">重新生成</button>
+      <button id="rand">随机种子</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="t">相 机</div>
+    <div class="btns b3">
+      <button id="cam0">原图</button>
+      <button id="cam1">俯视</button>
+      <button id="cam2">地面</button>
+    </div>
+    <div class="row">
+      <label>焦距</label>
+      <input type="range" id="fov" min="12" max="70" step="1" value="34">
+      <output id="fovv">34°</output>
+    </div>
+    <label class="chk"><input type="checkbox" id="spin"> 环绕巡航</label>
+  </div>
+
+  <div class="grp">
+    <div class="t">光 照</div>
+    <div class="row">
+      <label>方位</label>
+      <input type="range" id="az" min="0" max="360" step="1" value="118">
+      <output id="azv">118°</output>
+    </div>
+    <div class="row">
+      <label>高度</label>
+      <input type="range" id="el" min="8" max="85" step="1" value="43">
+      <output id="elv">43°</output>
+    </div>
+    <div class="row">
+      <label>曝光</label>
+      <input type="range" id="exp" min="0.4" max="2" step="0.02" value="0.88">
+      <output id="expv">0.88</output>
+    </div>
+    <div class="row">
+      <label>沙尘</label>
+      <input type="range" id="haze" min="0" max="30" step="0.5" value="13">
+      <output id="hazev">13</output>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="t">画 质</div>
+    <label class="chk"><input type="checkbox" id="ao" checked> 环境光遮蔽 (GTAO)</label>
+    <label class="chk"><input type="checkbox" id="shadow" checked> 阴影</label>
+    <label class="chk"><input type="checkbox" id="grade" checked> 调色 / 暗角 / 颗粒</label>
+    <div class="btns" style="margin-top:8px">
+      <button id="shot">保存截图</button>
+      <button id="wire">线框</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="t">统 计</div>
+    <div id="stat"></div>
+  </div>
+</div>
+
+<div id="tip">
+  左键<b>旋转</b> · 右键<b>平移</b> · 滚轮<b>缩放</b><br>
+  1 单位 = 1 米
+</div>
+
+<div id="load">
+  <div class="ttl">B U I L D I N G &nbsp; S I T E</div>
+  <div id="bar"><i></i></div>
+  <div class="msg" id="loadmsg">初始化…</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./node_modules/three/build/three.module.js",
+    "three/addons/": "./node_modules/three/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
