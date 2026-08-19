@@ -162,7 +162,7 @@ class GatewayClient:
     offline=True 是**离线回放模式**：只许缓存命中，miss 即显式报错——评审机
     没有云端网关访问权限时，凭随工程附带的 cache/vlm_gateway 也能整条复跑。
     log_path 是逐调用 JSONL 日志（阶段/模型/缓存命中/耗时），既是排障现场，
-    也是测试题"AI 使用标注"的机器可读证据，UE 面板直接展示它。
+    也是交付要求里"AI 使用标注"的机器可读证据，UE 面板直接展示它。
     """
 
     def __init__(self, cache_dir: str | Path, url: str = DEFAULT_URL,

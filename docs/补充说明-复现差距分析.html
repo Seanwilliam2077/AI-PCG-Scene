@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>补充说明：复现效果差距分析</title>
+<link rel="stylesheet" href="assets/kit.css">
 <style>
-  @page { size: A4; margin: 14mm 13mm; }
-  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; color: #222;
-         font-size: 10pt; line-height: 1.55; margin: 0; }
-  h1 { font-size: 15pt; border-bottom: 2.5px solid #E87722; padding-bottom: 4px;
-       margin: 10px 0 8px; }
-  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 9pt; }
-  th, td { border: 1px solid #ccc; padding: 4px 7px; text-align: left; vertical-align: top; }
-  th { background: #FDF3E7; }
-  .kv { background: #FDF3E7; border-left: 4px solid #E87722; padding: 6px 10px;
-        margin: 8px 0; font-size: 9.5pt; }
-  .num { color: #E87722; font-weight: 700; }
-  code { background: #f4f4f4; padding: 0 3px; font-size: 8.5pt; }
-  .muted { color: #666; font-size: 9pt; }
+/* 这是一份短的附页，只用 kit 的排版与令牌；.num 是它自己的一个强调色。 */
+.num{color:var(--acc);font-weight:700}
 </style>
 </head>
 <body>
 
-<h1>补充说明：为什么复现效果与参考图仍有差距</h1>
-<p class="muted">随《技术方案报告》附发 · 数字均来自交付 run 的机器留痕（match_report / 装配回执），工程包内可复核。</p>
+<nav><div class="in">
+  <a href="../index.html" class="home">三条路</a>
+  <a href="技术方案报告.html">线 1 主文档</a>
+  <span class="sp"></span>
+  <button class="btn" id="theme" title="切换主题">◐</button>
+</div></nav>
 
-<div class="kv"><b>一句话结论</b>：差距不是某个环节的 bug，而是<b>「单张图的信息上限」×「单向前馈架构」</b>——
+<div class="wrap" id="top">
+
+<div class="sec" style="border-top:none">
+  <div class="tag">线 1 · 附页</div>
+  <h1>为什么复现效果与参考图仍有差距</h1>
+  <p class="lead">随《<a href="技术方案报告.html">技术方案报告</a>》附发 ·
+  数字均来自交付 run 的机器留痕（<code>match_report</code> / 装配回执），工程包内可复核。</p>
+</div>
+
+<div class="sec">
+<div class="key"><b>一句话结论</b>：差距不是某个环节的 bug，而是<b>「单张图的信息上限」×「单向前馈架构」</b>——
 单目图缺深度、缺被遮挡结构、缺光照物理参数，每级只能"估计"；管线一次前馈，误差逐级放大且无法回收。</div>
 
-<table>
+<div class="tbl-scroll"><table>
   <tr><th style="width:13%">层</th><th style="width:37%">根因与实测证据</th><th style="width:23%">画面表现</th><th>改进方向</th></tr>
   <tr><td><b>感知</b></td>
       <td>VLM 整排并框（CRT 召回 <span class="num">13/16</span>）；贴墙桌带被框成内部框，"沿墙长桌"结构<b>零证据</b>，只能规则反推</td>
@@ -49,16 +54,27 @@
       <td>VLM 估白平衡 4000K（直用整场发蓝，被钳到 6500）；墙材单点取样重铺，釉面/污渍空间变化全丢</td>
       <td>墙面平板感、氛围偏暖偏平</td>
       <td>PBR 库检索；曝光/白平衡闭环自校</td></tr>
-</table>
+</table></div>
 
 <p>另注：终局规则（AABB 去穿插 36 处、真实包围盒重力吸附与微推挤）实现了 <span class="num">0 穿模 / 0 悬空 / 0 椅背穿桌面</span>
 ——由<b>独立会话加载存盘关卡</b>复测确认，非装配会话自报。但每次移动都以"物理合法"为目标而非"贴近原图"，
 进一步消耗逐件对应度——在没有闭环比对时这是正确取舍（穿模比错位更刺眼）。</p>
 
-<div class="kv"><b>出路</b>：短期把匹配层的两处工程问题修掉（实测 bbox 回写、embedding 款式检索）；
+<div class="key"><b>出路</b>：短期把匹配层的两处工程问题修掉（实测 bbox 回写、embedding 款式检索）；
 根本出路是<b>把前馈改成闭环</b>——装配 → 截图 → 与参考图比对 → 增量修正，循环至收敛。
 本版的装配回执与对象寻址机制正是为此预留的接口。当前版本做到的是<b>结构对应 + 工程可复现</b>，
 尚未做到<b>款式对应 + 光影复原</b>，此为下一版目标。</div>
 
+</div>
+
+<div class="foot">
+  这一份是《技术方案报告》的附页 —— 交互版的逐项证据在
+  <a href="技术方案报告.html">那一页</a>里可以直接动手核对。
+</div>
+
+</div>
+
+<script src="assets/kit.js"></script>
+<script>Kit.theme('#theme');</script>
 </body>
 </html>

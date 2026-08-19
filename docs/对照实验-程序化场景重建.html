@@ -3,484 +3,981 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>对照实验 — 程序化场景重建：一张参考图 → 浏览器里实时跑的三维基地</title>
+<title>程序化场景重建 — 交互版</title>
+<link rel="stylesheet" href="assets/kit.css">
 <style>
-  @page { size: A4; margin: 14mm 14mm; }
-  * { box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
-         font-size: 10pt; line-height: 1.62; color: #1a1a1a; margin: 0; }
-  @media screen {
-    body { max-width: 940px; margin: 0 auto; padding: 32px 26px 80px; background: #fff; }
-  }
-  h1 { font-size: 15pt; border-bottom: 2.5px solid #E87722; padding-bottom: 5px;
-       margin: 22px 0 10px; break-after: avoid; }
-  h2 { font-size: 11.5pt; margin: 14px 0 6px; color: #B45309; break-after: avoid; }
-  h3 { font-size: 10pt; margin: 10px 0 4px; color: #444; break-after: avoid; }
-  p { margin: 6px 0; text-align: justify; }
-  .cover { text-align: center; padding-top: 26px; }
-  .cover h1 { border: none; font-size: 22pt; margin-bottom: 4px; }
-  .cover .sub { font-size: 12pt; color: #555; }
-  .cover .meta { margin-top: 14px; color: #777; font-size: 9pt; line-height: 1.8; }
-  .pagebreak { break-before: page; }
-  table { border-collapse: collapse; width: 100%; margin: 9px 0; font-size: 8.8pt; }
-  th, td { border: 1px solid #ccc; padding: 5px 7px; text-align: left; vertical-align: top; }
-  th { background: #FDF3E7; font-weight: 600; }
-  tr { break-inside: avoid; }
-  table.keep { break-inside: avoid; }
-  code { font-family: Consolas, monospace; font-size: 8.6pt; background: #f4f4f4;
-         padding: 0 3px; border-radius: 2px; }
-  pre { font-family: Consolas, monospace; font-size: 8.4pt; background: #f6f4ef;
-        border: 1px solid #e2ddd2; border-left: 3px solid #E87722; border-radius: 3px;
-        padding: 8px 11px; overflow-x: auto; line-height: 1.5; margin: 8px 0;
-        break-inside: avoid; }
-  .figure { text-align: center; margin: 10px 0; break-inside: avoid; }
-  .figure img { max-width: 100%; border: 1px solid #ddd; }
-  .figure .cap { font-size: 8.5pt; color: #666; margin-top: 4px; text-align: left; }
-  .figure .cap b { color: #B45309; }
-  .grid2 { display: flex; gap: 10px; margin: 10px 0; break-inside: avoid; }
-  .grid2 > .figure { flex: 1; margin: 0; min-width: 0; }
-  .kv { background: #FDF3E7; border-left: 4px solid #E87722; padding: 7px 11px;
-        margin: 9px 0; font-size: 9.4pt; break-inside: avoid; }
-  .note { background: #F4F4F4; border-left: 4px solid #999; padding: 7px 11px;
-          margin: 9px 0; font-size: 8.8pt; color: #555; break-inside: avoid; }
-  ul, ol { margin: 5px 0; padding-left: 21px; }
-  li { margin: 3px 0; }
-  .stats { display: flex; flex-wrap: wrap; margin: 14px 0 6px;
-           border-top: 1px solid #e2ddd2; border-bottom: 1px solid #e2ddd2; }
-  .stats div { flex: 1 1 16%; padding: 9px 4px; text-align: center; }
-  .stats .n { font-size: 15pt; color: #E87722; font-weight: 600; line-height: 1.2; }
-  .stats .k { font-size: 7.8pt; color: #888; }
-  .step { border-left: 3px solid #E87722; padding-left: 11px; margin: 12px 0; }
-  .step .lbl { font-size: 8pt; color: #E87722; font-weight: 600; letter-spacing: .06em; }
+/* 本页特有的少量样式，其余全部来自 assets/kit.css */
+.stage .poster{display:block;width:100%;height:auto;filter:saturate(.85) brightness(.7)}
+.stage .start{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--acc);color:#fff;border:0;border-radius:6px;padding:11px 20px;
+  font-size:15px;font-weight:700;box-shadow:0 4px 18px rgba(0,0,0,.45)}
+.stage .hint{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.62);
+  color:#e8e2da;font-size:12.5px;padding:6px 12px;line-height:1.5}
+.plan{width:100%;min-width:660px;max-width:740px;height:auto;display:block;margin:0 auto}
+.plan .cell{cursor:pointer;stroke-width:1.4;transition:none}
+.plan .cell:hover,.plan .cell.on{stroke:var(--acc);stroke-width:3}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.chip{font-size:12.5px;padding:3px 9px;border:1px solid var(--rule);border-radius:14px;
+  background:var(--panel);color:var(--dim);font-variant-numeric:tabular-nums}
+.chip b{color:var(--acc2);font-weight:700}
+.chip .arrow{color:var(--faint);padding:0 2px}
+.axis{display:inline-block;font-size:11.5px;letter-spacing:.08em;padding:2px 8px;
+  border-radius:3px;background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acc2);
+  font-weight:700}
+.rowsel{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.two{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:860px){.two{grid-template-columns:1fr 1fr}}
+/* grid / flex 子项默认 min-width:auto，会被 660px 的总平面图撑破视口 */
+.two>*,.step-wrap>*{min-width:0}
+.tbl-scroll,.scrollbox{max-width:100%}
+.cap{font-size:13px;color:var(--faint);margin-top:6px;line-height:1.55}
+.cap b{color:var(--acc2)}
+.scrollbox{max-height:430px;overflow:auto;border:1px solid var(--rule);border-radius:4px}
+.scrollbox table{margin:0}
+.scrollbox thead th{position:sticky;top:0;z-index:1}
+.ok{color:var(--good);font-weight:700}.no{color:var(--bad);font-weight:700}
 </style>
 </head>
 <body>
 
-<!-- ============ 封面 ============ -->
-<div class="cover">
+<nav><div class="in">
+  <a href="../index.html" class="home">三条路</a>
+  <a href="#top">顶部</a><a href="#live">实时场景</a><a href="#loop">八轮迭代</a>
+  <a href="#solve">取景求解</a><a href="#plan">总平面</a><a href="#bugs">两个 bug</a>
+  <a href="#ao">GTAO</a><a href="#cost">开销</a><a href="#lines">三线对照</a>
+  <span class="sp"></span>
+  <button class="btn" id="theme" title="切换主题">◐</button>
+</div></nav>
+
+<div class="wrap" id="top">
+
+<div class="sec" style="border-top:none">
+  <div class="tag">线 2 · three.js + WebGL2</div>
   <h1>程序化场景重建</h1>
-  <div class="sub">对照实验 · 一张参考图 → 浏览器里实时跑的三维基地</div>
-  <div class="meta">
-    three.js r180 / WebGL2 · 几何与贴图全部运行时程序化生成 · 零外部模型与图片文件<br>
-    本文记录完整过程：参考图拆解 → 四条设计推理 → 八轮迭代循环 → 结果 · 2026 年 8 月
+  <p class="lead">一张参考图，不匹配任何资产库，几何与贴图全部在页面加载时由代码算出来。
+  这一页的每个数字都可以自己动手核：拖动对比、逐轮回放、拉动视场角看约束求解、
+  在总平面上点院落、在近景上探针读实测差值，以及在页面里直接把场景跑起来。</p>
+
+  <div class="mgrid" style="margin-top:18px">
+    <div class="mcell"><div class="k">构件</div><div class="v">44 897</div><div class="d muted">文档记录 44 441</div></div>
+    <div class="mcell"><div class="k">顶点</div><div class="v">1.70 M</div><div class="d muted">1 703 913</div></div>
+    <div class="mcell"><div class="k">网格</div><div class="v">14</div><div class="d muted">12 材质桶 + 2 层地面</div></div>
+    <div class="mcell"><div class="k">院落</div><div class="v">121</div><div class="d muted">11 列 × 11 排</div></div>
+    <div class="mcell"><div class="k">每帧绘制</div><div class="v">60</div><div class="d muted">关 GTAO 降到 30</div></div>
+    <div class="mcell"><div class="k">每帧三角面</div><div class="v">5.65 M</div><div class="d muted">记录 5.63 M</div></div>
+    <div class="mcell"><div class="k">帧时间</div><div class="v">24.4 ms</div><div class="d muted">记录值，1280×720</div></div>
+    <div class="mcell"><div class="k">外部资源</div><div class="v">0</div><div class="d muted">无模型 / 无图片</div></div>
+  </div>
+  <p class="tiny">构件 / 顶点 / 网格 / 院落 / 绘制批次 / 三角面这六项，是本次把归档源码
+  <code>process/threejs_fob/</code>（种子 20260813）在无头浏览器里跑起来后，
+  从 <code>window.__fob.info</code> 与 <code>renderer.info</code> 读回来的实测值。
+  帧时间 24.4 ms 与「整场重建约 4 s」是当时在真实 GPU 上的记录值 ——
+  软件光栅化下测不出可比的时间，所以不改写。构件数与记录值差 1%（44 897 对 44 441），
+  归档源码与当时出图的版本应有微小出入，两个数都列在这里。</p>
+</div>
+
+<!-- ===================== 1. 参考图 vs 结果 ===================== -->
+<div class="sec">
+  <div class="tag">参考图 vs 结果</div>
+  <h2>拖动分割线</h2>
+  <p class="muted">左边是输入的那张参考图，右边是 three.js 在浏览器里实时渲染的结果。</p>
+  <div id="wipeMain"></div>
+  <p class="cap"><b>两图机位不同，这是有意的。</b>本线不做位姿解算 ——
+  参考图是一张高空斜视的沙漠前进作战基地渲染图，重建的是<b>场景结构与构成规律</b>，
+  不是逐像素还原。所以不要把这条分割线当成配准误差看：它只说明「同一类场景」，
+  不说明「同一个机位」。仓库里做逐像素还原的是<a href="还原度闭环迭代.html">线 3</a>，
+  那条线的参考图是另一张室内图。</p>
+  <p class="tiny">拖动、点击，或用 ← → 方向键。</p>
+</div>
+
+<!-- ===================== 2. 实时场景 ===================== -->
+<div class="sec" id="live">
+  <div class="tag">可以自己跑</div>
+  <h2>把场景嵌在文档里</h2>
+  <p class="muted">下面这个框里是归档源码本身，不是录像也不是截图。
+  点开之后它会在你的浏览器里现场烘 9 张程序化贴图、排一遍总平面、
+  生成四万多个构件再合并 —— 和第 4 节那八轮迭代跑的是同一份代码。
+  面板里可以改种子、切三个相机预设、拉视场角与太阳方位、开关 GTAO 与阴影。</p>
+
+  <div class="stage" id="stage">
+    <img class="poster" src="../process/figures/fob/iter4_final.jpg" alt="实时场景预览图">
+    <button class="start" id="stageStart">▶ 启动实时场景</button>
+    <div class="hint" id="stageHint">首次构建约需数秒到数十秒（取决于机器）。
+      需要 WebGL2，并且能访问 cdn.jsdelivr.net 取 three.js r0.180.0。</div>
+  </div>
+
+  <div class="mgrid" id="liveStats" style="display:none"></div>
+  <p class="tiny" id="liveNote" style="display:none"></p>
+
+  <div class="key">
+  <b>为什么要多出一个 <code>index.cdn.html</code>。</b>
+  归档的 <code>process/threejs_fob/index.html</code> 的 importmap 指向
+  <code>./node_modules/three/…</code>，而仓库没有提交 <code>node_modules</code>，
+  所以它在静态托管上打不开。<code>index.cdn.html</code> 是同一份文件，
+  只把 importmap 换成 <code>https://cdn.jsdelivr.net/npm/three@0.180.0/…</code>
+  （版本号取自 <code>package.json</code> 的 <code>"three": "^0.180.0"</code>），
+  外加两处纯样式改动：滑杆加 <code>min-width:0</code>（否则 264px 的侧栏会把数值读数挤出边界），
+  以及窄视口下把侧栏压窄的一段 media query。场景代码 <code>src/*.js</code> 一行没动。
+  离线复现仍然用原版：
+  <code>npm i</code> 之后 <code>python process/threejs_fob/serve.py 8177</code>。
   </div>
 </div>
 
-<div class="figure">
-  <img src="../process/figures/fob/sbs.jpg" alt="参考图与最终渲染结果并排对比">
-  <div class="cap"><b>参考图 → 结果</b>　左为输入的单张参考图，右为 three.js 在浏览器里实时渲染的结果。
-  两图机位不同：本线不做位姿解算，重建的是<b>场景结构与构成规律</b>，不是逐像素还原
-  —— 这一点决定了下文所有的取舍。</div>
-</div>
+<!-- ===================== 3. 拆解 ===================== -->
+<div class="sec">
+  <div class="tag">任务</div>
+  <h2>先把图拆成一份可生成的清单</h2>
+  <p>程序化生成没有「照着抄」这一说，只能问「这东西由什么规则长出来」。第一步不是写代码，是列清单：</p>
 
-<div class="figure">
-  <img src="../process/figures/fob/iter4_final.jpg" alt="最终渲染结果">
-  <div class="cap"><b>最终画面</b>　浏览器实时渲染，非离线烘焙。周界铁丝网与刀片刺网、岗楼、贯穿画面的长 T 墙、
-  天线场、汽车连与导弹发射车、指挥楼与营房、停机坪上的直升机，以及一直铺到画面顶边的院落群 ——
-  全部由代码生成，场景里没有一个外部模型文件。</div>
-</div>
+  <div class="tbl-scroll"><table>
+  <tr><th style="width:12%">类别</th><th>清单</th><th style="width:32%">生成规则要回答的问题</th></tr>
+  <tr><td>周界</td><td>铁丝网 + 螺旋刀片刺网、外侧土路、带外楼梯的岗楼</td><td>刺网是真螺旋管还是贴图？岗楼楼梯怎么和平台对齐？</td></tr>
+  <tr><td>围墙</td><td>T 形防爆墙把场地切成一个个院落 —— 画面里最强的图形结构</td><td>院落多大、路多宽、墙在哪儿开口</td></tr>
+  <tr><td>通信</td><td>两口大抛物面天线、桁架桅杆、若干小天线</td><td>抛物面的 f/D、馈源三脚架、俯仰叉架</td></tr>
+  <tr><td>载具</td><td>6×6 篷布卡车、悍马、油罐车、起竖的防空导弹发射车、双管高炮</td><td>剪影比例是否站得住（不是细节多不多）</td></tr>
+  <tr><td>建筑</td><td>2 层指挥楼、3 层营房、深色坡顶铁皮库房</td><td>窗格密度、屋面材质与墙的明度差</td></tr>
+  <tr><td>堆料</td><td>集装箱、木箱垛、油桶 —— <b>院子是塞满的，不是空的</b></td><td>密度分布：贴着墙堆，还是散在中间</td></tr>
+  <tr><td>氛围</td><td>强烈沙尘，越远越糊；<b>画面里没有天空</b></td><td>雾的浓度、基地要铺多大</td></tr>
+  </table></div>
 
-<div class="stats">
-  <div><div class="n">44 441</div><div class="k">构件</div></div>
-  <div><div class="n">1.69 M</div><div class="k">顶点</div></div>
-  <div><div class="n">13</div><div class="k">网格 / draw call</div></div>
-  <div><div class="n">121</div><div class="k">院落</div></div>
-  <div><div class="n">~4 s</div><div class="k">整场重建</div></div>
-  <div><div class="n">0</div><div class="k">外部资源文件</div></div>
-</div>
-
-<div class="kv">
-<b>这份文档在仓库里的位置。</b>
-本仓库主线是「参考图 → UE5 关卡」的资产库匹配管线，其自评的根本短板是
-<b>单向前馈、误差逐级放大且无法回收</b>，下一代主干应当是闭环迭代。
-围绕这句话，仓库里现在有两条<b>并行线</b>：
-<br><br>
-<b>并行线一 · <a href="还原度闭环迭代.html">还原度闭环迭代</a>（度量驱动）</b> ——
-同一张室内参考图，Blender + Cycles，先把「像不像」变成边缘 F 分数与 16 分区曝光表，
-再让循环去优化它，回答<b>还原度上限</b>能到哪里。
-<br>
-<b>并行线二 · 本文（规则驱动）</b> ——
-换一张参考图、换 three.js 实时渲染，回答另一个问题：
-<b>不匹配资产库、几何与贴图全部由代码生成，一张图能不能变成一类场景的生成器。</b>
-<br><br>
-两条线的方法论差异在第 3 节末尾对读，包括本文这条线为「目视驱动」付出的代价。
-</div>
-
-<!-- ============ 1. 任务 ============ -->
-<div class="pagebreak"></div>
-<h1>1. 任务：要还原的是什么</h1>
-
-<div class="figure">
-  <img src="../process/figures/fob/ref.jpg" alt="参考图">
-  <div class="cap"><b>参考图</b>　一张高空斜视的沙漠前进作战基地渲染图。</div>
-</div>
-
-<p>第一步不是写代码，是把图拆成一份<b>可生成的清单</b> ——
-程序化生成没有「照着抄」这一说，只能问「这东西由什么规则长出来」。</p>
-
-<table>
-<tr><th style="width:13%">类别</th><th>清单</th><th style="width:31%">生成规则要回答的问题</th></tr>
-<tr><td>周界</td><td>铁丝网 + 螺旋刀片刺网、外侧土路、带外楼梯的岗楼</td><td>刺网是真螺旋管还是贴图？岗楼楼梯怎么和平台对齐？</td></tr>
-<tr><td>围墙</td><td>T 形防爆墙把场地切成一个个院落 —— 画面里最强的图形结构</td><td>院落多大、路多宽、墙在哪儿开口</td></tr>
-<tr><td>通信</td><td>两口大抛物面天线、桁架桅杆、若干小天线</td><td>抛物面的 f/D、馈源三脚架、俯仰叉架</td></tr>
-<tr><td>载具</td><td>6×6 篷布卡车、悍马、油罐车、起竖的防空导弹发射车、双管高炮</td><td>剪影比例是否站得住（不是细节多不多）</td></tr>
-<tr><td>建筑</td><td>2 层指挥楼、3 层营房、深色坡顶铁皮库房</td><td>窗格密度、屋面材质与墙的明度差</td></tr>
-<tr><td>堆料</td><td>集装箱、木箱垛、油桶 —— <b>院子是塞满的，不是空的</b></td><td>密度分布：贴着墙堆，还是散在中间</td></tr>
-<tr><td>氛围</td><td>强烈沙尘，越远越糊；<b>画面里没有天空</b></td><td>雾的浓度、基地要铺多大</td></tr>
-</table>
-
-<div class="kv">
-「<b>画面里没有天空</b>」这一条最贵：它意味着基地必须一直铺到画面顶边，
-直接决定了网格要多大、相机要多高、雾要多浓。后面第 5、6 两轮迭代就是在还这笔账。
-</div>
-
-<!-- ============ 2. 怎么想的 ============ -->
-<div class="pagebreak"></div>
-<h1>2. 怎么想的：四条设计推理</h1>
-
-<h2>2.1 总平面：一份数据，两处消费</h2>
-
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/topdown.jpg" alt="俯视总平面">
-    <div class="cap"><b>俯视总平面</b>　为看清结构，这张图临时把沙尘调到最低。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/ground_bake.jpg" alt="烘焙出来的地面贴图">
-    <div class="cap"><b>同一份数据烘出来的地面贴图</b>　4096²，运行时用 Canvas 2D 画。
-    从这张图能直接读出整个基地的总平面。</div>
+  <div class="key">
+  「<b>画面里没有天空</b>」这一条最贵：它意味着基地必须一直铺到画面顶边，
+  直接决定了网格要多大、相机要多高、视场角能开多大。
+  第 5 节把这句话变成了一个可以解的不等式 —— 也就是第 5、6 两轮迭代真正在还的账。
   </div>
 </div>
 
-<p><code>layout.js</code> 输出一个 <b>11 列 × 9 排</b>的院落网格（48×40 m 院子、11 m 道路），
-每个院子带 <code>kind</code>（用途）、<code>seed</code>、<code>lod</code>、
-<code>pad</code>（有没有混凝土场坪）、四面墙的开口情况。前三排是照着参考图手工排的，往后随机填充。</p>
+<!-- ===================== 4. 八轮迭代 ===================== -->
+<div class="sec" id="loop">
+  <div class="tag">过程</div>
+  <h2>八轮迭代</h2>
+  <p class="muted">每一轮都跑同样四步：<b>渲一张图 → 和参考图并排看 → 找出最刺眼的那一条偏差 → 改规则 → 再渲</b>。
+  关键是「最刺眼的那一条」：每轮只解决一个主要矛盾。同时改五处，下一轮就说不清是哪处起了作用。</p>
 
-<p>把它单独抽成一层数据、而不是在摆放代码里硬编码坐标，换来三件事：</p>
-<ul>
-<li><b>地面烘焙和物件摆放读同一份数据</b> —— 混凝土场坪的边界永远和院墙严丝合缝，
-不会出现「地上画的场坪和墙错开半米」这种一眼假的问题；</li>
-<li><b><code>lod</code> 按离相机的排数递减</b>：前两排全细节，中间两排简化，最远五排只留剪影
-（T 墙退化成一整段盒子，省掉九成构件）；</li>
-<li><b>换 seed 只换院子内容和形态，总体结构不变</b> —— 每次都是一座讲得通的基地，不是随机噪声。</li>
-</ul>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
+    <button class="btn" id="prev">‹ 上一轮</button>
+    <button class="btn" id="play">▶ 自动播放</button>
+    <button class="btn" id="next">下一轮 ›</button>
+    <span class="tiny" id="stepPos"></span>
+  </div>
+  <div class="step-wrap">
+    <div class="step-img"><div class="step-badge" id="sBadge"></div><img id="sImg" alt=""></div>
+    <div>
+      <h3 id="sTitle" style="margin-top:0"></h3>
+      <div id="sBody"></div>
+    </div>
+  </div>
 
-<h2>2.2 相机：从参考图反解机位</h2>
-
-<p>「画面里没有天空」不是氛围描述，是一个<b>可以列方程的约束</b>：
-画面底边必须落在周界土路上（z≈170），顶边必须还落在基地里（最远一排 z≈−300）。
-设相机高 <code>h</code>、纵深坐标 <code>Z0</code>、垂直视场 <code>fov</code>：</p>
-
-<pre>theta_bottom = atan(h / (Z0 - z_bottom))
-theta_top    = atan(h / (Z0 - z_top))
-fov          = theta_bottom - theta_top</pre>
-
-<p>代入两个边界解出 <b>h ≈ 100 m、Z0 ≈ 272、fov ≈ 34°</b>。
-然后拿第三个点验算：那道贯穿画面的长 T 墙在 z = 138，代进去得 36.7°，
-落在画面下方 <b>22%</b> 处 —— 参考图里那条墙也在 25% 附近。方程解对了。</p>
-
-<div class="note">
-<b>这条约束是有代价的。</b>相机既要拍到近处的铁丝网，又要拍到 300 m 外的最后一排 ——
-物体的相对大小 =（物体尺寸 / 距离）/ 视场角，这两个要求在数学上互相拉扯，只能折中。
-参考图里岗楼约占画面高度 20%，我这边只能做到 6–8%；要追平就得牺牲纵深。
-第 3、5、6 三轮迭代都是在这条线上来回试。
+  <div class="warn" style="margin-top:20px">
+  <b>关于这几张图。</b>第 1–7 轮的原始截图在收尾清理时被删掉了。
+  <code>iter1_early</code> / <code>iter2_tight</code> / <code>iter3_horizon</code>
+  是事后把当时的相机与光照参数<b>退回去重新渲染</b>的复现图 ——
+  这几轮改的确实全是这些参数，所以症状是真实的，但几何与配色是最终版。
+  第 4、6、7 三轮没有属于自己的画面，播放器里显示的是它们各自「看到问题」时的那一帧，
+  卡片上会标出来。第 8 轮的 before / after 是真退回那两行错误代码重渲的，差异是实打实的。
+  </div>
 </div>
 
-<h2>2.3 几何：四万个构件，十三次 draw call</h2>
+<!-- ===================== 5. 取景求解 ===================== -->
+<div class="sec" id="solve">
+  <div class="tag">这条线最该早点做的事</div>
+  <h2>把「取景」从目视调参变成一次求解</h2>
+  <p>第 3、5、6 三轮都在同一条轴上来回横跳：fov 26°→38°（找回前景周界）→ 补网格排数（填住顶边）→
+  fov 38°→34°（把纵深收回来）。绕了一圈，落点在 26° 和 38° 之间。
+  原因很简单：<b>没有一个量在告诉我离目标还有多远</b>。</p>
 
-<div class="figure">
-  <img src="../process/figures/fob/wireframe.jpg" alt="线框">
-  <div class="cap"><b>线框</b>　地面保留贴图以便对照。可以看到远排的墙已经退化成整段剪影 —— 这是 lod 2。</div>
+  <p class="muted">而这个量并不难写。相机位姿是已知的 —— <code>main.js</code> 的
+  <code>VIEWS.cam0</code> 给出机位 (2, 100, 272)、目标点 (−8, 5, 88)，
+  于是俯角 <b id="kPitch"></b>、机高 100 m 都是定的；参考图的两条硬约束也是已知的：
+  画面底边要压住周界土路（<code>layout.js</code> 的 <code>OUTER_ROAD = 162</code>），
+  画面顶边不能越过最远一排院落。把这两条写成不等式，fov 就只剩一个可行区间。</p>
+
+  <div class="rowsel">
+    <span class="tiny">院落排数</span>
+    <button class="btn" data-rows="6">6 排</button>
+    <button class="btn" data-rows="9">9 排</button>
+    <button class="btn on" data-rows="11">11 排（归档值）</button>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;margin:6px 0 4px;flex-wrap:wrap">
+    <span class="tiny">垂直视场角 fov</span>
+    <input type="range" id="fovR" min="24" max="42" step="1" value="34" style="flex:1;min-width:200px">
+    <span class="rchip on" id="fovV">34°</span>
+    <span class="tiny">记录里出现过的取值</span>
+    <button class="btn" data-fov="26">26°</button>
+    <button class="btn" data-fov="30">30°</button>
+    <button class="btn" data-fov="34">34°</button>
+    <button class="btn" data-fov="38">38°</button>
+  </div>
+  <div class="readout" id="solveOut"></div>
+
+  <div class="legend" id="legend"></div>
+  <div class="chart"><svg id="chart" viewBox="0 0 900 340" role="img" aria-label="视场角与画面顶边落点"></svg></div>
+  <p class="cap">纵轴是画面<b>顶边射线打到地面的 z 坐标</b>，横轴是 fov。
+  三条水平线是三种院落排数下最远一排的外沿。曲线在某条水平线<b>之上</b>，
+  说明顶边仍落在基地里；掉到线下，顶边就越过了基地 —— 也就是「露出地平线」。
+  点图例开关曲线，点图上任意一点会把上面的滑块跳过去。</p>
+
+  <div class="key">
+  <b>解出来是一个区间，不是一个值。</b>
+  底边要压住周界土路 → <b>fov ≥ <span id="kMin"></span></b>（与排数无关）；
+  顶边不能越过最远一排 → <b>fov ≤ 上限</b>（随排数变）。
+  <div class="tbl-scroll" style="margin-top:10px"><table>
+    <thead><tr><th>院落排数</th><th class="n">最远一排外沿 z</th><th class="n">fov 上限</th><th>可行区间</th><th>结论</th></tr></thead>
+    <tbody id="winBody"></tbody>
+  </table></div>
+  <p style="margin-bottom:0">6 排时可行区间是<b>空的</b> —— 无论 fov 怎么调都同时满足不了两条约束，
+  必须先把网格铺大。这正是第 5 轮那次「扩排数」的真正理由，而当时是靠肉眼一轮一轮试出来的。
+  11 排时区间是 <b id="kWin"></b>，最终采用的 34° 几乎正好落在区间中点。</p>
+  </div>
+
+  <details>
+    <summary>这个模型对不对？拿文档里另外三个数字回代验证</summary>
+    <p class="muted">模型只有三行：俯角 = atan((机高 − 目标高) / 水平距离)；
+    边缘射线角 = 俯角 ± fov/2；落点 = 机位 z − (机高 / tan 射线角) × cos(方位偏角)。
+    下面三行不是拿来拟合模型的，是模型解完之后拿旧记录去核的。</p>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>核对项</th><th class="n">本页模型算出</th><th class="n">文档里的记录</th></tr></thead>
+      <tbody>
+        <tr><td>fov 34° 时画面底边落点 z</td><td class="n" id="vBottom"></td><td class="n">≈ 170</td></tr>
+        <tr><td>长 T 墙（z = 138）的射线角</td><td class="n" id="vTheta"></td><td class="n">36.7°</td></tr>
+        <tr><td>长 T 墙在画面里的高度位置</td><td class="n" id="vFrac"></td><td class="n">下方 22%</td></tr>
+      </tbody>
+    </table></div>
+    <p class="tiny" style="margin-bottom:0">三项都对上了，说明这套约束当年<b>本来就可以写成代码</b>，
+    只是被留在了眼睛里。这也是本线最值得搬走的一条教训。</p>
+  </details>
 </div>
 
-<p>没有用 <code>InstancedMesh</code>。所有物件在同一个矩阵栈里就地生成 ——
-墙、楼、卡车、天线一律直接吐世界坐标的几何，按<b>材质</b>丢进 13 个桶，最后每桶 merge 成一个 Mesh。</p>
+<!-- ===================== 6. 总平面 ===================== -->
+<div class="sec" id="plan">
+  <div class="tag">数据结构</div>
+  <h2>总平面：一份数据，两处消费</h2>
+  <p><code>layout.js</code> 输出一个院落网格，每个院子带用途、种子、LOD、有没有混凝土场坪、
+  四面墙的开口情况。地面烘焙和三维物件摆放<b>读同一份数据</b>，所以混凝土场坪的边界永远和院墙严丝合缝。</p>
 
-<pre>b.save().at(x, 0, z).ry(ry);
+  <p class="muted">下面这张图不是截图，是用归档 <code>layout.js</code> 的常量在浏览器里现画的：
+  网格由 <code>PITCH_X = 59</code> / <code>PITCH_Z = 51</code>、
+  院子 <code>48 × 40 m</code>、道路 <code>11 m</code> 推出来；
+  院落用途取自把 <code>buildSite(makeRng(20260813))</code> 在 Node 里跑一遍导出的真实结果。
+  橙色带是上一节滑块当前 fov 下的可见纵深范围 —— 两节联动，改上面的滑块这里会跟着动。</p>
+
+  <div class="tbl-scroll"><svg class="plan" id="planSvg" viewBox="-350 -290 730 740" role="img" aria-label="院落总平面"></svg></div>
+  <p class="cap">纵向是 z（下方为靠近相机的一侧），横向是 x，单位米。
+  <b>粗边框</b>的前三排是照着参考图手工排的，其余按 <code>FILL</code> 随机填充。
+  填色代表 LOD：越远细节越少。橙色虚线框是当前 fov 的可见纵深，红线是所选排数下最远一排的外沿。</p>
+
+  <div class="two">
+    <div class="readout" id="planOut" style="margin-top:0">把鼠标移到任意院落上，或移到下表任意一行。</div>
+    <div>
+      <div class="mgrid" style="margin:0">
+        <div class="mcell"><div class="k">LOD 0 全细节</div><div class="v">22</div><div class="d muted">前 2 排</div></div>
+        <div class="mcell"><div class="k">LOD 1 简化</div><div class="v">22</div><div class="d muted">中 2 排</div></div>
+        <div class="mcell"><div class="k">LOD 2 剪影</div><div class="v">77</div><div class="d muted">最远 7 排</div></div>
+        <div class="mcell"><div class="k">有混凝土场坪</div><div class="v">67</div><div class="d muted">/ 121</div></div>
+      </div>
+      <p class="tiny">LOD 只按离相机的排数递减：<code>dist ≥ 4 → 2</code>、<code>dist ≥ 2 → 1</code>、其余 0。
+      最远七排（LOD 2）里 T 墙退化成一整段盒子，省掉九成构件。</p>
+    </div>
+  </div>
+
+  <div class="filters" id="cellFilters"></div>
+  <div class="scrollbox tbl-scroll"><table>
+    <thead><tr><th>院落</th><th>用途</th><th class="n">LOD</th><th class="n">离相机</th>
+      <th>场坪</th><th>围墙</th><th class="n">世界矩形 x / z</th></tr></thead>
+    <tbody id="cellBody"></tbody>
+  </table></div>
+  <p class="cap">鼠标移到任意一行，左边总平面上对应的院子会高亮。
+  <b>「随机填充」的 88 个院落每换一次种子就重排一次</b>，
+  而前三排、周界、道路网格不变 —— 这就是「换 seed 是另一座基地，不是另一堆噪声」的全部含义。</p>
+
+  <div class="warn">
+  <b>一处需要更正的旧记录。</b>上一版文档写的是「11 列 × 9 排」，且说最远五排为剪影。
+  按归档 <code>layout.js</code>（<code>COL0 = −5, COL1 = 5, ROW0 = −8, ROW1 = 2</code>）
+  实际是 <b>11 列 × 11 排 = 121 个院落</b>，LOD 分布 22 / 22 / 77（最远<b>七</b>排剪影）。
+  121 这个数与旧文档自己给出的「121 院落」、以及本次实测的
+  <code>__fob.info.cells = 121</code> 都是一致的 —— 错的只是「9 排」这个说法。
+  第 5 轮那句「z 一直铺到 −398」也对应 <code>row = −8</code>，即 11 排。
+  第 5 节的排数选择器把 9 排和 11 排都留着了：两种取值下 fov 38° 都超上限、34° 都在区间内，
+  结论不受影响。
+  </div>
+
+  <h3>三个观察模式</h3>
+  <div class="tabs">
+    <button class="tab mode-tab">线框</button>
+    <button class="tab mode-tab">俯视总平面</button>
+    <button class="tab mode-tab">地面烘焙 4096²</button>
+  </div>
+  <div class="tabpanel mode-panel">
+    <figure><img src="../process/figures/fob/wireframe.jpg" alt="线框">
+    <figcaption>地面保留贴图以便对照。远排的墙已经退化成整段剪影 —— 这是 LOD 2。</figcaption></figure>
+  </div>
+  <div class="tabpanel mode-panel">
+    <figure><img src="../process/figures/fob/topdown.jpg" alt="俯视总平面">
+    <figcaption>相机预设 <code>cam1</code>：机位 (10, 470, 190)，fov 42°。为看清结构，这张图临时把沙尘调到最低。</figcaption></figure>
+  </div>
+  <div class="tabpanel mode-panel">
+    <figure><img src="../process/figures/fob/ground_bake.jpg" alt="地面烘焙贴图">
+    <figcaption>同一份总平面数据烘出来的地面贴图，4096²、边长 900 m（<code>ground.js</code> 的
+    <code>PLANE = 900</code>、<code>N = 4096</code>，约 4.55 像素/米），运行时用 Canvas 2D 画。
+    从这张图能直接读出整个基地的总平面。</figcaption></figure>
+  </div>
+
+  <p style="margin-top:18px">按顺序叠：沙土底色与大尺度色斑 → 压实道路 → 院内混凝土场坪（含分仓缝与裂缝）→
+  停机坪圆圈和 H → 轮胎印 → 油渍与碎屑 → 高频颗粒 → 边缘向远景过渡。为什么不用一堆 plane 拼：
+  拼贴会有 z-fighting 和接缝，还要额外几十次绘制；烘一张图只要一次。
+  轮胎印、油渍这种「跨越道路和场坪」的东西，拼贴根本画不了，画布上随手一笔就有。
+  高频细节交给一张 512² 的沙地法线按 240× 平铺 —— 大结构和小颗粒各管各的。</p>
+</div>
+
+<!-- ===================== 7. 两个 bug ===================== -->
+<div class="sec" id="bugs">
+  <div class="tag">第 8 轮</div>
+  <h2>拉近了才看得见的两个 bug</h2>
+  <p>远景全对不代表模型是对的。主图里每扇窗只有两三个像素，错了也看不出来 ——
+  所以最后一轮专门把相机放到 20 m 高逐个检查，立刻抓到两处。</p>
+
+  <div id="wipeBug"></div>
+  <p class="cap"><b>修复前 / 修复后</b>　两张图是同一帧、同一种子，只退回了那两行错误代码。
+  拖动分割线：右上的窗户从一片浅米色方格变成真正的凹进去的黑洞，
+  左下的集装箱从一块光板变成 27 cm 一道的波纹。</p>
+
+  <h3>把差值量出来</h3>
+  <p class="muted">这两张图逐像素可比，所以「改了多少」不必靠形容词。
+  下面在修复后的画面上圈了四个区域，逐区报三个量：区域平均亮度的变化（档）、
+  被压暗 0.05 以上的像素占比、横 / 纵方向逐像素梯度的变化。
+  把鼠标移到框上或下面的标签上。</p>
+  <div id="probe"></div>
+  <div class="rlist" id="rlist"></div>
+  <div class="readout" id="rOut">把鼠标移到任意区域上。</div>
+  <p class="tiny">测法：两张 1200 × 677 的 JPEG 按 Rec.709 转亮度后逐像素相减，
+  梯度取相邻像素差的绝对值均值。四个区域的坐标是从「差值大于阈值」的连通域里量出来的，
+  不是手画的。</p>
+
+  <div class="two">
+    <div>
+      <h3>① 窗套把窗洞盖住了</h3>
+      <p>本意是画一圈窗套，实际写成了一整块比窗洞还大的板，盖在洞口外侧。
+      远看就是一片浅色方格 —— 参考图里那种密集的黑窗格全没了。改成上下左右四条边框即可。</p>
+      <pre>- b.box('concrete', ww+0.3,  wh+0.3, 0.09, ..)  // 一整块板
++ b.box('concrete', ww+fw*2, fw,     0.1,  ..)  // 上
++ b.box('concrete', ww+fw*2, fw,     0.1,  ..)  // 下
++ b.box('concrete', fw,      wh,     0.1,  ..)  // 左 / 右</pre>
+    </div>
+    <div>
+      <h3>② 波纹密到糊成光面</h3>
+      <p>波纹贴图横向有 8 道棱，间距由 <code>tile</code>（多少米一张贴图）决定。
+      原来给了 0.55，算出来 6.9 cm 一道，远小于一个像素，直接被采样糊成噪点。
+      改成 2.2 → 27 cm 一道，正好是真实集装箱的尺寸。</p>
+      <pre>- tile: 0.55   // 6.06m / 0.55 * 8 = 88 道 -&gt; 6.9 cm
++ tile: 2.20   // 6.06m / 2.20 * 8 = 22 道 -&gt; 27  cm</pre>
+    </div>
+  </div>
+
+  <div class="key">
+  <b>这两个 bug 说明一件事：</b>闭环迭代的「比对」环节必须<b>多尺度</b>。
+  只在主图机位比，远景对了就以为收敛了；真正的模型错误藏在近景里。
+  探针里那个「远景建筑」区域是同一处窗套改动在 300 m 外的效果：
+  同一行代码，近景动了 0.18 档，远景只动 0.02 档 —— 主图机位根本报不出这个 bug。
+  放到 UE5 那条管线上，对应的就是装配完不能只截一张对齐机位图，还得按物件逐个出近景回执。
+  </div>
+
+  <div class="two" style="margin-top:18px">
+    <figure><img src="../process/figures/fob/detail_heli.jpg" alt="停机坪">
+    <figcaption>停机坪：机身、侧倾尾斜梁、尾桨、平尾、四片带下垂的主旋翼、起落架。
+    圆圈和 H 是地面贴图烘出来的，不是额外的面片。</figcaption></figure>
+    <figure><img src="../process/figures/fob/detail_motorpool.jpg" alt="汽车连">
+    <figcaption>汽车连：四联装起竖的防空导弹发射车、6×6 篷布卡车、波纹雨棚、集装箱，
+    以及修好之后凹进去的窗洞。</figcaption></figure>
+  </div>
+</div>
+
+<!-- ===================== 8. GTAO ===================== -->
+<div class="sec" id="ao">
+  <div class="tag">画质</div>
+  <h2>GTAO 开 / 关，以及为什么整图平均值看不见它</h2>
+  <div id="wipeAO"></div>
+  <p class="cap"><b>关掉 GTAO（左） / 开启（右）</b>　同机位同种子，只切开关。
+  少了接触阴影，物体开始「浮」在地上 —— 这也是为什么要在顶点色里额外烘一层接地暗部作兜底
+  （<code>builder.js</code> 的 <code>aoHeight = 1.6</code>、<code>aoStrength = 0.24</code>：
+  按世界高度把 1.6 m 以下的顶点色最多压暗 24%）。
+  两张分别以 1200×676 与 1600×900 输出，比较前统一缩到 1200×676。</p>
+
+  <div class="mgrid">
+    <div class="mcell"><div class="k">整图平均亮度差</div><div class="v">0.021</div><div class="d muted">档 · 几乎为零</div></div>
+    <div class="mcell"><div class="k">被压暗的像素</div><div class="v">12.9%</div><div class="d muted">压暗 ≥ 0.02</div></div>
+    <div class="mcell"><div class="k">这些像素平均压暗</div><div class="v">0.130</div><div class="d muted">档</div></div>
+    <div class="mcell"><div class="k">压暗 ≥ 0.05 的像素</div><div class="v">2.7%</div><div class="d muted">接触区</div></div>
+  </div>
+  <p class="tiny">测法同上：两图缩到同尺寸、各做 σ=1.5 的高斯滤波（滤掉后期那层随机颗粒，
+  否则 26% 的像素会被颗粒本身的振幅淹没），再逐像素比亮度。滤波后两图相关系数 0.9937，
+  确认是同机位同一帧。</p>
+
+  <div class="key">
+  <b>这组数正好是线 3 那句话的反面教材。</b>
+  GTAO 把整幅画面的平均亮度只挪了 <b>0.021 档</b> —— 任何「整图平均亮度」「整图直方图」类的指标
+  都会判定这两张图<b>没有区别</b>。但它把 12.9% 的像素压暗了 0.13 档，而这 12.9% 全在物体和地面的接触处，
+  正是「物体坐不坐得住」的全部信息。<b>指标必须和你要判的那件事在同一个尺度上</b>，
+  这和第 7 节那个「近景 0.18 档、远景 0.02 档」是同一个道理。
+  </div>
+
+  <h3>换个种子，就是另一座基地</h3>
+  <div id="wipeSeed"></div>
+  <p class="cap"><b>seed 20260813（左） / seed 777001（右）</b>
+  建筑形态、道路开口、堆料布局、车辆位置全部重排；但天线场、指挥楼、停机坪仍在各自该在的位置上 ——
+  第 6 节那张总平面里，粗边框的前三排是写死的，其余 88 个院落才交给随机数。
+  结构规则不变，内容全变，约 4 秒出一座。</p>
+</div>
+
+<!-- ===================== 9. 开销 ===================== -->
+<div class="sec" id="cost">
+  <div class="tag">几何组织</div>
+  <h2>四万个构件，十四个网格</h2>
+  <p>没有用 <code>InstancedMesh</code>。所有物件在同一个矩阵栈里就地生成 ——
+  墙、楼、卡车、天线一律直接吐世界坐标的几何，按<b>材质</b>丢进桶里，最后每桶 merge 成一个 Mesh。</p>
+  <pre>b.save().at(x, 0, z).ry(ry);
 b.box('concrete', w, H, d, 0, H/2, 0, { color: bodyColor, tile: 5.5 });
 b.restore();</pre>
+  <ul>
+    <li><b>颜色走顶点色。</b>同一个 <code>concrete</code> 材质能同时当墙、楼、掩体、路缘石，
+    颜色变化不需要拆材质 —— 这是「十几次绘制」的前提。</li>
+    <li><b>UV 按世界尺寸重排。</b><code>boxUV()</code> 把盒子每个面的 UV 按米缩放，
+    所以 3 m 的墙和 30 m 的楼纹理密度一致，不会一个糊一个碎。</li>
+    <li><b>发射几何时顺手烘接地暗部。</b>按世界高度把顶点色压暗一档，物体才「坐」得住 ——
+    这是在没有实时 GI 的前提下最便宜的接触感。</li>
+  </ul>
 
-<p>三个让这套办法成立的细节：</p>
-<ul>
-<li><b>颜色走顶点色。</b>同一个 <code>concrete</code> 材质能同时当墙、楼、掩体、路缘石，
-颜色变化不需要拆材质 —— 这是 13 个 draw call 的前提。</li>
-<li><b>UV 按世界尺寸重排。</b><code>boxUV()</code> 把盒子每个面的 UV 按米缩放，
-所以 3 m 的墙和 30 m 的楼纹理密度一致，不会一个糊一个碎。</li>
-<li><b>发射几何时顺手烘接地暗部。</b>按世界高度把顶点色压暗一档，物体才「坐」得住，
-不会看起来浮在地上 —— 这是在没有实时 GI 的前提下最便宜的接触感。</li>
-</ul>
+  <h3>材质桶：声明 13 个，这一局用上 12 个</h3>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>材质桶</th><th>用途</th><th class="n">粗糙 / 金属</th><th class="n">源贴图</th>
+      <th class="n">调用点</th><th class="n">实测顶点</th></tr></thead>
+    <tbody id="matBody"></tbody>
+  </table></div>
+  <p class="cap">「调用点」是在 <code>src/*.js</code>（不含 <code>textures.js</code> 的声明处）里
+  该桶名作为字符串出现的次数；「实测顶点」是种子 20260813 那一局合并后每个 Mesh 的
+  <code>position.count</code>。<b><code>concreteDS</code> 的调用点是 0</b> ——
+  它被声明为「薄壳双面混凝土」，但天线反射面和旋翼桨叶最后都走了 <code>paintDS</code>，
+  所以这个桶从来没有被填过，运行时也就不会生成对应的 Mesh。旧文档里的「13 个 draw call」，
+  准确说法是：<b>声明 13 个材质，实跑产生 12 个构筑物 Mesh，加地面 2 层共 14 个</b>。</p>
 
-<h2>2.4 地面：不是拼的，是烘出来的</h2>
-
-<p>整张总平面画进一张 <b>4096²</b> 贴图（见 2.1 右图），按顺序叠：沙土底色与大尺度色斑 →
-压实道路 → 院内混凝土场坪（含分仓缝与裂缝）→ 停机坪圆圈和 H → 轮胎印 → 油渍与碎屑 →
-高频颗粒 → 边缘向远景过渡。为什么不用一堆 plane 拼：</p>
-
-<ul>
-<li>拼贴会有 z-fighting 和接缝，还要额外几十次 draw call；烘一张图<b>只要一次</b>；</li>
-<li>轮胎印、油渍这种「跨越道路和场坪」的东西，拼贴根本画不了，画布上随手一笔就有；</li>
-<li>高频细节交给一张 512² 的沙地法线按 240× 平铺 —— 大结构和小颗粒各管各的，互不牵制。</li>
-</ul>
-
-<p>顺带解决的一件事：地面网格有 320×320 段的真实起伏（沙丘 + 周界土垄），
-但会按同一份平面数据把场坪和道路<b>压平</b> —— 不然混凝土地坪会跟着沙丘一起波浪。</p>
-
-<!-- ============ 3. 迭代 ============ -->
-<div class="pagebreak"></div>
-<h1>3. 迭代循环：八轮</h1>
-
-<p>这是本文的重点，也是和本仓库 UE5 管线最不一样的地方。那条管线是单向前馈：
-感知 → 布局 → 素材 → 匹配 → 装配，一路往下，前面的误差后面收不回来。
-这里换成一个闭环，每一轮都跑同样四步：</p>
-
-<div class="step">
-<div class="lbl">L O O P</div>
-<b>渲一张图 → 和参考图并排看 → 找出<u>最刺眼的那一条</u>偏差 → 改规则 → 再渲</b><br>
-<span style="font-size:8.8pt;color:#666">
-关键是「最刺眼的那一条」：每轮只解决一个主要矛盾。同时改五处，下一轮就说不清是哪处起了作用。
-</span>
+  <h3>每帧真正付出的绘制</h3>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th style="width:34%">指标</th><th class="n">GTAO 开</th><th class="n">GTAO 关</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>绘制批次</td><td class="n">60</td><td class="n">30</td><td>14 个 Mesh × (阴影 pass + 主 pass) + 后期全屏四边形；GTAO 再把场景过一遍深度/法线</td></tr>
+      <tr><td>每帧三角面</td><td class="n">5 652 420</td><td class="n">2 826 226</td><td>正好翻倍，即 GTAO 的预处理 pass 完整重跑一遍场景</td></tr>
+      <tr><td>常驻几何 / 贴图</td><td class="n" colspan="2">15 / 32</td><td>反复换种子不涨，无泄漏</td></tr>
+      <tr><td>帧时间 1280×720</td><td class="n" colspan="2">24.4 ms</td><td>记录值，真实 GPU</td></tr>
+    </tbody>
+  </table></div>
+  <p class="tiny">绘制批次与三角面是本次实测：在无头浏览器里 <code>renderer.info.reset()</code> 之后
+  跑一次 <code>composer.render()</code> 读回来的，开关 GTAO 各测一次。
+  常驻几何 15 = 12 材质桶 + 地面 + 远景地平面 + 后期全屏四边形。</p>
 </div>
 
-<h2>3.1 迭代序列</h2>
+<!-- ===================== 10. 方法论 ===================== -->
+<div class="sec">
+  <div class="tag">诚实</div>
+  <h2>这个循环的短板：它是目视驱动的</h2>
+  <p>回头看，这八轮有一个方法论上的硬伤：<b>判据全在眼睛里</b>。
+  每轮都是把渲染图和参考图并排看、挑最刺眼的一条改，没有任何可测量的量。
+  仓库里的<a href="还原度闭环迭代.html">线 3</a> 把这个陷阱写得很清楚 ——
+  「人眼对整体亮度极不敏感、对局部错位又极敏感，凭感觉调会在两三轮后开始互相抵消」。</p>
 
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/iter1_early.jpg" alt="第 1–2 轮">
-    <div class="cap"><b>① 第 1–2 轮 · 满屏一个色</b><br>
-    没有环境球、雾 0.0015、曝光 1.06、fov 30° 且相机过远。
-    金属件发假、明暗层次全被雾洗平、单位物体小到读不出是什么。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/iter2_tight.jpg" alt="第 3 轮">
-    <div class="cap"><b>② 第 3 轮 · 光调好了，但取景丢了周界</b><br>
-    加了 PMREM 环境球、混凝土调冷灰、屋顶单列深色、堆料密度翻倍。
-    但相机拉太近（fov 26°），参考图里那条铁丝网和土路整个被切出画外。</div>
-  </div>
-</div>
+  <details open>
+    <summary>应验一：三轮在「取景」这一条轴上反复横跳</summary>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th style="width:8%">轮次</th><th style="width:30%">改的是同一件事</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td>3</td><td>fov 26° → 38°</td><td>找回了前景周界，但纵深随之超出基地范围</td></tr>
+        <tr><td>5</td><td>网格 6 排 → 更多排</td><td>补地面去填顶边，治的是第 3 轮带出来的症状</td></tr>
+        <tr><td>6</td><td>fov 38° → 34°</td><td>又把纵深收回来 —— 绕了一圈回到 26° 和 38° 之间</td></tr>
+      </tbody>
+    </table></div>
+    <p>第 5 节已经把这条轴解掉了：两条不等式，一个可行区间，一次求解。
+    需要的判据甚至不必是浮点数 —— 一个布尔量「画面顶边的射线是否仍落在基地范围内」就够。
+    它本来就是相机反解那个方程的第三个约束，只是当时没写成代码。</p>
+  </details>
 
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/iter3_horizon.jpg" alt="第 5 轮">
-    <div class="cap"><b>③ 第 5 轮 · 画面顶部露出了地平线</b><br>
-    退回 fov 38° 找回了前景周界，代价是纵深超出基地范围 ——
-    顶边那道浅色横带就是地平线。参考图里没有天空，这不行。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/iter4_final.jpg" alt="第 6–8 轮">
-    <div class="cap"><b>④ 第 6–8 轮 · 收敛</b><br>
-    网格从 6 排扩到 9 排（z 一直铺到 −398）把顶边填满，
-    fov 收到 34° 把纵深压回基地内，再修场坪明度、天线亮度和两个近景 bug。</div>
-  </div>
-</div>
+  <details>
+    <summary>应验二：整图指标看不见 GTAO，也看不见远景的窗洞</summary>
+    <p>第 8 节量出来：GTAO 让整图平均亮度只变了 0.021 档，但让 12.9% 的接触区像素暗了 0.13 档。
+    第 7 节量出来：同一处窗套修复，近景 0.18 档、300 m 外 0.02 档。
+    如果当时真的挑了一个「整图平均亮度」当判据，这两件事都会被判成「没变化」。
+    <b>先想清楚指标要判什么，再选指标</b> —— 线 3 花一整节定目标函数就是在做这件事。</p>
+  </details>
 
-<div class="note">
-<b>关于这四张图。</b>第 1–7 轮的原始截图在收尾清理时被删掉了。
-上面 ②③ 两张是事后把当时的相机与光照参数<b>退回去重新渲染</b>的复现图 ——
-这几轮改的确实全是这些参数，所以症状是真实的，但几何与配色是最终版。
-第 8 轮的 before / after（3.3 节）是真退回那两行错误代码重渲的，差异是实打实的。
-</div>
+  <details>
+    <summary>没能补上的：这条线始终没有一个跨轮次可比的分数</summary>
+    <p>诚实地说，本页能补的只是<b>取景</b>这一条轴，因为它的约束是几何的、可以闭式求解。
+    「明度」「密度」「材质密度」那几轮仍然没有量 —— 第 1–7 轮的原始截图已删，
+    现在也没法回头补测每轮的指标轨迹。线 3 那张九步指标曲线，本线拿不出对应的东西。
+    这是记录方式的代价：<b>删掉的中间产物没法事后量化</b>。</p>
+  </details>
 
-<h2>3.2 八轮完整记录</h2>
-
-<table class="keep">
-<tr><th style="width:5%">轮次</th><th style="width:33%">看到的问题</th><th>改了什么</th></tr>
-<tr><td>1</td><td>首帧 <code>concrete</code> 桶整个没渲染出来；构建流程还会卡死不动</td>
-<td><code>ExtrudeGeometry</code> / <code>IcosahedronGeometry</code> 是<b>非索引</b>几何，
-混进索引几何里 <code>mergeGeometries</code> 直接失败 —— 给它们补一条平凡索引。
-另外 <code>requestAnimationFrame</code> 在非前台标签页不触发，进度让步改用 <code>setTimeout</code></td></tr>
-<tr><td>2</td><td>满屏一个色调，没有明暗层次；屋顶和墙一样浅；院子是空的</td>
-<td>加程序化环境球（PMREM）；混凝土调冷灰、屋顶单列深色；曝光 1.06→0.96；
-雾 0.0015→0.0007；院内堆料密度翻倍，并新增「沿墙内侧堆」的分布规则</td></tr>
-<tr><td>3</td><td>相机太近，丢了前景铁丝网和土路；地面太橙；道路和院子分不开</td>
-<td>fov 26°→38° 并后移相机；地面降饱和；道路改成更暗的灰</td></tr>
-<tr><td>4</td><td>前景土路占了画面 22%；T 墙上出现假的横向条纹</td>
-<td>铁丝网和土路前移 7 m；混凝土贴图的模板缝减半并减弱；墙面 <code>tile</code> 2.2→3.6</td></tr>
-<tr><td>5</td><td>画面顶部露出了地平线 —— 参考图里没有天空</td>
-<td>网格从 6 排扩到 9 排（z 一直铺到 −398）；雾加重</td></tr>
-<tr><td>6</td><td>还是能看到地平线，且远排太素、糊成一片浅色</td>
-<td>fov 38°→34° 收窄纵深；背景排补集装箱和深色堆料</td></tr>
-<tr><td>7</td><td>场坪太白太干净；天线太灰，不像参考图里最白的那两个东西</td>
-<td>场坪调暗并加飘沙；天线面提亮到接近纯白，f/D 0.38→0.31 让碟面更深</td></tr>
-<tr><td>8</td><td>把相机拉到 20 m 检查：窗户是浅色方块；集装箱是光面；天线面有放射状污渍</td>
-<td>窗套原本是一整块板，把窗洞盖住了 → 改成四条边框；波纹 <code>tile</code> 0.55→2.2；
-天线改用干净的漆面材质而非混凝土贴图</td></tr>
-</table>
-
-<h2>3.3 第 8 轮：拉近了才看得见的两个 bug</h2>
-
-<p>远景全对不代表模型是对的。主图里每扇窗只有两三个像素，错了也看不出来 ——
-所以最后一轮专门把相机放到 20 m 高逐个检查，立刻抓到两处。</p>
-
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/bug_before.jpg" alt="修复前">
-    <div class="cap"><b>修复前</b>　窗户是一片浅米色方格；左下角的集装箱是一块光板。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/bug_after.jpg" alt="修复后">
-    <div class="cap"><b>修复后</b>　窗洞变成真正的黑洞，集装箱有了 27 cm 一道的波纹。</div>
+  <div class="key">
+  <b>可以直接搬走的结论：</b>闭环迭代的价值上限，取决于<b>判据的质量</b>，不取决于循环的次数。
+  目视驱动能收敛，但会在同一条轴上来回走；一旦某个偏差能被写成一个数（哪怕是很粗的数，
+  哪怕只是一个布尔量），那条轴上的迭代就退化成一次求解。
   </div>
 </div>
 
-<h3>① 窗套把窗洞盖住了</h3>
-<p>本意是画一圈窗套，实际写成了一整块比窗洞还大的板，盖在洞口外侧。
-远看就是一片浅色方格 —— 参考图里那种密集的黑窗格全没了。改成上下左右四条边框即可。</p>
-<pre>- b.box('concrete', ww+0.3,  wh+0.3, 0.09, ..)  // one slab
-+ b.box('concrete', ww+fw*2, fw,     0.1,  ..)  // top
-+ b.box('concrete', ww+fw*2, fw,     0.1,  ..)  // bottom
-+ b.box('concrete', fw,      wh,     0.1,  ..)  // left / right</pre>
+<!-- ===================== 11. 三线对照 ===================== -->
+<div class="sec" id="lines">
+  <div class="tag">对照</div>
+  <h2>和本仓库另外两条线</h2>
+  <p>同一个命题「一张参考图 → 一个三维场景」，仓库里现在有三条路线，取舍各不相同：</p>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th style="width:13%"></th>
+    <th style="width:29%">UE5 资产库管线<br><span style="font-weight:400;color:var(--faint)">主线</span></th>
+    <th style="width:29%">还原度闭环迭代<br><span style="font-weight:400;color:var(--faint)">线 3</span></th>
+    <th>程序化生成<br><span style="font-weight:400;color:var(--faint)">线 2 · 本文</span></th></tr></thead>
+    <tbody>
+    <tr><td><b>内容来源</b></td><td>39 模块预制资产库 + 图生 3D 兜底</td>
+    <td>手工建模 + 本地资产库</td><td>全部运行时算出来，零资源文件</td></tr>
+    <tr><td><b>流程形态</b></td><td>单向前馈五阶段，误差逐级放大</td>
+    <td><b>度量驱动</b>闭环，九步</td><td><b>目视驱动</b>闭环，八轮</td></tr>
+    <tr><td><b>判据</b></td><td>装配回执（穿模 / 悬空）</td>
+    <td>边缘 F 分数、16 分区曝光、直方图交集</td><td>肉眼并排比对（短板；本页把取景一轴补成了求解）</td></tr>
+    <tr><td><b>渲染</b></td><td>UE5 实时</td><td>Cycles 离线，480 spp / 38 s</td><td>WebGL 实时，24 ms/帧</td></tr>
+    <tr><td><b>回答的问题</b></td><td>能不能<b>可交付、可离线复跑</b></td>
+    <td>还原度<b>上限</b>在哪里</td><td>能不能从一张图长出<b>一类</b>场景</td></tr>
+    <tr><td><b>可变性</b></td><td>换图要重跑全流程</td><td>针对单图调优，不可迁移</td>
+    <td>换 seed 约 4 秒出一座新基地</td></tr>
+    </tbody>
+  </table></div>
 
-<h3>② 波纹密到糊成光面</h3>
-<p>波纹贴图横向有 8 道棱，间距由 <code>tile</code>（多少米一张贴图）决定。
-原来给了 0.55，算出来 6.9 cm 一道，远小于一个像素，直接被采样糊成平面。
-改成 2.2 → 27 cm 一道，正好是真实集装箱的尺寸。</p>
-<pre>- tile: 0.55   // 6.06m / 0.55 * 8 = 88 ribs -&gt; 6.9 cm
-+ tile: 2.20   // 6.06m / 2.20 * 8 = 22 ribs -&gt; 27  cm</pre>
-
-<div class="kv">
-<b>这两个 bug 说明一件事：</b>闭环迭代的「比对」环节必须<b>多尺度</b>。
-只在主图机位比，远景对了就以为收敛了；真正的模型错误藏在近景里。
-放到 UE5 那条管线上，对应的就是装配完不能只截一张对齐机位图，
-还得按物件逐个出近景回执。
-</div>
-
-<h2>3.4 这个循环的短板：它是目视驱动的</h2>
-
-<p>回头看，这八轮有一个方法论上的硬伤：<b>判据全在眼睛里</b>。
-每轮都是把渲染图和参考图并排看、挑最刺眼的一条改，没有任何可测量的量。
-仓库里的<a href="还原度闭环迭代.html">并行线一</a>把这个陷阱写得很清楚 ——
-「人眼对整体亮度极不敏感、对局部错位又极敏感，凭感觉调会在两三轮后开始互相抵消」。</p>
-
-<p>这句话在本文里是应验了的。看 3.2 那张表的第 3、5、6 轮：</p>
-
-<table>
-<tr><th style="width:8%">轮次</th><th style="width:30%">改的是同一件事</th><th>结果</th></tr>
-<tr><td>3</td><td>fov 26° → 38°</td><td>找回了前景周界，但纵深随之超出基地范围</td></tr>
-<tr><td>5</td><td>网格 6 排 → 9 排</td><td>补地面去填顶边，治的是第 3 轮带出来的症状</td></tr>
-<tr><td>6</td><td>fov 38° → 34°</td><td>又把纵深收回来 —— 绕了一圈回到 26° 和 38° 之间</td></tr>
-</table>
-
-<p>三轮都在「取景」这一条轴上反复横跳，因为<b>没有一个量在告诉我离目标还有多远</b>。
-其实这里需要的判据并不复杂 —— 哪怕只是一个布尔量「画面顶边的射线是否仍落在基地范围内」，
-就能把第 5、6 两轮压缩成一次求解：它本来就是 2.2 节那个方程的第三个约束，
-只是当时没把它写成代码，而是留在眼睛里。</p>
-
-<div class="kv">
-<b>可以直接搬走的结论：</b>闭环迭代的价值上限，取决于<b>判据的质量</b>，不取决于循环的次数。
-目视驱动能收敛，但会在同一条轴上来回走；一旦某个偏差能被写成一个数
-（哪怕是很粗的数），那条轴上的迭代就退化成一次求解。
-这也正是并行线一先花一整节定目标函数、再动手建模的原因。
-</div>
-
-<!-- ============ 4. 结果 ============ -->
-<div class="pagebreak"></div>
-<h1>4. 结果</h1>
-
-<h2>4.1 近景：模型经得起拉近看</h2>
-
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/detail_heli.jpg" alt="停机坪">
-    <div class="cap"><b>停机坪</b>　直升机：机身、侧倾尾斜梁、尾桨、平尾、四片带下垂的主旋翼、起落架。
-    停机坪的圆圈和 H 是地面贴图烘出来的，不是额外的面片。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/detail_motorpool.jpg" alt="汽车连">
-    <div class="cap"><b>汽车连</b>　四联装起竖的防空导弹发射车、6×6 篷布卡车、波纹雨棚、集装箱，
-    以及修好之后凹进去的窗洞。</div>
+  <div class="key">
+  <b>三条路线是互补的，不是替代关系。</b>
+  资产库管线解决「能不能交付」，线 3 解决「像不像这一张图」，本文解决「能不能长出一千张这样的图」。
+  真正值得移植回主线的不是程序化本身，而是<b>闭环 + 判据</b>这一对：
+  装配完不是终点，而是下一轮的输入；同时那个「比对」环节必须落成可测量的量。
+  本文八轮里有五轮的问题（取景、明度、密度、纵深、近景几何）在单向前馈的管线里根本不会被发现 ——
+  因为没人回头看结果。
   </div>
 </div>
 
-<p>T 墙的底座 / 墙板 / 压顶三段式、集装箱的角件与门闩、卡车的篷杆、天线的馈源三脚架 ——
-这些细节在主图里只有几个像素，但它们决定了主图里那片「杂物」看起来是有内容的还是一团糊。</p>
-
-<h2>4.2 换个种子，就是另一座基地</h2>
-
-<div class="grid2">
-  <div class="figure">
-    <img src="../process/figures/fob/seed_variant.jpg" alt="另一个种子">
-    <div class="cap"><b>seed 777001</b>　建筑形态、道路开口、堆料布局、车辆位置全部重排；
-    但天线场、指挥楼、停机坪仍在各自该在的位置上 —— 结构规则不变，内容全变。</div>
-  </div>
-  <div class="figure">
-    <img src="../process/figures/fob/ao_off.jpg" alt="关掉 GTAO">
-    <div class="cap"><b>关掉 GTAO</b>　少了接触阴影，物体开始「浮」在地上。
-    这也是为什么要在顶点色里额外烘一层接地暗部作兜底。</div>
-  </div>
-</div>
-
-<h2>4.3 性能</h2>
-
-<table>
-<tr><th style="width:34%">指标</th><th>值</th></tr>
-<tr><td>帧时间（1280×720，GTAO 全开）</td><td>24.4 ms</td></tr>
-<tr><td>draw call（含阴影与 AO pass）</td><td>60–64（主 pass 13）</td></tr>
-<tr><td>每帧三角面</td><td>5.63 M</td></tr>
-<tr><td>构件数 / 顶点数</td><td>44 441 / 1.69 M</td></tr>
-<tr><td>整场重建（换种子）</td><td>约 4 s</td></tr>
-<tr><td>常驻几何 / 贴图</td><td>15 / 32（13 材质桶 + 2 层地面，反复换种子不涨，无泄漏）</td></tr>
-</table>
-
-<!-- ============ 5. 对照 ============ -->
-<div class="pagebreak"></div>
-<h1>5. 和本仓库 UE5 管线的对照</h1>
-
-<p>同一个命题「一张参考图 → 一个三维场景」，仓库里现在有三条路线，取舍各不相同：</p>
-
-<table>
-<tr><th style="width:13%"></th>
-<th style="width:29%">UE5 资产库管线<br><span style="font-weight:400;color:#777">主线</span></th>
-<th style="width:29%">还原度闭环迭代<br><span style="font-weight:400;color:#777">并行线一</span></th>
-<th>程序化生成<br><span style="font-weight:400;color:#777">并行线二 · 本文</span></th></tr>
-<tr><td><b>内容来源</b></td><td>39 模块预制资产库 + 图生 3D 兜底</td>
-<td>手工建模 + 本地资产库</td><td>全部运行时算出来，零资源文件</td></tr>
-<tr><td><b>流程形态</b></td><td>单向前馈五阶段，误差逐级放大</td>
-<td><b>度量驱动</b>闭环，九步</td><td><b>目视驱动</b>闭环，八轮</td></tr>
-<tr><td><b>判据</b></td><td>装配回执（穿模 / 悬空）</td>
-<td>边缘 F 分数、16 分区曝光、直方图交集</td><td>肉眼并排比对（短板，见 3.4）</td></tr>
-<tr><td><b>渲染</b></td><td>UE5 实时</td><td>Cycles 离线，480 spp / 38 s</td><td>WebGL 实时，24 ms/帧</td></tr>
-<tr><td><b>回答的问题</b></td><td>能不能<b>可交付、可离线复跑</b></td>
-<td>还原度<b>上限</b>在哪里</td><td>能不能从一张图长出<b>一类</b>场景</td></tr>
-<tr><td><b>可变性</b></td><td>换图要重跑全流程</td><td>针对单图调优，不可迁移</td>
-<td>换 seed 4 秒出一座新基地</td></tr>
-</table>
-
-<div class="kv">
-<b>三条路线是互补的，不是替代关系。</b>
-资产库管线解决「能不能交付」，并行线一解决「像不像这一张图」，
-本文解决「能不能长出一千张这样的图」。
-真正值得移植回主线的不是程序化本身，而是<b>闭环 + 判据</b>这一对：
-装配完不是终点，而是下一轮的输入；同时那个「比对」环节必须落成可测量的量，
-否则就会退化成本文 3.4 节那种在同一条轴上反复横跳的目视调参。
-本文八轮里有五轮的问题（取景、明度、密度、纵深）在单向前馈的管线里根本不会被发现 ——
-因为没人回头看结果。
-</div>
-
-<h1>6. 复现</h1>
-
-<pre>cd webui/base3d &amp;&amp; npm i        # 唯一依赖：three.js
-python webui/base3d/serve.py 8177
+<!-- ===================== 12. 复现 ===================== -->
+<div class="sec">
+  <div class="tag">复现</div>
+  <h2>怎么跑起来</h2>
+  <pre>cd process/threejs_fob &amp;&amp; npm i        # 唯一依赖：three.js ^0.180.0
+python process/threejs_fob/serve.py 8177
 # -&gt; http://127.0.0.1:8177</pre>
+  <p>或者不装依赖，直接开本页第 2 节的内嵌版
+  <a href="../process/threejs_fob/index.cdn.html">index.cdn.html</a>（走 CDN 取 three.js）。</p>
 
-<p>面板里可以改：种子 · 相机预设（原图 / 俯视 / 地面）· 太阳方位与高度 · 曝光 ·
-沙尘浓度 · GTAO / 阴影 / 调色开关 · 截图。</p>
+  <details>
+    <summary>两个环境坑</summary>
+    <p>① Windows 上不要用 <code>python -m http.server</code>：它从注册表读 MIME，
+    <code>.js</code> 会被解析成 <code>text/plain</code>，浏览器直接拒绝加载 ES module ——
+    配套的 <code>serve.py</code> 把 MIME 表写死了。</p>
+    <p>② 源码分层：<code>rng.js</code> 可复现随机源 / <code>textures.js</code> 程序化贴图与材质 /
+    <code>builder.js</code> 变换栈与分桶合并 / <code>layout.js</code> 总平面 /
+    <code>ground.js</code> 地面烘焙 / <code>props.js</code> 构件库 /
+    <code>buildings.js</code> 建筑 / <code>vehicles.js</code> 载具 /
+    <code>base.js</code> 摆放 / <code>main.js</code> 渲染与 UI。共 3 163 行。</p>
+  </details>
 
-<div class="note">
-<b>两个环境坑。</b>
-① Windows 上不要用 <code>python -m http.server</code>：它从注册表读 MIME，
-<code>.js</code> 会被解析成 <code>text/plain</code>，浏览器直接拒绝加载 ES module ——
-配套的 <code>serve.py</code> 把 MIME 表写死了。
-② 源码分层：<code>rng.js</code> 可复现随机源 / <code>textures.js</code> 程序化贴图与材质 /
-<code>builder.js</code> 变换栈与分桶合并 / <code>layout.js</code> 总平面 /
-<code>ground.js</code> 地面烘焙 / <code>props.js</code> 构件库 /
-<code>buildings.js</code> 建筑 / <code>vehicles.js</code> 载具 /
-<code>base.js</code> 摆放 / <code>main.js</code> 渲染与 UI。
+  <p class="foot">参考图给的是「长什么样」，代码要回答的是「按什么规则长成这样」——
+  把规则写对了，换个种子它还是一座讲得通的基地。<br>
+  本页所有可交互部件的数据都来自本仓库：图像取自 <code>process/figures/fob/</code>，
+  几何常量与院落用途取自 <code>process/threejs_fob/src/</code>，
+  运行时统计取自把该源码跑起来后读回的 <code>renderer.info</code> 与 <code>__fob.info</code>，
+  像素差值由这几张图现场量出。</p>
 </div>
 
-<p style="margin-top:26px;padding-top:10px;border-top:1px solid #e2ddd2;font-size:8.6pt;color:#888">
-参考图给的是「长什么样」，代码要回答的是「按什么规则长成这样」——
-把规则写对了，换个种子它还是一座讲得通的基地。
-</p>
+</div><!-- /wrap -->
 
+<!-- ===================== 数据 ===================== -->
+<script id="D-rounds" type="application/json">
+{"rounds":[
+ {"n":1,"img":"iter1_early.jpg","frame":"第 1–2 轮的画面","axis":"工程",
+  "title":"首帧根本没渲出来","saw":"首帧 <code>concrete</code> 桶整个没渲染出来；构建流程还会卡死不动。",
+  "did":"<code>ExtrudeGeometry</code> / <code>IcosahedronGeometry</code> 是<b>非索引</b>几何，混进索引几何里 <code>mergeGeometries</code> 直接失败 —— 给它们补一条平凡索引（<code>builder.js</code> 的 <code>emit()</code>）。另外 <code>requestAnimationFrame</code> 在非前台标签页不触发，进度让步改用 <code>setTimeout</code>。",
+  "chips":[["非索引几何","merge 失败","补平凡索引"],["进度让步","rAF","setTimeout"]]},
+ {"n":2,"img":"iter1_early.jpg","frame":"第 1–2 轮的画面","axis":"明度 / 密度",
+  "title":"满屏一个色","saw":"满屏一个色调，没有明暗层次；屋顶和墙一样浅；院子是空的。金属件发假 —— 因为完全没有环境光照。",
+  "did":"加程序化环境球（Canvas 渐变 → PMREM）；混凝土调冷灰、屋顶单列深色；院内堆料密度翻倍，并新增「沿墙内侧堆」的分布规则。",
+  "chips":[["曝光","1.06","0.96"],["雾密度","0.0015","0.0007"],["院内堆料密度","×1","×2"]]},
+ {"n":3,"img":"iter2_tight.jpg","frame":"第 3 轮的画面","axis":"取景",
+  "title":"光调好了，但取景丢了周界","saw":"相机太近，参考图里那条铁丝网和土路整个被切出画外；地面太橙；道路和院子分不开。",
+  "did":"fov 拉开并后移相机；地面降饱和；道路改成更暗的灰。",
+  "chips":[["fov","26°","38°"],["地面饱和度","高","降"],["道路明度","与院内接近","更暗"]]},
+ {"n":4,"img":"iter2_tight.jpg","frame":"沿用第 3 轮的画面（本轮无独立截图）","axis":"取景 / 材质",
+  "title":"前景土路占太多，T 墙上有假条纹","saw":"前景土路占了画面 22%；T 墙上出现假的横向条纹 —— 混凝土贴图的模板缝在这个尺度下变成了规则横纹。",
+  "did":"铁丝网和土路整体前移；模板缝减半并减弱；墙面贴图放大。",
+  "chips":[["周界前移","","+7 m"],["墙面 tile","2.2","3.6"],["模板缝密度","×1","×0.5"]]},
+ {"n":5,"img":"iter3_horizon.jpg","frame":"第 5 轮的画面","axis":"取景",
+  "title":"画面顶部露出了地平线","saw":"退回大 fov 找回了前景周界，代价是纵深超出基地范围 —— 顶边那道浅色横带就是地平线。参考图里没有天空，这不行。",
+  "did":"网格往远处扩排（z 一直铺到 −398，即 <code>layout.js</code> 的 <code>ROW0 = −8</code>）；雾加重。",
+  "chips":[["院落排数","6 排","扩排"],["最远一排 z","−143","−398"],["雾密度","","加重"]]},
+ {"n":6,"img":"iter4_final.jpg","frame":"最终画面（第 6–8 轮收敛后）","axis":"取景",
+  "title":"还是能看到地平线","saw":"扩了排数仍然能看到地平线，而且远排太素、糊成一片浅色。",
+  "did":"fov 收窄把纵深压回基地内；背景排补集装箱和深色堆料。这一步之后取景才收敛 —— 第 5 节说明了为什么它本来可以一次算出来。",
+  "chips":[["fov","38°","34°"],["背景排堆料","素","补深色"]]},
+ {"n":7,"img":"iter4_final.jpg","frame":"最终画面（本轮无独立截图）","axis":"明度",
+  "title":"场坪太白，天线太灰","saw":"场坪太白太干净；天线太灰，不像参考图里最白的那两个东西。",
+  "did":"场坪调暗并加飘沙；天线面提亮到接近纯白，抛物面加深。",
+  "chips":[["天线 f/D","0.38","0.31"],["场坪明度","偏白","调暗 + 飘沙"]]},
+ {"n":8,"img":"bug_after.jpg","frame":"把相机放到 20 m 高的检查视角","axis":"几何",
+  "title":"拉近了才看得见的两个 bug","saw":"把相机拉到 20 m 检查：窗户是浅色方块；集装箱是光面；天线面有放射状污渍。",
+  "did":"窗套原本是一整块板，把窗洞盖住了 → 改成四条边框；波纹贴图放大到真实尺寸；天线改用干净的漆面材质而非混凝土贴图。差值实测见第 7 节。",
+  "chips":[["窗套","一整块板","四条边框"],["波纹 tile","0.55（6.9 cm 一道）","2.20（27 cm 一道）"],["天线材质","混凝土贴图","漆面"]]}
+]}
+</script>
+
+<script id="D-plan" type="application/json">
+{"kinds":["barracks","billet","depot","hangar","helipad","hescoYard","hq","motorpool","satcom","vehiclePark","warehouse","yard"],
+"labels":{"barracks":"营房 30×14 m · 3 层","billet":"集装箱式营房 CHU 组块","depot":"堆料场 3–4 排货垛","hangar":"大跨库房 双坡铁皮 28–36 m","helipad":"停机坪 直升机 + 风向袋","hescoYard":"HESCO 掩体与补给堆场","hq":"指挥楼 25×16 m · 2 层","motorpool":"汽车连 6×6 篷布卡车 3–5 台","satcom":"卫通天线场 9.2 m + 8.0 m 抛物面","vehiclePark":"车辆停放场 悍马 4–6 台","warehouse":"库房 双坡铁皮 26–32 m","yard":"空院 货箱 / 油桶 / 轮胎"},
+"cells":[[-5,2,2,0,1,"NSW","s"],[-4,2,11,0,1,"ESW","s"],[-3,2,2,0,1,"NESW","e"],[-2,2,5,0,1,"NESW","s"],[-1,2,8,0,1,"NES","s"],[0,2,7,0,1,"NESW","s"],[1,2,7,0,1,"NESW","w"],[2,2,9,0,1,"NESW","n"],[3,2,2,0,1,"NESW","e"],[4,2,11,0,0,"NESW","w"],[5,2,2,0,1,"NES","e"],[-5,1,2,0,1,"NESW","w"],[-4,1,10,0,1,"NESW","n"],[-3,1,3,0,0,"NESW","e"],[-2,1,3,0,1,"NESW","s"],[-1,1,6,0,1,"NESW","n"],[0,1,0,0,1,"NESW","s"],[1,1,10,0,0,"NESW","w"],[2,1,3,0,1,"NESW","e"],[3,1,2,0,1,"NESW","w"],[4,1,1,0,1,"NESW","w"],[5,1,10,0,1,"NESW","n"],[-5,0,11,1,0,"NESW","n"],[-4,0,2,1,1,"NESW","s"],[-3,0,1,1,1,"NESW","e"],[-2,0,10,1,1,"NESW","s"],[-1,0,1,1,1,"NESW","n"],[0,0,1,1,1,"NESW","w"],[1,0,4,1,1,"ESW","s"],[2,0,10,1,1,"NESW","e"],[3,0,3,1,1,"NESW","s"],[4,0,2,1,1,"NESW","s"],[5,0,1,1,1,"NESW","n"],[-5,-1,2,1,1,"NESW","w"],[-4,-1,1,1,0,"NESW","w"],[-3,-1,10,1,1,"NESW","n"],[-2,-1,3,1,1,"NESW","e"],[-1,-1,7,1,1,"NESW","s"],[0,-1,11,1,0,"NESW","w"],[1,-1,1,1,1,"NESW","s"],[2,-1,2,1,1,"NESW","n"],[3,-1,1,1,1,"NESW","e"],[4,-1,10,1,0,"NESW","w"],[5,-1,3,1,1,"NSW","n"],[-5,-2,7,2,1,"NESW","s"],[-4,-2,11,2,0,"NESW","w"],[-3,-2,2,2,1,"NESW","n"],[-2,-2,1,2,1,"NESW","e"],[-1,-2,10,2,1,"NESW","w"],[0,-2,3,2,1,"NESW","s"],[1,-2,7,2,1,"NSW","n"],[2,-2,11,2,0,"NESW","e"],[3,-2,2,2,1,"NESW","w"],[4,-2,1,2,1,"NESW","s"],[5,-2,10,2,1,"NESW","n"],[-5,-3,3,2,1,"NESW","e"],[-4,-3,7,2,1,"NESW","w"],[-3,-3,11,2,0,"NESW","s"],[-2,-3,2,2,1,"NSW","n"],[-1,-3,1,2,1,"NESW","e"],[0,-3,10,2,1,"NESW","w"],[1,-3,3,2,1,"NESW","s"],[2,-3,7,2,1,"NESW","n"],[3,-3,11,2,0,"NESW","e"],[4,-3,2,2,1,"NESW","w"],[5,-3,1,2,1,"NESW","s"],[-5,-4,10,2,1,"NESW","n"],[-4,-4,3,2,1,"NESW","e"],[-3,-4,7,2,1,"NESW","w"],[-2,-4,11,2,0,"NESW","s"],[-1,-4,2,2,1,"NESW","n"],[0,-4,1,2,1,"NESW","e"],[1,-4,10,2,1,"NESW","w"],[2,-4,3,2,1,"NESW","s"],[3,-4,7,2,1,"NESW","n"],[4,-4,11,2,0,"NESW","e"],[5,-4,2,2,1,"NESW","w"],[-5,-5,1,2,1,"NESW","s"],[-4,-5,10,2,1,"NESW","n"],[-3,-5,3,2,1,"NESW","e"],[-2,-5,7,2,1,"NESW","w"],[-1,-5,11,2,0,"NESW","s"],[0,-5,2,2,1,"NESW","n"],[1,-5,1,2,1,"NESW","e"],[2,-5,10,2,1,"NESW","w"],[3,-5,3,2,1,"NESW","s"],[4,-5,7,2,1,"NESW","n"],[5,-5,11,2,0,"NESW","e"],[-5,-6,2,2,1,"NESW","w"],[-4,-6,1,2,1,"NESW","s"],[-3,-6,10,2,1,"NESW","n"],[-2,-6,3,2,1,"NESW","e"],[-1,-6,7,2,1,"NESW","w"],[0,-6,11,2,0,"NESW","s"],[1,-6,2,2,1,"NESW","n"],[2,-6,1,2,1,"NESW","e"],[3,-6,10,2,1,"NESW","w"],[4,-6,3,2,1,"NESW","s"],[5,-6,7,2,1,"NESW","n"],[-5,-7,11,2,0,"NESW","e"],[-4,-7,2,2,1,"NESW","w"],[-3,-7,1,2,1,"NESW","s"],[-2,-7,10,2,1,"NESW","n"],[-1,-7,3,2,1,"NESW","e"],[0,-7,7,2,1,"NESW","w"],[1,-7,11,2,0,"NESW","s"],[2,-7,2,2,1,"NESW","n"],[3,-7,1,2,1,"NESW","e"],[4,-7,10,2,1,"NESW","w"],[5,-7,3,2,1,"NESW","s"],[-5,-8,7,2,1,"NESW","n"],[-4,-8,11,2,0,"NESW","e"],[-3,-8,2,2,1,"NESW","w"],[-2,-8,1,2,1,"NESW","s"],[-1,-8,10,2,1,"NESW","n"],[0,-8,3,2,1,"NESW","e"],[1,-8,7,2,1,"NESW","w"],[2,-8,11,2,0,"NESW","s"],[3,-8,2,2,1,"NESW","n"],[4,-8,1,2,1,"NESW","e"],[5,-8,10,2,1,"NESW","s"]]}
+</script>
+
+<script id="D-probe" type="application/json">
+{"img":"../process/figures/fob/bug_after.jpg","w":1200,"h":677,
+"boxes":[
+ {"key":"container","chip":"集装箱侧板","rect":[8,458,190,604],
+  "lumA":0.2792,"lumB":0.2768,"stops":-0.013,"dark5":13.7,
+  "gxA":0.03691,"gxB":0.02366,"gxPct":-35.9,"gyPct":-0.4,"stdA":0.0957,"stdB":0.1011,
+  "note":"波纹 <code>tile</code> 0.55 → 2.20。逐像素横向梯度掉了 36% —— 原来那层 6.9 cm 一道的棱早已细过一个像素，采样出来是噪点而不是结构；换成 27 cm 一道之后噪点没了，区域整体标准差反而从 0.096 升到 0.101，也就是<b>高频噪声换成了读得出来的棱</b>。"},
+ {"key":"winR","chip":"右楼窗洞列","rect":[1054,28,1200,238],
+  "lumA":0.4232,"lumB":0.3847,"stops":-0.138,"dark5":22.1,
+  "gxA":0.03684,"gxB":0.0457,"gxPct":24.0,"gyPct":19.9,"stdA":0.1136,"stdB":0.1068,
+  "note":"窗套从一整块板改成四条边框。整块区域暗了 0.14 档，两个方向的梯度各涨 24% / 20% —— 窗洞变成真的洞，边框把它框住，结构信息回来了。"},
+ {"key":"winM","chip":"中楼窗洞列","rect":[716,42,998,192],
+  "lumA":0.2731,"lumB":0.2415,"stops":-0.178,"dark5":23.4,
+  "gxA":0.01479,"gxB":0.0172,"gxPct":16.3,"gyPct":10.5,"stdA":0.0661,"stdB":0.0488,
+  "note":"同一处改动、更靠近相机的一栋。暗了 0.18 档，是四个区域里变化最大的。标准差反而降了（0.066 → 0.049），因为原来那片浅色方格自己就是高对比的假结构。"},
+ {"key":"far","chip":"远景建筑（同一改动）","rect":[300,20,650,180],
+  "lumA":0.4094,"lumB":0.4039,"stops":-0.019,"dark5":4.2,
+  "gxA":0.02688,"gxB":0.02806,"gxPct":4.4,"gyPct":2.8,"stdA":0.1022,"stdB":0.0989,
+  "note":"同一行代码在远处的效果：只有 0.019 档，近景的十分之一。<b>这就是为什么主图机位报不出这个 bug</b> —— 不是它不严重，是它在那个尺度上量不出来。"},
+ {"key":"ctrl","chip":"对照区（未改动）","rect":[330,330,700,620],
+  "lumA":0.2463,"lumB":0.2463,"stops":0,"dark5":0,
+  "gxA":0.01768,"gxB":0.01768,"gxPct":0,"gyPct":0,"stdA":0.1102,"stdB":0.1102,
+  "note":"导弹发射车与雨棚这一片<b>逐像素完全相同</b>，四项差值全是 0.0000。这证明两张图确实是同一帧、同一种子，只退回了那两行代码 —— 上面几个区域的差值才有意义。"}
+]}
+</script>
+
+<script id="D-mat" type="application/json">
+{"mats":[
+ {"k":"concrete","use":"墙 / 楼 / 掩体 / 路缘石","r":1.0,"m":0.0,"tex":"混凝土 1024²","calls":46,"v":361868},
+ {"k":"metal","use":"钢架 / 管 / 桅杆 / 栏杆","r":0.55,"m":0.8,"tex":"金属 512²","calls":111,"v":837833},
+ {"k":"paint","use":"车辆漆面","r":0.78,"m":0.16,"tex":"浮尘 512²","calls":66,"v":184215},
+ {"k":"dark","use":"橡胶 / 阴影里的开口","r":0.9,"m":0.0,"tex":"无贴图（纯顶点色）","calls":33,"v":84279},
+ {"k":"wood","use":"木箱 / 托盘","r":0.92,"m":0.0,"tex":"木材 512²（5 条纹）","calls":10,"v":150624},
+ {"k":"corr","use":"波纹铁皮屋面 / 集装箱","r":0.68,"m":0.45,"tex":"波纹 512²（8 道棱）","calls":14,"v":41568},
+ {"k":"glass","use":"玻璃","r":0.15,"m":0.5,"tex":"无贴图","calls":7,"v":9728},
+ {"k":"hesco","use":"HESCO / 沙袋","r":1.0,"m":0.0,"tex":"HESCO 512²","calls":3,"v":24960},
+ {"k":"canvas","use":"帆布篷 / 迷彩布","r":1.0,"m":0.0,"tex":"帆布 512²","calls":6,"v":4020},
+ {"k":"paintDS","use":"薄壳双面：天线反射面 / 旋翼桨叶","r":0.7,"m":0.2,"tex":"浮尘 512² · 双面","calls":6,"v":4750},
+ {"k":"net","use":"迷彩网屏","r":0.95,"m":0.0,"tex":"网 alpha 256² · 双面 · alphaTest 0.40","calls":2,"v":8},
+ {"k":"mesh","use":"铁丝网周界","r":0.7,"m":0.6,"tex":"链网 alpha 256² · 双面 · alphaTest 0.42","calls":1,"v":60},
+ {"k":"concreteDS","use":"（声明为薄壳双面混凝土，未被使用）","r":1.0,"m":0.0,"tex":"混凝土 1024² · 双面","calls":0,"v":null}
+]}
+</script>
+
+<script src="assets/kit.js"></script>
+<script>
+(() => {
+  const $ = Kit.$, $$ = Kit.$$, esc = Kit.esc;
+  const J = id => JSON.parse(document.getElementById(id).textContent);
+  const FIG = '../process/figures/fob/';
+
+  Kit.theme('#theme');
+
+  /* ---------------- 1. 四个拖动对比 ---------------- */
+  Kit.wipe('#wipeMain', { a: FIG + 'ref.jpg', b: FIG + 'iter4_final.jpg',
+                          labelA: '参考图', labelB: 'three.js 实时渲染', start: 50 });
+  Kit.wipe('#wipeBug',  { a: FIG + 'bug_before.jpg', b: FIG + 'bug_after.jpg',
+                          labelA: '修复前', labelB: '修复后', start: 50 });
+  Kit.wipe('#wipeAO',   { a: FIG + 'ao_off.jpg', b: FIG + 'iter4_final.jpg',
+                          labelA: 'GTAO 关', labelB: 'GTAO 开', start: 50 });
+  Kit.wipe('#wipeSeed', { a: FIG + 'iter4_final.jpg', b: FIG + 'seed_variant.jpg',
+                          labelA: 'seed 20260813', labelB: 'seed 777001', start: 50 });
+
+  /* ---------------- 2. 实时场景 ---------------- */
+  const stage = $('#stage');
+  $('#stageStart').onclick = () => {
+    const btn = $('#stageStart'), poster = $('.poster', stage);
+    btn.remove(); if (poster) poster.remove();
+    const fr = document.createElement('iframe');
+    fr.src = '../process/threejs_fob/index.cdn.html';
+    fr.title = '程序化前进作战基地 · three.js 实时场景';
+    fr.setAttribute('loading', 'eager');
+    stage.insertBefore(fr, $('.hint', stage));
+    $('#stageHint').textContent = '面板：种子 / 相机预设 / 视场角 / 太阳方位与高度 / 曝光 / 沙尘 / GTAO / 阴影。左键旋转，右键平移，滚轮缩放。';
+    const t0 = Date.now();
+    const timer = setInterval(() => {
+      let info = null;
+      try { const w = fr.contentWindow; if (w && w.__fob) info = w.__fob.info; }
+      catch (e) { clearInterval(timer); return; }
+      if (info && info.parts > 0) { clearInterval(timer); showLive(info); }
+      else if (Date.now() - t0 > 240000) clearInterval(timer);
+    }, 900);
+  };
+  function showLive(info) {
+    const cells = [
+      ['构件', info.parts.toLocaleString(), '记录 44 441'],
+      ['顶点', (info.verts / 1e6).toFixed(2) + ' M', info.verts.toLocaleString()],
+      ['院落', String(info.cells), '11 × 11'],
+      ['材质桶 Mesh', String(info.meshes.length), info.meshes.map(m => m[0]).slice(0, 4).join(' / ') + ' …'],
+    ];
+    $('#liveStats').innerHTML = cells.map(c =>
+      `<div class="mcell"><div class="k">${esc(c[0])}</div><div class="v">${esc(c[1])}</div>` +
+      `<div class="d muted">${esc(c[2])}</div></div>`).join('');
+    $('#liveStats').style.display = '';
+    $('#liveNote').textContent = '以上四项是刚刚从上面这个场景自己的 window.__fob.info 里读回来的 —— '
+      + '不是写死在页面里的数字。换个种子点「重新生成」，它们会跟着变。';
+    $('#liveNote').style.display = '';
+  }
+
+  /* ---------------- 3. 八轮迭代 ---------------- */
+  const rounds = J('D-rounds').rounds;
+  rounds.forEach(r => {
+    r.html = `<p><span class="axis">${esc(r.axis)}</span></p>` +
+      `<p><b>看到的问题　</b>${r.saw}</p>` +
+      `<p><b>改了什么　</b>${r.did}</p>` +
+      `<div class="chips">` + r.chips.map(c =>
+        `<span class="chip">${esc(c[0])}${c[1] ? ` <b>${esc(c[1])}</b><span class="arrow">→</span>` : ' '}<b>${esc(c[2])}</b></span>`
+      ).join('') + `</div>` +
+      `<p class="tiny">画面：${esc(r.frame)} · <code>${esc(r.img)}</code></p>`;
+  });
+  Kit.stepper({
+    items: rounds, dots: '#dots', img: '#sImg', badge: '#sBadge', title: '#sTitle',
+    body: '#sBody', prev: '#prev', next: '#next', play: '#play', pos: '#stepPos',
+    imgBase: FIG, interval: 2600,
+  });
+
+  /* ---------------- 4. 取景求解 ---------------- */
+  // 全部常量取自 process/threejs_fob/src/main.js 与 src/layout.js
+  const CAM = { p: [2, 100, 272], t: [-8, 5, 88] };            // main.js VIEWS.cam0
+  const S = { PITCH_Z: 51, OZ: 10, CELL_D: 40, ROW1: 2, ROW0: -8,
+              PITCH_X: 59, OX: 12, CELL_W: 48, ROAD: 11, COL0: -5, COL1: 5,
+              FRONT_WALL: 138, FENCE: 151, OUTER_ROAD: 162, X_MIN: -320, X_MAX: 348 };
+  const R2D = 180 / Math.PI;
+  const horiz = Math.hypot(CAM.t[0] - CAM.p[0], CAM.t[2] - CAM.p[2]);
+  const PITCH = Math.atan2(CAM.p[1] - CAM.t[1], horiz) * R2D;
+  const KZ = Math.abs(CAM.t[2] - CAM.p[2]) / horiz;
+  const H = CAM.p[1], Z0 = CAM.p[2];
+  const zAt = deg => Z0 - (H / Math.tan(deg / R2D)) * KZ;
+  const thetaOf = z => Math.atan2(H, (Z0 - z) / KZ) * R2D;
+  const fracOf = (z, fov) => (PITCH + fov / 2 - thetaOf(z)) / fov;
+  const fovMinFor = z => 2 * (thetaOf(z) - PITCH);
+  const fovMaxFor = z => 2 * (PITCH - thetaOf(z));
+  const farEdge = rows => (3 - rows) * S.PITCH_Z + S.OZ - S.CELL_D / 2;
+  const FOVMIN = fovMinFor(S.OUTER_ROAD);
+
+  $('#kPitch').textContent = PITCH.toFixed(1) + '°';
+  $('#kMin').textContent = FOVMIN.toFixed(2) + '°';
+  $('#kWin').textContent = `[${FOVMIN.toFixed(2)}°, ${fovMaxFor(farEdge(11)).toFixed(2)}°]`;
+  $('#vBottom').textContent = zAt(PITCH + 17).toFixed(1);
+  $('#vTheta').textContent = thetaOf(S.FRONT_WALL).toFixed(2) + '°';
+  $('#vFrac').textContent = '下方 ' + (fracOf(S.FRONT_WALL, 34) * 100).toFixed(1) + '%';
+
+  $('#winBody').innerHTML = [6, 7, 8, 9, 10, 11, 12].map(r => {
+    const e = farEdge(r), mx = fovMaxFor(e), ok = mx > FOVMIN;
+    return `<tr${r === 11 ? ' class="on"' : ''}><td class="n">${r}</td><td class="n">${e}</td>` +
+      `<td class="n">${mx.toFixed(2)}°</td>` +
+      `<td class="n">${ok ? `${FOVMIN.toFixed(2)}° – ${mx.toFixed(2)}°` : '—'}</td>` +
+      `<td>${ok ? `<span class="ok">可行</span>${mx > 34 && FOVMIN < 34 ? '，含 34°' : ''}`
+                : '<span class="no">空集</span>，两条约束不可兼得'}</td></tr>`;
+  }).join('');
+
+  const FOV0 = 24, FOV1 = 42;
+  const chartRows = [];
+  for (let f = FOV0; f <= FOV1; f++)
+    chartRows.push({ tick: f, ztop: zAt(PITCH - f / 2),
+                     e6: farEdge(6), e9: farEdge(9), e11: farEdge(11) });
+  const chart = Kit.lineChart('#chart', {
+    rows: chartRows, xLabel: '垂直视场角 fov（度）', lo: -690, hi: -80, legend: '#legend',
+    series: [
+      { key: 'ztop', label: '顶边落点 z', color: '--c1' },
+      { key: 'e11', label: '11 排外沿 −418', color: '--c3' },
+      { key: 'e9', label: '9 排外沿 −316', color: '--c4' },
+      { key: 'e6', label: '6 排外沿 −163', color: '--c2' },
+    ],
+    onPick: i => setFov(FOV0 + i, false),
+  });
+
+  let curFov = 34, curRows = 11;
+  function setFov(f, redrawChart = true) {
+    curFov = Math.max(FOV0, Math.min(FOV1, f));
+    $('#fovR').value = curFov;
+    $('#fovV').textContent = curFov + '°';
+    if (redrawChart) chart.draw(curFov - FOV0);
+    renderSolve(); drawBand();
+  }
+  function renderSolve() {
+    const zb = zAt(PITCH + curFov / 2), zt = zAt(PITCH - curFov / 2);
+    const edge = farEdge(curRows), mx = fovMaxFor(edge);
+    const roadIn = zb >= S.OUTER_ROAD, skyOut = zt >= edge;
+    const row = (k, v) => `<tr><td>${k}</td><td class="n">${v}</td></tr>`;
+    $('#solveOut').innerHTML =
+      `<table style="margin:0">` +
+      row('画面底边落点 z', zb.toFixed(1) + ' m') +
+      row('画面顶边落点 z', zt.toFixed(1) + ' m') +
+      row('周界土路 z = 162 是否在画面内',
+        roadIn ? `<span class="ok">在，位于画面下方 ${(fracOf(S.OUTER_ROAD, curFov) * 100).toFixed(1)}%</span>`
+               : `<span class="no">出画 ${(S.OUTER_ROAD - zb).toFixed(1)} m</span>`) +
+      row('铁丝网 z = 151',
+        zb >= S.FENCE ? `在，下方 ${(fracOf(S.FENCE, curFov) * 100).toFixed(1)}%` : '<span class="no">出画</span>') +
+      row('长 T 墙 z = 138', `下方 ${(fracOf(S.FRONT_WALL, curFov) * 100).toFixed(1)}%`) +
+      row(`顶边是否仍落在基地内（${curRows} 排，外沿 ${edge}）`,
+        skyOut ? '<span class="ok">是，看不到地平线</span>'
+               : `<span class="no">否，越过 ${(edge - zt).toFixed(0)} m —— 顶边会露出地平线</span>`) +
+      row(`本排数下的可行 fov 区间`,
+        mx > FOVMIN ? `${FOVMIN.toFixed(2)}° – ${mx.toFixed(2)}°`
+                    : `<span class="no">空集</span>（上限 ${mx.toFixed(2)}° < 下限 ${FOVMIN.toFixed(2)}°）`) +
+      `</table>`;
+  }
+  $('#fovR').oninput = e => setFov(+e.target.value);
+  $$('[data-fov]').forEach(b => b.onclick = () => setFov(+b.dataset.fov));
+  $$('[data-rows]').forEach(b => b.onclick = () => {
+    curRows = +b.dataset.rows;
+    $$('[data-rows]').forEach(x => x.classList.toggle('on', x === b));
+    renderSolve(); drawBand();
+  });
+
+  /* ---------------- 5. 总平面 ---------------- */
+  const P = J('D-plan');
+  const cellRect = (col, row) => {
+    const cx = col * S.PITCH_X + S.OX, cz = row * S.PITCH_Z + S.OZ;
+    return { cx, cz, x0: cx - S.CELL_W / 2, x1: cx + S.CELL_W / 2,
+             z0: cz - S.CELL_D / 2, z1: cz + S.CELL_D / 2 };
+  };
+  const LODC = ['--c1', '--c3', '--c4'];
+  const rowsData = P.cells.map(c => {
+    const r = cellRect(c[0], c[1]);
+    return { id: c[0] + ',' + c[1], col: c[0], row: c[1], kind: P.kinds[c[2]], lod: c[3],
+             pad: c[4], walls: c[5], gate: c[6], dist: S.ROW1 - c[1], hand: c[1] >= 0, ...r };
+  });
+
+  const svg = $('#planSvg');
+  function drawPlan() {
+    let o = '';
+    // 道路
+    const rz0 = S.ROW0 * S.PITCH_Z + S.OZ - 40, rz1 = S.FRONT_WALL + 4;
+    for (let col = S.COL0; col <= S.COL1 + 1; col++) {
+      const x = col * S.PITCH_X + S.OX - S.PITCH_X / 2;
+      o += `<rect x="${x - S.ROAD / 2}" y="${-rz1}" width="${S.ROAD}" height="${rz1 - rz0}" fill="var(--rule)" opacity=".55"/>`;
+    }
+    for (let row = S.ROW0; row <= S.ROW1 + 1; row++) {
+      const z = row * S.PITCH_Z + S.OZ - S.PITCH_Z / 2;
+      o += `<rect x="${S.X_MIN}" y="${-(z + S.ROAD / 2)}" width="${S.X_MAX - S.X_MIN}" height="${S.ROAD}" fill="var(--rule)" opacity=".55"/>`;
+    }
+    // 院落
+    for (const c of rowsData) {
+      o += `<rect class="cell" data-id="${c.id}" x="${c.x0}" y="${-c.z1}" width="${S.CELL_W}" height="${S.CELL_D}" ` +
+           `fill="var(${LODC[c.lod]})" fill-opacity="${c.lod === 0 ? .38 : c.lod === 1 ? .26 : .15}" ` +
+           `stroke="var(--dim)" stroke-opacity="${c.hand ? .95 : .35}" stroke-width="${c.hand ? 2.6 : 1.2}"><title>${esc(c.id + ' ' + c.kind)}</title></rect>`;
+    }
+    // 周界
+    const line = (z, dash, txt, tx) =>
+      `<line x1="${S.X_MIN - 30}" y1="${-z}" x2="${S.X_MAX + 30}" y2="${-z}" stroke="var(--dim)" stroke-width="2.4" ${dash ? 'stroke-dasharray="8 5"' : ''}/>` +
+      `<text x="${tx}" y="${-z - 6}" font-size="15" fill="var(--faint)">${txt}</text>`;
+    o += line(S.FRONT_WALL, 0, '长 T 墙 z=138', S.X_MIN - 26);
+    o += line(S.FENCE, 1, '铁丝网 z=151', 40);
+    o += line(S.OUTER_ROAD, 1, '周界土路 z=162', S.X_MAX - 130);
+    // 岗楼
+    for (const t of [[-118, 146], [-12, 146], [108, 146], [216, 146], [-228, 146],
+                     [-316, 96], [344, 74], [-316, -30]])
+      o += `<circle cx="${t[0]}" cy="${-t[1]}" r="6" fill="var(--acc2)"/>`;
+    // 视场带（后画，盖在上面）
+    o += `<g id="band"></g>`;
+    // 相机
+    o += `<circle cx="${CAM.p[0]}" cy="${-CAM.p[2]}" r="8" fill="var(--acc)"/>` +
+         `<text x="${CAM.p[0] + 14}" y="${-CAM.p[2] + 5}" font-size="16" fill="var(--acc)">相机 (2, 100, 272)</text>`;
+    svg.innerHTML = o;
+    svg.addEventListener('mouseover', e => {
+      const r = e.target.closest('.cell'); if (r) showCell(r.dataset.id);
+    });
+    drawBand();
+  }
+  function drawBand() {
+    const g = svg.querySelector('#band'); if (!g) return;
+    const zb = zAt(PITCH + curFov / 2), zt = Math.max(zAt(PITCH - curFov / 2), -448);
+    const edge = farEdge(curRows);
+    g.innerHTML =
+      `<rect x="${S.X_MIN - 30}" y="${-zb}" width="${S.X_MAX - S.X_MIN + 60}" height="${zb - zt}" ` +
+      `fill="var(--acc)" fill-opacity=".13" stroke="var(--acc)" stroke-width="1.6" stroke-dasharray="6 4"/>` +
+      `<line x1="${S.X_MIN - 30}" y1="${-edge}" x2="${S.X_MAX + 30}" y2="${-edge}" stroke="var(--bad)" stroke-width="2.6"/>` +
+      `<text x="${S.X_MIN - 26}" y="${-edge + 20}" font-size="15" fill="var(--bad)">${curRows} 排外沿 z=${edge}</text>` +
+      `<text x="${S.X_MIN - 26}" y="${-zt - 8}" font-size="16" fill="var(--acc)">fov ${curFov}° 顶边 z=${zAt(PITCH - curFov / 2).toFixed(0)}</text>`;
+  }
+  function showCell(id) {
+    const c = rowsData.find(x => x.id === id); if (!c) return;
+    $$('.cell', svg).forEach(x => x.classList.toggle('on', x.dataset.id === id));
+    $$('#cellBody tr').forEach(x => x.classList.toggle('on', x.dataset.id === id));
+    $('#planOut').innerHTML =
+      `<b>院落 ${esc(c.id)}</b>（列 ${c.col}，排 ${c.row}）　` +
+      `<span class="axis">LOD ${c.lod}</span><br>` +
+      `<b>用途</b> ${esc(P.labels[c.kind] || c.kind)}　<code>${esc(c.kind)}</code><br>` +
+      `<b>世界矩形</b> x ${c.x0} … ${c.x1}　z ${c.z0} … ${c.z1}（48 × 40 m）<br>` +
+      `<b>离相机</b> 第 ${c.dist} 排　<b>混凝土场坪</b> ${c.pad ? '有' : '无'}　` +
+      `<b>围墙</b> ${esc(c.walls) || '无'}　<b>门</b> ${esc(c.gate.toUpperCase())}<br>` +
+      `<span class="tiny">${c.hand ? '前三排 —— 用途照着参考图手工写死在 <code>PLAN</code> 里，换种子不变。'
+        : '随机填充 —— 用途由 <code>rng.pick(FILL)</code> 决定，换种子会变。'}</span>`;
+  }
+  drawPlan();
+
+  const KINDLBL = k => (P.labels[k] || k).split(' ')[0];
+  Kit.filterTable({
+    rows: rowsData, filterEl: '#cellFilters', bodyEl: '#cellBody', initial: 'all',
+    filters: [
+      { key: 'all', label: `全部 ${rowsData.length}` },
+      { key: 'hand', label: '前三排 · 手工排布 33', test: r => r.hand },
+      { key: 'fill', label: '随机填充 88', test: r => !r.hand },
+      { key: 'l0', label: 'LOD 0 全细节 22', test: r => r.lod === 0 },
+      { key: 'l1', label: 'LOD 1 简化 22', test: r => r.lod === 1 },
+      { key: 'l2', label: 'LOD 2 剪影 77', test: r => r.lod === 2 },
+      { key: 'pad', label: '有混凝土场坪 67', test: r => r.pad === 1 },
+    ],
+    columns: [
+      { get: r => `<b>${esc(r.id)}</b>` },
+      { get: r => esc(KINDLBL(r.kind)) + ` <span class="tiny">${esc(r.kind)}</span>` },
+      { cls: 'n', get: r => r.lod },
+      { cls: 'n', get: r => r.dist },
+      { get: r => r.pad ? '有' : '—' },
+      { get: r => esc(r.walls) || '—' },
+      { cls: 'n', get: r => `${r.x0} … ${r.x1} / ${r.z0} … ${r.z1}` },
+    ],
+    onHover: r => showCell(r.id),
+  });
+
+  Kit.tabs('.mode-tab', '.mode-panel');
+
+  /* ---------------- 6. 近景探针 ---------------- */
+  const PB = J('D-probe');
+  const probe = Kit.probe('#probe', {
+    img: PB.img, w: PB.w, h: PB.h, boxes: PB.boxes, chips: '#rlist', readout: '#rOut',
+    render: b => {
+      const sign = v => (v > 0 ? '+' : '') + v;
+      const cls = v => v === 0 ? '' : (v < 0 ? 'win' : 'loss');
+      return `<b>${esc(b.chip)}</b>　<span class="tiny">像素框 ${b.rect.join(', ')}</span>` +
+        `<div class="mgrid" style="margin:8px 0 4px">` +
+        `<div class="mcell"><div class="k">亮度变化</div><div class="v">${sign(b.stops)}</div><div class="d muted">档</div></div>` +
+        `<div class="mcell"><div class="k">压暗 ≥0.05 的像素</div><div class="v">${b.dark5}%</div><div class="d muted">&nbsp;</div></div>` +
+        `<div class="mcell"><div class="k">横向梯度</div><div class="v ${cls(-b.gxPct)}">${sign(b.gxPct)}%</div><div class="d muted">${b.gxA} → ${b.gxB}</div></div>` +
+        `<div class="mcell"><div class="k">纵向梯度</div><div class="v">${sign(b.gyPct)}%</div><div class="d muted">&nbsp;</div></div>` +
+        `<div class="mcell"><div class="k">区域标准差</div><div class="v">${b.stdB}</div><div class="d muted">原 ${b.stdA}</div></div>` +
+        `</div>${b.note}`;
+    },
+  });
+  probe.show('winM');
+  showCell('-1,2');
+
+  /* ---------------- 7. 材质桶表 ---------------- */
+  $('#matBody').innerHTML = J('D-mat').mats.map(m =>
+    `<tr${m.calls === 0 ? ' style="opacity:.62"' : ''}>` +
+    `<td><code>${esc(m.k)}</code></td><td>${esc(m.use)}</td>` +
+    `<td class="n">${m.r.toFixed(2)} / ${m.m.toFixed(2)}</td>` +
+    `<td class="n">${esc(m.tex)}</td>` +
+    `<td class="n">${m.calls === 0 ? '<span class="no">0</span>' : m.calls}</td>` +
+    `<td class="n">${m.v == null ? '<span class="no">未生成</span>' : m.v.toLocaleString()}</td></tr>`).join('');
+
+  setFov(34);
+})();
+</script>
 </body>
 </html>

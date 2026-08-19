@@ -28,3 +28,7 @@ Thumbs.db
 process/threejs_fob/node_modules/
 process/threejs_fob/_shots/
 process/threejs_fob/package-lock.json
+
+# 文档校验工具的本地依赖（tools/verify_page.js 用 puppeteer-core 驱动本机 Chrome）
+node_modules/
+package-lock.json
