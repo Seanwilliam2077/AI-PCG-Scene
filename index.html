@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Scene Builder — 一张参考图 → 三维场景的三条路</title>
+<style>
+  :root{
+    --bg:#faf8f5; --card:#fff; --ink:#1a1a1a; --dim:#666; --faint:#8c8681;
+    --rule:#e2dcd4; --acc:#E87722; --acc2:#B45309;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#141210; --card:#1c1917; --ink:#ece8e3; --dim:#a8a29b; --faint:#7d7770;
+      --rule:#2e2a26; --acc:#F0902F; --acc2:#E0A34A;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:"Microsoft YaHei","Noto Sans SC","PingFang SC",sans-serif;
+       font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+  header{padding:60px 0 26px;border-bottom:2.5px solid var(--acc);margin-bottom:28px}
+  h1{font-size:clamp(26px,4.4vw,40px);line-height:1.15;margin:0 0 10px;font-weight:700}
+  .sub{color:var(--dim);font-size:17px;max-width:62ch;margin:0}
+  .hero{margin:26px 0 8px}
+  .hero img{display:block;width:100%;height:auto;border:1px solid var(--rule)}
+  .cap{font-size:13px;color:var(--faint);margin-top:8px;text-align:center}
+  .note{border-left:3px solid var(--acc);background:var(--card);padding:12px 16px;
+        margin:22px 0;font-size:14.5px;color:var(--dim)}
+  .note b{color:var(--acc2)}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(292px,1fr));
+        margin:26px 0}
+  a.card{display:block;background:var(--card);border:1px solid var(--rule);
+         padding:18px 20px;text-decoration:none;color:inherit;transition:border-color .15s}
+  a.card:hover,a.card:focus-visible{border-color:var(--acc);outline:none}
+  a.card .n{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+            color:var(--acc);font-weight:700}
+  a.card h2{font-size:19px;margin:7px 0 8px;font-weight:700}
+  a.card p{margin:0;font-size:14.5px;color:var(--dim);line-height:1.62}
+  a.card .k{margin-top:12px;font-size:12.5px;color:var(--faint);
+            font-family:Consolas,"Cascadia Mono",monospace}
+  a.wide{grid-column:1/-1;border-left:3px solid var(--acc)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0 0}
+  th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--card);font-weight:600;color:var(--acc2)}
+  .foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);
+        font-size:13px;color:var(--faint)}
+  .foot a{color:var(--acc2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>一张参考图 → 三维场景的三条路</h1>
+  <p class="sub">同一个命题的三条互相独立的实现，外加一份把三条放在一起走查的对照文档。</p>
+</header>
+
+<div class="hero">
+  <img src="process/figures/tri/overview.jpg" alt="三条线各自的参考图与结果">
+  <div class="cap">三条线各自的参考图（上）与结果（下）</div>
+</div>
+
+<div class="note">
+  <b>先说清楚可比性的边界。</b>线 1 与线 3 用的是同一张室内参考图，线 2 用的是另一张（沙漠基地）。
+  所以三条线之间<b>不能直接比还原度</b>，能比的是方法结构；一切定量对照都限制在线 1 与线 3 之间。
+</div>
+
+<div class="grid">
+
+  <a class="card" href="docs/技术方案报告.html">
+    <div class="n">线 1 · UE5</div>
+    <h2>资产库匹配管线</h2>
+    <p>AI 能不能替人搭一个<b>可交付</b>的关卡。设计主线是「AI 出提案，规则做裁决」——
+    所有模型输出先过确定性校验与钳制，再由规则链决定摆放。单向前馈，可离线复跑。</p>
+    <div class="k">127 actors / 0 errors　·　端到端约 3 分钟</div>
+  </a>
+
+  <a class="card" href="docs/对照实验-程序化场景重建.html">
+    <div class="n">线 2 · three.js</div>
+    <h2>程序化场景重建</h2>
+    <p>一张图能不能变成一类场景的<b>生成器</b>。不匹配资产库，几何与贴图全部由代码
+    在运行时生成，浏览器里实时跑。八轮目视驱动的迭代。</p>
+    <div class="k">44 441 构件 / 13 draw call　·　外部文件 0</div>
+  </a>
+
+  <a class="card" href="docs/还原度闭环迭代.html">
+    <div class="n">线 3 · Blender</div>
+    <h2>还原度闭环迭代</h2>
+    <p>允许无限循环，还原度的<b>上限</b>在哪。先把「像不像」变成可测量的量，
+    再让「渲染 → 度量 → 定位病因 → 改」的循环去优化它。九步迭代。</p>
+    <div class="k">边缘 F 0.260 → 0.650　·　分区误差和 5.62 → 2.44 档</div>
+  </a>
+
+  <a class="card wide" href="docs/三线对照-单图到三维场景.html">
+    <div class="n">最后 · 三线对照</div>
+    <h2>同一个模型，三种软件环境</h2>
+    <p>可交互页面：逐条走查三条管线（可按「模型判断 / 确定性算法 / 人工介入」过滤每个环节）、
+    一个<b>位姿误差放大器</b>，以及对「同样是一个模型，为什么位姿估计和三维语义理解差这么多」的归因。
+    最直接的证据是：线 1 与线 3 面对同一张图、解出完全一致的内参，
+    但俯仰差 9.4°、机高差 0.40 m，最终房间宽度差 <b>2.7 倍</b>。</p>
+    <div class="k">10.84 m 对 3.95 m</div>
+  </a>
+
+</div>
+
+<table>
+<thead><tr><th></th><th>线 1 · UE5</th><th>线 2 · three.js</th><th>线 3 · Blender</th></tr></thead>
+<tbody>
+<tr><th>回答的问题</th><td>能不能做出可交付的关卡</td><td>能不能变成一类场景的生成器</td><td>还原度的上限在哪</td></tr>
+<tr><th>驱动方式</th><td>单向前馈：AI 出提案，规则裁决</td><td>目视驱动：挑最刺眼的改</td><td>度量驱动：先把像不像变成可测量的量</td></tr>
+<tr><th>资产来源</th><td>39 模块库，四级瀑布匹配</td><td>代码运行时生成，零外部文件</td><td>39 模块库 + 参考图矫正回贴</td></tr>
+<tr><th>参考图</th><td>室内机房</td><td>沙漠基地（<b>另一张</b>）</td><td>室内机房（同线 1）</td></tr>
+<tr><th>运行环境</th><td>UE 5.5 编辑器内嵌 Python</td><td>浏览器 WebGL2 实时</td><td>Blender 4.2 / Cycles 离线</td></tr>
+</tbody>
+</table>
+
+<div class="foot">
+  其余材料：<a href="docs/补充说明-复现差距分析.html">线 1 复现差距分析</a> ·
+  <a href="docs/PIPELINE_V2_DESIGN.md">v2 架构设计</a> ·
+  <a href="docs/PIPELINE_REVIEW.md">逐模块代码审查</a> ·
+  <a href="docs/QUICKSTART.md">上手指引</a><br>
+  源码与过程留档见仓库 <a href="https://github.com/Seanwilliam2077/ai-scene-builder">README</a>。
+  本站由 GitHub Pages 从仓库根目录直接托管。
+</div>
+
+</div>
+</body>
+</html>
