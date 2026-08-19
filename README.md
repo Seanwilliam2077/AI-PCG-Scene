@@ -1,5 +1,19 @@
 # AI Scene Builder — 一张参考图 → 三维场景的三条路
 
+> ### 📖 在线阅读（推荐）
+> **[https://seanwilliam2077.github.io/ai-scene-builder/](https://seanwilliam2077.github.io/ai-scene-builder/)**
+>
+> GitHub 的文件视图对 `.html` 一律显示**源码**，点开看到的是代码不是网页 —— 这是它的安全设计，
+> public / private 都一样。要当网页看请走上面的站点，或直接点下面的链接：
+>
+> | | 在线网页 | 仓库源码 |
+> |---|---|---|
+> | 线 1 · UE5 资产库管线 | **[打开](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E6%8A%A5%E5%91%8A.html)** | [源码](docs/技术方案报告.html) |
+> | 线 2 · three.js 程序化生成 | **[打开](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E5%AF%B9%E7%85%A7%E5%AE%9E%E9%AA%8C-%E7%A8%8B%E5%BA%8F%E5%8C%96%E5%9C%BA%E6%99%AF%E9%87%8D%E5%BB%BA.html)** | [源码](docs/对照实验-程序化场景重建.html) |
+> | 线 3 · Blender 度量闭环 | **[打开](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E8%BF%98%E5%8E%9F%E5%BA%A6%E9%97%AD%E7%8E%AF%E8%BF%AD%E4%BB%A3.html)** | [源码](docs/还原度闭环迭代.html) |
+> | 三线对照（可交互） | **[打开](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E4%B8%89%E7%BA%BF%E5%AF%B9%E7%85%A7-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E5%9C%BA%E6%99%AF.html)** | [源码](docs/三线对照-单图到三维场景.html) |
+> | 线 1 复现差距分析 | **[打开](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E-%E5%A4%8D%E7%8E%B0%E5%B7%AE%E8%B7%9D%E5%88%86%E6%9E%90.html)** | [源码](docs/补充说明-复现差距分析.html) |
+
 同一个命题：**给一张参考图，能不能自动生成一个三维场景。**
 这个仓库里有三条互相独立的实现，各自回答这个命题的不同侧面，
 并附一份把三条放在一起走查的对照文档。
@@ -18,10 +32,10 @@
 | **资产来源** | 39 模块资产库，四级瀑布匹配 | 全部由代码运行时生成，零外部文件 | 39 模块资产库 + 参考图自身矫正回贴 |
 | **参考图** | 室内机房 | 沙漠前进作战基地（**另一张**） | 室内机房（与线 1 同一张） |
 | **运行环境** | UE 5.5 编辑器内嵌 Python | 浏览器 WebGL2 实时 | Blender 4.2 / Cycles 离线 |
-| **文档** | **[技术方案报告](docs/技术方案报告.html)** | **[对照实验-程序化场景重建](docs/对照实验-程序化场景重建.html)** | **[还原度闭环迭代](docs/还原度闭环迭代.html)** |
+| **文档** | **[技术方案报告](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E6%8A%A5%E5%91%8A.html)** | **[对照实验-程序化场景重建](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E5%AF%B9%E7%85%A7%E5%AE%9E%E9%AA%8C-%E7%A8%8B%E5%BA%8F%E5%8C%96%E5%9C%BA%E6%99%AF%E9%87%8D%E5%BB%BA.html)** | **[还原度闭环迭代](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E8%BF%98%E5%8E%9F%E5%BA%A6%E9%97%AD%E7%8E%AF%E8%BF%AD%E4%BB%A3.html)** |
 
 **最后一份文档把三条放在一起比：
-[三线对照 — 同一个模型，三种软件环境](docs/三线对照-单图到三维场景.html)**（可交互）。
+[三线对照 — 同一个模型，三种软件环境](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E4%B8%89%E7%BA%BF%E5%AF%B9%E7%85%A7-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E5%9C%BA%E6%99%AF.html)**（可交互）。
 
 > **先说清楚可比性的边界。** 线 1 与线 3 用的是同一张室内参考图，线 2 用的是另一张。
 > 所以三条线之间**不能直接比还原度**，能比的是方法结构；一切定量对照都限制在线 1 与线 3 之间。
@@ -30,7 +44,7 @@
 
 ## 线 1 · UE5 资产库管线（主线，可交付）
 
-> 文档：**[docs/技术方案报告.html](docs/技术方案报告.html)** ·
+> 在线阅读：**[打开网页](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E6%8A%A5%E5%91%8A.html)**　·　源码：[docs/技术方案报告.html](docs/技术方案报告.html) ·
 > 差距分析：[docs/补充说明-复现差距分析.html](docs/补充说明-复现差距分析.html)
 
 网易 TA 测试题 2 的完整实现与过程留档。核心命题是「AI 能不能替人搭场景」，
@@ -80,7 +94,7 @@
 
 ## 线 2 · three.js 程序化生成（规则驱动）
 
-> 文档：**[docs/对照实验-程序化场景重建.html](docs/对照实验-程序化场景重建.html)**
+> 在线阅读：**[打开网页](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E5%AF%B9%E7%85%A7%E5%AE%9E%E9%AA%8C-%E7%A8%8B%E5%BA%8F%E5%8C%96%E5%9C%BA%E6%99%AF%E9%87%8D%E5%BB%BA.html)**　·　源码：[docs/对照实验-程序化场景重建.html](docs/对照实验-程序化场景重建.html)
 > （另有 `.pdf`）· 完整可运行源码：`process/threejs_fob/`
 
 换一张参考图（沙漠前进作战基地）、换 three.js 实时渲染，回答一个不同的问题：
@@ -107,7 +121,7 @@
 
 ## 线 3 · Blender 度量闭环（度量驱动）
 
-> 文档：**[docs/还原度闭环迭代.html](docs/还原度闭环迭代.html)**
+> 在线阅读：**[打开网页](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E8%BF%98%E5%8E%9F%E5%BA%A6%E9%97%AD%E7%8E%AF%E8%BF%AD%E4%BB%A3.html)**　·　源码：[docs/还原度闭环迭代.html](docs/还原度闭环迭代.html)
 
 线 1 的差距分析里有一句自我批评——「管线**单向前馈**，误差逐级放大无法回收；
 下一代主干应是闭环迭代」。这条线是那句话的原型实现：同一张参考图，
@@ -136,7 +150,7 @@
 
 ## 三条线放在一起看
 
-**[docs/三线对照-单图到三维场景.html](docs/三线对照-单图到三维场景.html)** ——
+**[在线阅读](https://seanwilliam2077.github.io/ai-scene-builder/docs/%E4%B8%89%E7%BA%BF%E5%AF%B9%E7%85%A7-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E5%9C%BA%E6%99%AF.html)**（源码 [docs/三线对照-单图到三维场景.html](docs/三线对照-单图到三维场景.html)）——
 可交互页面：逐条走查三条管线（可按「模型判断 / 确定性算法 / 人工介入」过滤每个环节），
 一个**位姿误差放大器**（拖动俯仰角，看同一张图上的地面纵深怎么被放大），
 以及对「同样是一个模型，为什么位姿估计和三维语义理解差这么多」的归因。
