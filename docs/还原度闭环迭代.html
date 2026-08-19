@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>还原度闭环迭代 — 从一张参考图到可度量的 3D 场景</title>
+<style>
+  @page { size: A4; margin: 14mm 13mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
+         font-size: 10.5pt; line-height: 1.68; color: #1a1a1a; margin: 0;
+         background: #fff; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 26px 70px; }
+
+  h1 { font-size: 15.5pt; border-bottom: 2.5px solid #E87722; padding-bottom: 5px;
+       margin: 30px 0 12px; break-after: avoid; }
+  h2 { font-size: 12pt; margin: 20px 0 7px; color: #B45309; break-after: avoid; }
+  h3 { font-size: 10.5pt; margin: 14px 0 5px; color: #7C3A06; break-after: avoid; }
+  p { margin: 7px 0; text-align: justify; }
+  ul, ol { margin: 7px 0 7px 22px; padding: 0; }
+  li { margin: 4px 0; }
+
+  .cover { text-align: center; padding: 44px 0 18px; }
+  .cover h1 { border: none; font-size: 23pt; margin: 0 0 6px; }
+  .cover .sub { font-size: 12pt; color: #555; }
+  .cover .meta { margin-top: 14px; color: #777; font-size: 9pt; line-height: 1.85; }
+
+  figure { margin: 14px 0 6px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; }
+  figcaption { font-size: 8.8pt; color: #666; margin-top: 5px; text-align: center;
+               line-height: 1.5; }
+
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9pt; }
+  th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left;
+           vertical-align: top; }
+  th { background: #FDF3E7; font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums;
+         font-family: Consolas, "Cascadia Mono", monospace; white-space: nowrap; }
+  tr { break-inside: avoid; }
+  .win { color: #1c7a3f; font-weight: 600; }
+  .loss { color: #B02A37; font-weight: 600; }
+
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 9pt;
+         background: #F5F2EE; padding: 1px 4px; border: 1px solid #E6E0D8; }
+  pre { background: #F7F5F2; border: 1px solid #E2DCD4; border-left: 3px solid #E87722;
+        padding: 9px 12px; overflow-x: auto; font-size: 8.8pt; line-height: 1.6;
+        margin: 10px 0; }
+  pre code { background: none; border: none; padding: 0; }
+
+  .key { border-left: 3px solid #E87722; background: #FDF8F2; padding: 9px 14px;
+         margin: 12px 0; }
+  .key strong { color: #B45309; }
+  .warn { border-left: 3px solid #B02A37; background: #FDF4F4; padding: 9px 14px;
+          margin: 12px 0; }
+  .lead { font-size: 11pt; color: #333; }
+  .toc { background: #FAF8F5; border: 1px solid #E6E0D8; padding: 12px 18px;
+         margin: 18px 0; font-size: 9.5pt; }
+  .toc ol { margin: 4px 0 0 20px; }
+  .toc a { color: #B45309; text-decoration: none; }
+  .pagebreak { break-before: page; }
+  hr { border: none; border-top: 1px solid #E2DCD4; margin: 26px 0; }
+  .foot { color: #888; font-size: 8.6pt; margin-top: 30px; border-top: 1px solid #ddd;
+          padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="cover">
+  <h1>还原度闭环迭代</h1>
+  <div class="sub">从一张参考图到一个可度量的 3D 场景</div>
+  <div class="meta">
+    Blender 4.2 / Cycles &nbsp;·&nbsp; 参考图 1024&times;572 &nbsp;·&nbsp;
+    166 物体 / 568 万三角面 &nbsp;·&nbsp; 480 spp 单帧 38 秒（RTX 3080）<br>
+    边缘 F 分数 0.260 &rarr; <strong>0.650</strong> &nbsp;·&nbsp;
+    16 分区曝光误差和 5.62 &rarr; <strong>2.44 档</strong>
+  </div>
+</div>
+
+<figure>
+  <img src="../process/recon/sbs.jpg" alt="参考图与重建结果并排对比">
+  <figcaption>左：输入参考图　|　右：重建场景在解算机位下的 Cycles 渲染。
+  没有把原图合成进画面，也没有用投影贴图替代几何。</figcaption>
+</figure>
+
+<div class="toc">
+  <strong>目录</strong>
+  <ol>
+    <li><a href="#s0">这份文档补的是哪个洞</a></li>
+    <li><a href="#s1">第一个判断：把「像不像」变成可测量的量</a></li>
+    <li><a href="#s2">第二个判断：先解相机，其余全挂在它上面</a></li>
+    <li><a href="#s3">第三个判断：布局写在图像空间，不写坐标</a></li>
+    <li><a href="#s4">第四个判断：先闭环，再好看</a></li>
+    <li><a href="#s5">九步迭代：效果图与指标轨迹</a></li>
+    <li><a href="#s6">并发怎么拆才不打架</a></li>
+    <li><a href="#s7">独立审查发现了作者发现不了的东西</a></li>
+    <li><a href="#s8">被推翻的三个「我自己的结论」</a></li>
+    <li><a href="#s9">现状、仍然错的地方、以及为什么不修</a></li>
+    <li><a href="#s10">复现</a></li>
+  </ol>
+</div>
+
+<hr>
+
+<h1 id="s0">1. 这份文档补的是哪个洞</h1>
+
+<p class="lead">主线 UE 管线的结论里有一句自我批评：</p>
+
+<div class="key">
+  「根本原因是管线<strong>单向前馈</strong>，误差逐级放大无法回收；下一代主干应是
+  <strong>闭环迭代</strong>。」<br>
+  <span style="color:#777;font-size:9pt">—— 本仓库 README「已知短板不藏」</span>
+</div>
+
+<p>这份文档就是那条闭环线的原型实现。它和 UE 管线是<strong>并行</strong>关系，不是替代：
+UE 那条是可交付、可离线复跑的<em>产品管线</em>；这条是回答另一个问题的<em>还原度上限探索</em>
+—— 如果允许「渲染 → 度量 → 定位病因 → 改 → 再渲染」无限循环，同一张参考图能被逼到多近。</p>
+
+<p>技术栈也故意不同：全程 Blender + Cycles，<strong>零云端调用、零 API Key</strong>，
+所有数据来自参考图本身与本地 39 模块资产库。因此这条线不存在脱敏问题，
+仓库里的实现就是完整实现。</p>
+
+<h2>目标场景</h2>
+<p>一间脏旧的地下机房：白色刷漆砖墙、墙挂木板架上一排米色 CRT（屏幕发洋红/青/蓝光）、
+中央折叠长桌、正中一根暗红钢立柱、前景两把蓝色折叠椅、顶上荧光灯管、
+密集海报墙、右墙垂落的黑色缆束与赭黄悬链、湿反光的深色水泥地。</p>
+
+<hr class="pagebreak">
+
+<h1 id="s1">2. 第一个判断：把「像不像」变成可测量的量</h1>
+
+<p>这类任务最容易走的弯路是<strong>凭眼睛调</strong>：看一眼觉得墙太亮，调暗一点，再看一眼。
+问题是人眼对整体亮度极不敏感、对局部错位又极敏感，凭感觉调会在两三轮后开始互相抵消。
+所以第一件事不是建模，是先定<strong>目标函数</strong>。</p>
+
+<h2>SSIM 是错的目标函数（这点是实测出来的）</h2>
+
+<p>直觉上 SSIM 该是首选。实际上在这个任务里它几乎不动，而且方向是错的：</p>
+
+<div class="warn">
+  <strong>实测反例。</strong>把砖缝调亮，SSIM 会<strong>单调上升</strong>，一直越过
+  「渲染砖缝振幅已经低于参考图（0.043 对 0.049）」这个点。也就是说
+  <strong>SSIM 奖励一面空白墙胜过一面正确的墙</strong>。
+  原因：1024&times;572 的杂乱室内照，SSIM 被高频纹理一致性主导 —— 污渍斑块、
+  单块砖的色差、地上的碎屑 —— 这些没有任何重建能逐像素复现。
+</div>
+
+<p>所以砖缝的最终值是按<strong>振幅</strong>定的，不是按 SSIM 定的。SSIM 全程只作为
+<em>回归护栏</em>保留（防止某次改动把画面整体搞坏），不作为优化目标。</p>
+
+<h2>真正有判别力的四件量</h2>
+
+<table>
+<thead><tr><th>量</th><th>它回答什么</th><th>为什么可信</th></tr></thead>
+<tbody>
+<tr><td><strong>容差边缘 F 分数</strong></td>
+    <td>结构对不对：东西在不在正确位置</td>
+    <td>双向膨胀 5px 后算 IoU，容忍 1–2px 抖动但不容忍错位。全程从 0.260 涨到 0.650</td></tr>
+<tr><td><strong>16 分区曝光/色相表</strong></td>
+    <td><em>哪里</em>不对、<em>怎么</em>不对</td>
+    <td>按档（stop）报亮度差、报饱和度与圆均值色相，直接指向要改哪盏灯或哪个反射率</td></tr>
+<tr><td><strong>直方图交集</strong></td>
+    <td>影调分布对不对</td>
+    <td>不受空间错位影响，能把「整体太亮」和「局部错位」分开</td></tr>
+<tr><td><strong>逐物体互相关偏移</strong></td>
+    <td>具体哪个物体错位、错多少像素</td>
+    <td>整图指标永远答不了这个问题（详见第 6 节）</td></tr>
+</tbody>
+</table>
+
+<p>参考图本身的影调目标也是量出来的，用来当配光的靶子：</p>
+
+<table>
+<thead><tr><th>亮度百分位</th><td class="n">0.1</td><td class="n">1</td><td class="n">5</td>
+<td class="n">25</td><td class="n">50</td><td class="n">75</td><td class="n">95</td>
+<td class="n">99</td><td class="n">99.9</td></tr></thead>
+<tbody><tr><th>参考图</th><td class="n">0.024</td><td class="n">0.031</td><td class="n">0.047</td>
+<td class="n">0.094</td><td class="n">0.192</td><td class="n">0.369</td><td class="n">0.710</td>
+<td class="n">0.867</td><td class="n">0.992</td></tr></tbody>
+</table>
+
+<p>中位数 0.192、只有 <strong>0.51%</strong> 的像素超过 0.95（灯管和屏幕芯）、
+<strong>5.98%</strong> 低于 0.05。这才是要打的靶：<strong>暗中位 + 长而稀的高光尾</strong>，
+而不是「整体增益改一改」。</p>
+
+<hr>
+
+<h1 id="s2">3. 第二个判断：先解相机，其余全挂在它上面</h1>
+
+<p>相机错了，后面所有摆放都是在错的投影下拟合，越调越偏。所以先把它锁死。</p>
+
+<h2>三步解算，每步用不同的证据</h2>
+<ol>
+  <li><strong>偏航与消失点。</strong>LSD 线段检测 + RANSAC，对 61 条纵深族线段
+      （砖缝、板架边、地面伸缩缝）求共同消失点，得 (517.4, 201.5)。它只偏离画面中心列
+      5 像素 —— 这本身就证明<strong>相机在房间中轴线上、无偏航</strong>。</li>
+  <li><strong>俯仰。</strong>消失点所在行直接给出俯仰（给定焦距）。</li>
+  <li><strong>机高。</strong>用地平线比例法：两把折叠椅是已知 0.82 m 且跨越地平线的物体，
+      由此得到的机高<strong>与焦距无关</strong>，把尺度和焦距解耦开。</li>
+</ol>
+
+<pre><code>hfov 95.0°   f 469.16 px   pitch −10.2°   yaw +0.4°   roll −0.35°
+相机 (0, 0, 1.18) m      房间 3.95 × 7.00 × 2.55 m</code></pre>
+
+<figure>
+  <img src="../process/recon/calib.jpg" alt="房间线框、地面栅格与地平线叠在参考图上">
+  <figcaption>把解出来的房间线框、0.5 m 地面栅格与地平线画回参考图。
+  后墙两角落在 378 / 668 px，参考图实测 370 / 670 —— 这就是验收方式。</figcaption>
+</figure>
+
+<h2>一个必须承认的上限</h2>
+<p>参考图是 AI 生成图，<strong>自身透视并不自洽</strong>：同一面墙上不同砖缝外推出的消失点
+能差 30 像素，即 ±15px 量级的内部不一致。所以追求亚分米级解算是没有意义的，
+早点转入「渲染—度量—修」闭环才是对的。这个判断让后面省了很多力气。</p>
+
+<hr class="pagebreak">
+
+<h1 id="s3">4. 第三个判断：布局写在图像空间，不写坐标</h1>
+
+<p>常规做法是给每个物体填 3D 坐标。这里换了一种：每个物体记的是
+<strong>它与支撑面接触的那个像素</strong>，加上支撑面的名字。</p>
+
+<pre><code>{"id": "crt_L2", "asset": "M02", "support": "shelf_L",
+ "anchor_px": [300, 250], "yaw": 88, "note": "左架第二台，粉屏"}</code></pre>
+
+<p>由 <code>tools/resolve.py</code> 反投影成米。好处有三个，都在后面兑现了：</p>
+<ul>
+  <li>移动一个物体等于改一个像素值，跟人读图的方式一致；</li>
+  <li>改房间尺寸或改支撑高度时，<strong>所有摆放自动重新推导</strong>，不会各自漂移；</li>
+  <li>它使布局对相机变化<strong>不变</strong> —— 这一条后来成了关键证据（第 8 节）。</li>
+</ul>
+
+<figure>
+  <img src="../process/recon/layout.jpg" alt="所有实例的投影包围盒画在参考图上">
+  <figcaption>每个实例的投影包围盒画在参考图上。检查摆放用这张图只要毫秒，
+  渲染一次要一分钟 —— 内循环必须走便宜的那条。</figcaption>
+</figure>
+
+<div class="warn">
+  <strong>这个办法在掠射墙面上是病态的。</strong>左墙几乎与视线平行，
+  读数差几个像素、反投影出来的纵深就差几米。两排墙架因此改用另一种拟合：
+  <strong>把物体的投影范围（宽度、中心、底行）同时去匹配参考图里的范围，
+  联合解纵深与朝向</strong>。这个拟合顺带揭示了两件事 —— 显示器朝向各不相同
+  （有的朝房间、有的朝相机），以及右架比左架高 0.12 m（两次独立测量一致）。
+</div>
+
+<h2>资产不是造的，是配的</h2>
+<figure>
+  <img src="../process/recon/catalog.jpg" alt="资产库四朝向接触表局部">
+  <figcaption>39 个模块逐个渲四个朝向的接触表（局部）。
+  用来定每个资产的真实高度和「正面朝 −Y」需要的偏航修正 —— 注册表里的
+  <code>est_size_cm</code> 是 AI 估的，不可信，得自己量。</figcaption>
+</figure>
+
+<hr>
+
+<h1 id="s4">5. 第四个判断：先闭环，再好看</h1>
+
+<p>第一版渲染很难看：墙是平灰的、没有海报、没有线缆、屏幕过曝成白块。
+但它<strong>跑通了</strong> —— spec 驱动、五个模块各自建、相机对齐、出图、量分。
+这一步的价值不在画面，在于此后每一个改动都能立刻被量化。</p>
+
+<p>反过来的顺序（先把砖墙材质做精致，再想怎么组装）会让人在无法验证的东西上花掉大半时间。</p>
+
+<hr class="pagebreak">
+
+<h1 id="s5">6. 九步迭代：效果图与指标轨迹</h1>
+
+<figure>
+  <img src="../process/recon/iteration_strip.jpg" alt="九个里程碑渲染依次排列，每格标注改了什么与当时的指标">
+  <figcaption>九个里程碑，按时间顺序。每格下方是当时实测的
+  ssim / 边缘 F / 边缘精确率 / 直方图交集 / 全局曝光。</figcaption>
+</figure>
+
+<figure>
+  <img src="../process/recon/metric_curve.jpg" alt="三条指标在九个里程碑上的轨迹">
+  <figcaption>同一批里程碑上的指标轨迹。边缘 F 翻倍以上，
+  而 SSIM 直到最后两步才动 —— 这正是第 2 节那个判断的实证。</figcaption>
+</figure>
+
+<h2>逐步在改什么</h2>
+
+<table>
+<thead><tr><th>步</th><th>改了什么</th><th class="n">ssim</th><th class="n">边缘F</th>
+<th class="n">曝光</th><th>这一步真正的收获</th></tr></thead>
+<tbody>
+<tr><td>01</td><td>首次端到端：外壳 + 资产 + 灯管</td><td class="n">0.386</td>
+    <td class="n">0.260</td><td class="n">+0.33</td>
+    <td>闭环通了；砖纹完全没出来（UV 问题）</td></tr>
+<tr><td>02</td><td>转 Cycles；屏幕按纹理饱和度自发光</td><td class="n">0.337</td>
+    <td class="n">0.584</td><td class="n">+0.64</td>
+    <td>边缘 F 一步 +0.32：结构开始对上</td></tr>
+<tr><td>03</td><td>海报层：参考图自身海报矫正回贴</td><td class="n">0.335</td>
+    <td class="n">0.602</td><td class="n">+0.60</td>
+    <td>内容补齐；此时整体还偏亮 0.6 档</td></tr>
+<tr><td>04</td><td>线缆、管路、地面走线</td><td class="n">0.328</td>
+    <td class="n">0.603</td><td class="n">+0.44</td>
+    <td>内容先于调色 —— 内容会改变所有分区读数</td></tr>
+<tr><td>05</td><td>光度定标：按分区表配光与调色</td><td class="n">0.383</td>
+    <td class="n">0.591</td><td class="n">+0.03</td>
+    <td>曝光基本归零；对比度 0.206 对参考 0.210</td></tr>
+<tr><td>06</td><td>外壳法线朝内；删掉不该有的门洞</td><td class="n">0.390</td>
+    <td class="n">0.577</td><td class="n">+0.17</td>
+    <td>单是法线一项就值 +0.005 ssim / +0.012 直方图</td></tr>
+<tr><td>07</td><td><strong>并发</strong>：海报 + 材质两个 owner</td><td class="n">0.383</td>
+    <td class="n">0.617</td><td class="n">+0.15</td>
+    <td>公告板发现（第 7 节）；砖缝按振幅定标</td></tr>
+<tr><td>08</td><td>相机偏航符号修正</td><td class="n">0.398</td>
+    <td class="n">0.620</td><td class="n">+0.15</td>
+    <td><strong>全项目单步 ssim 收益最大的一次</strong></td></tr>
+<tr><td>09</td><td><strong>并发</strong>：系统性分量 + 四区域逐物体归位</td>
+    <td class="n">0.417</td><td class="n">0.650</td><td class="n">+0.15</td>
+    <td>无匹配物体 7 → 4；已对齐 0 → 4</td></tr>
+</tbody>
+</table>
+
+<h2>总账</h2>
+<table>
+<thead><tr><th>指标</th><th class="n">起点</th><th class="n">终点</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>容差边缘 F 分数</td><td class="n">0.260</td><td class="n win">0.650</td>
+    <td>结构匹配，翻倍以上</td></tr>
+<tr><td>边缘精确率</td><td class="n">0.203</td><td class="n win">0.701</td>
+    <td>新画出来的边落在参考图的边上</td></tr>
+<tr><td>边缘召回率</td><td class="n">—</td><td class="n win">0.605</td><td></td></tr>
+<tr><td>直方图交集</td><td class="n">0.733</td><td class="n">0.812</td>
+    <td>峰值曾到 0.817，最后一轮让掉 0.005</td></tr>
+<tr><td>全局曝光误差</td><td class="n">+0.33 档</td><td class="n win">+0.15 档</td>
+    <td>中景地面曾是 +1.02，现 +0.17</td></tr>
+<tr><td>亮度标准差（对比度）</td><td class="n">0.201</td><td class="n win">0.215</td>
+    <td>参考图 0.210</td></tr>
+<tr><td>平均绝对误差</td><td class="n">0.153</td><td class="n win">0.132</td><td></td></tr>
+<tr><td>16 分区误差绝对值之和</td><td class="n">5.62 档</td><td class="n win">2.44 档</td>
+    <td>最差分区 +1.02 → +0.36</td></tr>
+<tr><td>SSIM</td><td class="n">0.386</td><td class="n">0.417</td>
+    <td>大半程低于起点；不是目标函数</td></tr>
+</tbody>
+</table>
+
+<figure>
+  <img src="../process/recon/compare4.jpg" alt="四联图：参考、渲染、逆SSIM热图、边缘叠图">
+  <figcaption>四联图。右下是边缘叠图：绿=参考图、红=渲染、黄=两者重合。
+  黄色越多越好；一个错位的物体在这张图上一眼可见。</figcaption>
+</figure>
+
+<figure>
+  <img src="../process/recon/views.jpg" alt="同一场景的四个不同机位渲染">
+  <figcaption>同一份 spec 在参考机位之外的三个机位。这是「它确实是个 3D 场景」
+  的证据 —— 没有任何东西是只在一个角度成立的取巧。</figcaption>
+</figure>
+
+<hr class="pagebreak">
+
+<h1 id="s6">7. 并发怎么拆才不打架</h1>
+
+<p>拆并发的难点不是分任务，是<strong>让并行的人不互相覆盖</strong>。这里用三条约束解决：</p>
+
+<h3>① 所有权按文件切，不按功能切</h3>
+<p>每个 owner 只写自己那一份 <code>spec/parts/*.json</code> 片段，
+由 <code>tools/merge_parts.py</code> 按实例 id 合并进主 spec。谁都不许直接写
+<code>spec/scene.json</code>。片段之间的实例集合互不相交，合并天然无冲突。</p>
+
+<h3>② 每人一条独立构建道</h3>
+<pre><code>python tools/merge_parts.py --resolve --out spec/scene_&lt;tag&gt;.json
+blender -b --python build.py -- --spec spec/scene_&lt;tag&gt;.json ...</code></pre>
+<p>合并时会读<em>所有</em>片段，所以每个人始终看到别人的最新进展，
+但各自渲染各自的副本。<strong>没有这条，两个 owner 同时跑合并就会互相踩主 spec</strong>
+—— 这是第一次尝试并发时真实存在的隐患。</p>
+
+<h3>③ 有先后依赖的，就不要并发</h3>
+<p>第 9 步本来打算五个区域一起并发。但当时有一个疑似<strong>系统性</strong>偏移
+（所有物体整体偏移），如果不先定下来，四个区域 owner 会各自把这个系统误差
+<strong>吸收进自己的坐标里</strong>，事后无法拆分。所以改成三阶段流水：
+系统性 owner 单独先跑 → 四区域并发 → 整合 owner 合并、渲染、复测、按区域裁决。</p>
+
+<h3>整合环节必须有裁决权</h3>
+<p>整合 owner 的职责不是「把大家的改动合起来」，而是<strong>独立复测并有权回滚</strong>。
+第 7 步的整合者没有采信任何 owner 的自我归因，而是做了 2&times;2 消融
+（老/新材质 &times; 老/新海报，四次全分辨率渲染）来分离贡献，
+并发现材质 owner 的砖缝暗度过冲了 21%（它用的百分位统计量会被缝宽偏置），
+换成对缝宽稳健的统计量重新定标后才放行。</p>
+
+<div class="key">
+  三轮并发共 13 个 agent、约 130 万 token。<strong>第一轮 16 个 agent 全部因
+  API 529 失败、零产出</strong>，只能退回单线程；这是真实成本的一部分，
+  也是为什么工具链必须能被单人独立驱动。
+</div>
+
+<hr>
+
+<h1 id="s7">8. 独立审查发现了作者发现不了的东西</h1>
+
+<p>三个 bug 全都是<strong>某个数字拒绝改善</strong>时才暴露的，不是看图看出来的。
+这一点值得单独强调：它们在渲染图上都不显眼。</p>
+
+<h2>① 右墙洗墙灯照到了左墙</h2>
+<p>XYZ 欧拉角符号错。症状是「右侧偏暗 + 左侧偏亮」两个现象，
+被当成两个独立问题调了好几轮。<strong>永久对策</strong>：
+<code>modules/lighting.py</code> 现在把每盏灯算出的朝向向量打进 build report，
+灯打反了不渲染就能看见。</p>
+
+<h2>② 同一个符号错误又犯了一次</h2>
+<p>后方补光照回了相机，所以加上它反而是近处地面变亮、远墙依旧暗。</p>
+
+<h2>③ 房间外壳每一面的法线都朝房间外</h2>
+<p>旋转 plane 拼外壳留下了反向绕序。Cycles 的漫反射两面都着色所以看不出来，
+但 Bump 链是按翻转后的法线求值的，掠射面会被压黑。修正后单这一项
++0.005 ssim、+0.012 直方图交集。</p>
+
+<h2>④ 海报根本不是贴在砖上的</h2>
+<figure>
+  <img src="../process/recon/rect.jpg" alt="后墙矫正展开后的样子，可见无砖缝的公告板">
+  <figcaption>把后墙按墙面矫正展开之后，结构一目了然：
+  海报都在一块<strong>没有砖缝的公告板</strong>上，不是直接贴砖。</figcaption>
+</figure>
+<p>这是海报 owner 在矫正视图里看出来的。按「偏离局部中位数」找海报的像素规则
+<strong>永远看不见板子</strong> —— 板子本身是均匀的，不会偏离自己的中位数。
+这正是后墙分区长期偏亮 0.48 档的真因：那里渲染的是一片裸砖。</p>
+
+<h2>⑥ 整排左墙显示器的朝向是反的</h2>
+<p>这是第 9 步最实质的发现，来自左区 owner。参考图里左架每台 CRT 都是<strong>近乎侧视</strong>的：
+<code>crt_L1</code> 只在 u 272–288 露出 16 px 宽的洋红细条，u 168–270 全是素色米白机壳；
+<code>crt_L2</code> 是 u 297–306 的 9 px 红条。而 spec 里的偏航是 4–69° ——
+对于 x ≈ −1.7 的显示器，这个角度把屏幕正对着视线。<strong>靠左墙架子上的显示器应该朝 +X</strong>，
+即从这个机位看约 +90…+105°。这一个错误就是 <code>crt_L1</code> 报「无匹配」的原因：
+渲染在参考图放素色机壳的地方放了一块正对镜头的粉屏。</p>
+<p>而 <code>crt_floorL</code> 恰好反过来：它的青屏在参考图里是<strong>朝墙</strong>的（约 −52°），
+那片朝墙的光正是砖墙 u 150–205 上那块宽青色洗光 —— 之前的实测笔记里已经记着
+「这块洗光缺失」，当时没想到病因是朝向。</p>
+<div class="key">
+  <strong>为什么我自己的拟合会拟合错。</strong>第 3 节那个「匹配投影范围」的拟合，
+  单看<strong>宽度</strong>是<strong>退化</strong>的：一个侧视的深显示器和一个正视的浅显示器
+  可以投出同样的宽度。它和高度耦合在一起 —— 左区 owner 同时发现这批物体比
+  <code>ASSET_TUNE</code> 高 20–40%，而且这是被几何逼出来的：z = 1.20 只比机位高 0.02 m，
+  所以 0.78 m 板上一台 0.42 m CRT 的顶点在这面墙上<strong>任何纵深</strong>都投在 v = 195–199，
+  而参考图实测顶点在 v = 166–193，要够到 v = 168 顶点得在 z ≈ 1.37。
+  两个自由度一起错，宽度一项就还是对得上 —— 拟合的观测量太少。
+</div>
+<p>顺带它把 <code>shelf_z_L = 0.78</code> 又验了一次（因为尺寸结论看着可疑）：
+板子前上沿在 u 300–410 上贴合实测边缘约 1 px，而 z = 0.90 差 20 px。左架高度是对的。</p>
+
+<h2>⑤ 逐物体互相关本身也会骗人</h2>
+<p>系统性 owner 用它自己的 A/B 证明了噪声地板：在一次俯仰 A/B 中，
+12 个<strong>接触像素可证明没有移动</strong>的锚定物体，报出的 dy 平均变化了 10.2 px
+—— 纯粹因为周围渲染内容变了、相关器重新锁定。而且在一排几乎一样的米色 CRT 里，
+相关器会<strong>锁到邻居身上</strong>：crt_R2 报 dx −39、crt_R3 报 dx +33，
+那是邻居误配，不是摆放误差。</p>
+
+<div class="key">
+  <strong>方法论上的收获：</strong>度量工具本身也要被审查。
+  我把一个带偏置的聚合量当成事实交给了 agent，是它把这个前提推翻的。
+</div>
+
+<hr class="pagebreak">
+
+<h1 id="s8">9. 被推翻的三个「我自己的结论」</h1>
+
+<p>这三条都曾被我当成缺陷记录下来，后来被测量推翻。保留而不删除，
+因为<strong>推翻的过程比结论更有用</strong>。</p>
+
+<h2>①「前景那把椅子太小、太远」</h2>
+<figure>
+  <img src="../process/recon/chair.jpg" alt="前景椅子区域，参考图与渲染并排">
+  <figcaption>左参考、右渲染。当时凭缩略图判断椅子太小，实际它靠背顶点与参考图
+  相差 3 px、后腿脚 5 px、靠背轮廓宽 117 px 对 117 px。</figcaption>
+</figure>
+<p>结论：判断来自缩略图而不是测量。撤回。</p>
+
+<h2>②「左前那台 CRT 纵深错了 0.93 m」</h2>
+<p>这个数字来自我自己推的一个「视宽 → 纵深」闭式近似。改用<strong>直接投影网格</strong>
+重解之后，原摆放误差只有 6 px —— 错的是那个近似式，不是摆放。</p>
+
+<h2>③「存在 −6.3 px 的系统性竖直偏移」</h2>
+<p>这条是我作为前提<strong>交给 agent 去诊断</strong>的，结果它把前提本身推翻了：</p>
+<ul>
+  <li>该趋势由单个物体造成。<code>chair_edge</code> 占了 57% 的面积权重，
+      而它的相关搜索窗被画面下缘和左缘<strong>裁切</strong>，
+      导致 <code>dy</code> 只可能落在 [−40, 0]。剔掉这一行，加权均值从 −6.3
+      翻成 +2.6。</li>
+  <li>相机俯仰：需要的 −0.754° 会把地平线推离实测消失点 6.3 px，并让三条已定标的
+      结构行各偏 6–8 px。A/B 渲染后每项指标都变差。</li>
+  <li>相机高度：高度误差有 1/纵深 的特征（1.6 m 处 263 px/m，7.6 m 处 61 px/m），
+      而实测 dy 与纵深<strong>零相关</strong>（Pearson r = −0.09, t = −0.37, n = 19）。</li>
+  <li>共享支撑高度：同一支撑面上，CRT 平均 dy +18.6 而托架 −5.3，
+      <strong>同一面里 24 px 的分裂</strong>，不可能是支撑面整体高低。</li>
+</ul>
+
+<div class="key">
+  它还指出了一个我自己架构上的性质我没想到：<strong>相机改动在原理上就修不了这些数</strong>。
+  布局写在图像空间、并通过同一台相机重新解算，所以任何俯仰/高度改动下，
+  锚定物体的接触像素移动量 ≤ 0.011 px；只有 9 个 <code>support:"fixed"</code>
+  的条目会平移。我却让它去考虑改相机。
+</div>
+
+<p>后续验证闭合得很干净：区域 owner 实际去修 <code>chair_edge</code>
+（它确实近了 0.26 m、偏航错了 108°），修完之后那个「系统性趋势」自己消失了 ——
+加权均值 dy 从 −6.3 变成 +2.4。</p>
+
+<figure>
+  <img src="../process/recon/align.jpg" alt="逐物体配准箭头画在参考图上">
+  <figcaption>逐物体配准箭头（放大 3 倍）：绿 ≤3px、琥珀 ≤8px、红 &gt;8px。
+  读它的时候要带上上面的告警：靠画面边缘的物体受搜索窗裁切偏置，
+  处在一排相似 CRT 中的物体可能锁到了邻居。它指的是「去哪里看」，不是「移动多少」。</figcaption>
+</figure>
+
+<hr>
+
+<h1 id="s9">10. 现状、仍然错的地方、以及为什么不修</h1>
+
+<table>
+<thead><tr><th>#</th><th>问题</th><th>为什么还在</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>左墙远端的海报是糊的</td>
+    <td><strong>参考图本身在那段只有 21 px/m 的采样率。</strong>矫正不能凭空造出
+    从未被拍下的细节；换成自己画的海报就不再是「对这张图的重建」了。这是信息上限，不是缺陷。</td></tr>
+<tr><td>2</td><td>左架分区偏亮 +0.36 档</td>
+    <td>目前 16 个分区里最差的一个。资产自身反射率与背后砖墙想要的值不一致。</td></tr>
+<tr><td>3</td><td>地面细碎垃圾不足</td>
+    <td>大件都在，程序化颗粒也有，但参考图地面那些一颗颗的碎屑没有逐个摆。</td></tr>
+<tr><td>4</td><td>折叠椅框是暖铜色</td>
+    <td>参考图里是冷灰钢。这是<strong>资产属性</strong>，不是配光问题。</td></tr>
+<tr><td>5</td><td>近景地面色相偏冷 18°</td>
+    <td>参考图湿地面拾取的暖反弹比我们多。</td></tr>
+<tr><td>6</td><td>天花缺少模板纹理</td>
+    <td>我们是斑驳混凝土；参考图有清晰的支模痕迹与污渍条纹。</td></tr>
+</tbody>
+</table>
+
+<p>另外记两个仍然存在的越界：<code>cab_floorR</code> 解算到 y = 7.538（后墙在 7.0），
+<code>tower_floorR1</code> 到 x = 2.026（半宽 1.975）。都在外壳之外，属于下一轮要收的账。</p>
+
+<hr>
+
+<h1 id="s10">11. 复现</h1>
+
+<pre><code>python tools/bake_wall_layer.py                # 从参考图烘出矫正后的海报层
+python tools/merge_parts.py --resolve          # 片段合并进主 spec 并重解锚点
+blender -b --python build.py -- --engine CYCLES --samples 480 \
+        --out out/render_final.png --save-blend
+python tools/compare.py    --render out/render_final.png --tag final
+python tools/align_check.py --render out/render_final.png --vis
+blender -b --python tools/views.py -- --engine CYCLES --samples 140</code></pre>
+
+<h2>工具清单</h2>
+<table>
+<thead><tr><th>工具</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td><code>tools/calib.py</code></td><td>LSD + RANSAC 解消失点</td></tr>
+<tr><td><code>tools/overlay.py</code></td><td>房间线框叠回参考图（标定验收）</td></tr>
+<tr><td><code>tools/place.py</code></td><td>像素 ↔ 米互转，任意支撑平面</td></tr>
+<tr><td><code>tools/resolve.py</code></td><td>把 anchor_px 反投影成 pos</td></tr>
+<tr><td><code>tools/spec_overlay.py</code></td><td>实例包围盒叠回参考图（摆放内循环）</td></tr>
+<tr><td><code>tools/compare.py</code></td><td>整图 + 16 分区打分，出四联审查图</td></tr>
+<tr><td><code>tools/align_check.py</code></td><td>逐物体互相关配准，带可信度裁决</td></tr>
+<tr><td><code>tools/check_camera.py</code></td><td>校验渲染相机与投影器一致（60 点，超 3px 报警）</td></tr>
+<tr><td><code>tools/bake_wall_layer.py</code></td><td>墙面矫正烘海报层（含公告板）</td></tr>
+<tr><td><code>tools/probe_pixel.py</code></td><td>射线追某个像素，报出打到了哪个物体</td></tr>
+<tr><td><code>tools/views.py</code></td><td>换机位渲染，验证是真 3D 场景</td></tr>
+<tr><td><code>tools/catalog.py</code></td><td>资产库四朝向接触表</td></tr>
+<tr><td><code>tools/merge_parts.py</code></td><td>片段合并（支持显式 null 删除键）</td></tr>
+</tbody>
+</table>
+
+<div class="foot">
+  Blender 4.2.3 LTS · Cycles / OptiX · RTX 3080 · 参考图 1024&times;572 ·
+  39 模块贴图资产库 · 全程无云端调用、无 API Key<br>
+  本文所有数字均为实测，可用上面的命令复现；被推翻的结论按原样保留。
+</div>
+
+</div>
+</body>
+</html>
