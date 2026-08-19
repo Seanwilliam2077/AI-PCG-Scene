@@ -1,0 +1,8 @@
+This is the content displayed on a screen: {description}.
+
+Redraw it as a flat, head-on, full-frame image of the screen content only:
+- No bezel, no monitor housing, no reflection, no perspective, no scanlines
+  (scanlines are added later in the material).
+- Keep the original colours, layout and phosphor glow feel.
+- {text_line}
+- Crisp and readable.

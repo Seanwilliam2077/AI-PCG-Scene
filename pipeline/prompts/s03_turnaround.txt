@@ -1,0 +1,8 @@
+This image shows: {description}.
+
+Create ONE image: a 2x2 grid showing the EXACT SAME object from four viewpoints,
+identical scale, identical neutral diffuse studio lighting, on a solid pure
+{chroma} background, no shadows, no reflections, no text or labels.
+Top-left: left side view. Top-right: right side view.
+Bottom-left: back view. Bottom-right: top-down view.
+The object must be identical in shape, colour, material and wear in all four cells.

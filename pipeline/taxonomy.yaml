@@ -1,0 +1,65 @@
+# 受控类别词表：s01 感知、s00 资产打标、s04 库匹配三方共用的唯一真相源。
+# LLM 两侧都被要求只从 categories 里选词，运行时匹配因此退化成字符串相等，
+# 而不是语义猜谜。改这里等于同时改感知与打标的口径。
+
+categories:
+  - crt_monitor        # CRT 显示器（含一体机屏幕）
+  - computer_tower     # 卧/立式主机箱
+  - server_cabinet     # 立式机柜/大型机箱
+  - keyboard
+  - mouse
+  - printer
+  - floppy_disk
+  - folding_chair
+  - long_table         # 折叠长桌/条桌
+  - bench              # 长凳/矮条凳
+  - drawer_cabinet     # 抽屉柜/文件柜
+  - power_strip        # 电源插排
+  - cable              # 线缆/线束
+  - paper_cup
+  - soda_can
+  - traffic_cone
+  - poster             # 海报（平面印刷品）
+  - newspaper          # 报纸（平面印刷品）
+  - sign               # 标牌/铭牌/贴纸（平面印刷品）
+  - banner             # 横幅（平面印刷品）
+  - paper_debris       # 纸屑/散页（平面印刷品）
+  - ceiling_light
+  - misc               # 词表外物体（进人工队列）
+
+# 感知层自由词 → 类别的折叠表（小写包含匹配，先长后短）。
+synonyms:
+  crt: crt_monitor
+  monitor: crt_monitor
+  screen: crt_monitor
+  pc_tower: computer_tower
+  tower: computer_tower
+  desktop: computer_tower
+  mainframe: server_cabinet
+  cabinet: server_cabinet
+  rack: server_cabinet
+  chair: folding_chair
+  desk: long_table
+  table: long_table
+  stool: bench
+  drawer: drawer_cabinet
+  file_cabinet: drawer_cabinet
+  plug: power_strip
+  socket: power_strip
+  wire: cable
+  cord: cable
+  pipe: cable
+  conduit: cable
+  cup: paper_cup
+  can: soda_can
+  cone: traffic_cone
+  flyer: poster
+  paper: paper_debris
+  light: ceiling_light
+  lamp: ceiling_light
+
+# 平面印刷品：不参与网格匹配，走 Decal 贴图路径。
+flat_print_categories: [poster, newspaper, sign, banner, paper_debris]
+
+# 屏幕类：装配时接自发光屏幕材质，缩放需保持屏面两轴等比。
+screen_categories: [crt_monitor]

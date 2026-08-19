@@ -1,0 +1,17 @@
+{
+  "position_cm": [
+    0.0,
+    0.0,
+    78.0
+  ],
+  "rotation_deg": {
+    "pitch": -0.8,
+    "yaw": 0.0,
+    "roll": -0.35
+  },
+  "hfov_deg": 95.0,
+  "vfov_deg": 62.73,
+  "aspect": 1.7902,
+  "fov_source": "manual",
+  "calib_confidence": 0.9
+}

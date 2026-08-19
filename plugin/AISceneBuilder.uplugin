@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1.0",
+	"FriendlyName": "AI Scene Builder",
+	"Description": "From one reference image to a lit, dressed UE5 level. Five-step wizard: perceive, layout, 2D generation, 3D generation, assemble.",
+	"Category": "AI",
+	"CreatedBy": "TA Pipeline",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AISceneBuilderEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{ "Name": "PythonScriptPlugin", "Enabled": true },
+		{ "Name": "EditorScriptingUtilities", "Enabled": true },
+		{ "Name": "PCG", "Enabled": true }
+	]
+}

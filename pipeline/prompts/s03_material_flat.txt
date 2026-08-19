@@ -1,0 +1,7 @@
+This is a photo crop of a real surface: {material}.
+
+Rebuild it as a flat texture swatch:
+- Flatten the lighting to uniform diffuse. Remove all shadows, highlights and vignetting.
+- Remove perspective: make it a straight top-down / head-on view of the surface.
+- Keep the pattern, grain, grout lines, wear and colour EXACTLY as in the input.
+- Fill the whole square frame with the surface. No objects, no text, no borders.

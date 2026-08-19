@@ -1,0 +1,63 @@
+{
+  "s05_build_scene": {
+    "seconds": 57.8,
+    "compiled": true,
+    "ue": "ok",
+    "actors": 127,
+    "errors": 0,
+    "exit_code": 0
+  },
+  "s01_perceive": {
+    "seconds": 85.6,
+    "objects": 12,
+    "detections": 70,
+    "calib_conf": 0.9,
+    "fov_source": "manual",
+    "box3d": 10,
+    "vlm_gateway": {
+      "calls": 7,
+      "cache_hits": 9,
+      "retries": 0
+    }
+  },
+  "s02_layout": {
+    "seconds": 0.0,
+    "objects": 36,
+    "room_cm": [
+      1083.8,
+      723.3,
+      285.0
+    ],
+    "scale_calibration": 1.0,
+    "low_confidence": 6
+  },
+  "s03_gen2d": {
+    "seconds": 2.9,
+    "hero": 0,
+    "materials": 3,
+    "decals": 5,
+    "screens": 0,
+    "skipped": 0,
+    "vlm_gateway": {
+      "calls": 0,
+      "cache_hits": 12,
+      "retries": 0
+    }
+  },
+  "s04_gen3d": {
+    "seconds": 0.4,
+    "assets": 30,
+    "matched": 21,
+    "proxy": 9,
+    "decal_tex": 6,
+    "flagged": 17,
+    "provider": "library"
+  },
+  "_last_invocation": {
+    "ts": "2026-08-10T22:30:06",
+    "stages": "s05",
+    "ran": [
+      "s05_build_scene"
+    ]
+  }
+}

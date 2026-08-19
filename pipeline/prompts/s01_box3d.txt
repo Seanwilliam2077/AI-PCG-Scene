@@ -1,0 +1,6 @@
+Detect the 3D bounding boxes of no more than 10 prominent items in this image.
+
+Output ONLY a JSON list (no markdown fences). Each entry:
+{"label": "object name", "box_3d": [x_center, y_center, z_center, x_size, y_size, z_size, roll, pitch, yaw]}
+
+Angles are in degrees.

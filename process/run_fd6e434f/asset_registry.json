@@ -1,0 +1,1300 @@
+{
+  "provider": "library",
+  "fallback_reason": null,
+  "assets": {
+    "beige_computer_tower_06": {
+      "id": "beige_computer_tower_06",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_ORM.png"
+      },
+      "size_cm": [
+        44.4,
+        26.7,
+        71.7
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M08",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.7527,
+          0.7527,
+          0.7527
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          67.71,
+          31.05,
+          95.26
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M08/SM_M08.SM_M08",
+        "ue_mi": "/Game/AutoScene/AssetLib/M08/MI_M08.MI_M08"
+      }
+    },
+    "beige_computer_tower_07": {
+      "id": "beige_computer_tower_07",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png"
+      },
+      "size_cm": [
+        71.7,
+        43.0,
+        66.9
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M09",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.7727,
+          0.7727,
+          0.7727
+        ],
+        "flags": [
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          37.56,
+          79.73,
+          86.58
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+        "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+      }
+    },
+    "beige_computer_tower_1_54": {
+      "id": "beige_computer_tower_1_54",
+      "category": "beige_computer_tower_1",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_ORM.png"
+      },
+      "size_cm": [
+        32.0,
+        19.2,
+        70.0
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M10",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.782,
+          0.782,
+          0.782
+        ],
+        "flags": [
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          33.52,
+          75.55,
+          89.51
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M10/SM_M10.SM_M10",
+        "ue_mi": "/Game/AutoScene/AssetLib/M10/MI_M10.MI_M10"
+      }
+    },
+    "beige_computer_tower_20": {
+      "id": "beige_computer_tower_20",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png"
+      },
+      "size_cm": [
+        32.0,
+        19.2,
+        67.9
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M09",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.7842,
+          0.7842,
+          0.7842
+        ],
+        "flags": [
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          37.56,
+          79.73,
+          86.58
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+        "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+      }
+    },
+    "beige_computer_tower_21": {
+      "id": "beige_computer_tower_21",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_ORM.png"
+      },
+      "size_cm": [
+        26.3,
+        15.8,
+        66.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "A02",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6836,
+          0.6836,
+          0.6836
+        ],
+        "flags": [
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          38.47,
+          78.93,
+          87.42
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/A02/SM_A02.SM_A02",
+        "ue_mi": "/Game/AutoScene/AssetLib/A02/MI_A02.MI_A02"
+      }
+    },
+    "beige_computer_tower_2_55": {
+      "id": "beige_computer_tower_2_55",
+      "category": "beige_computer_tower_2",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_ORM.png"
+      },
+      "size_cm": [
+        26.7,
+        16.0,
+        66.7
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M08",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.5153,
+          0.5153,
+          0.5153
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          67.71,
+          31.05,
+          95.26
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M08/SM_M08.SM_M08",
+        "ue_mi": "/Game/AutoScene/AssetLib/M08/MI_M08.MI_M08"
+      }
+    },
+    "beige_computer_tower_35": {
+      "id": "beige_computer_tower_35",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png"
+      },
+      "size_cm": [
+        133.1,
+        79.9,
+        166.1
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M09",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "flags": [
+          "SCALE_CLAMPED",
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          37.56,
+          79.73,
+          86.58
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+        "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+      }
+    },
+    "beige_computer_tower_50": {
+      "id": "beige_computer_tower_50",
+      "category": "beige_computer_tower",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_ORM.png"
+      },
+      "size_cm": [
+        91.8,
+        55.1,
+        85.7
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M10",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.9574,
+          0.9574,
+          0.9574
+        ],
+        "flags": [
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          33.52,
+          75.55,
+          89.51
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M10/SM_M10.SM_M10",
+        "ue_mi": "/Game/AutoScene/AssetLib/M10/MI_M10.MI_M10"
+      }
+    },
+    "beige_crt_monitor_04": {
+      "id": "beige_crt_monitor_04",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_ORM.png"
+      },
+      "size_cm": [
+        42.8,
+        45.0,
+        43.9
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M01",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6069,
+          0.6069,
+          0.5308
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          74.13,
+          70.71,
+          82.71
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M01/SM_M01.SM_M01",
+        "ue_mi": "/Game/AutoScene/AssetLib/M01/MI_M01.MI_M01"
+      }
+    },
+    "beige_crt_monitor_19": {
+      "id": "beige_crt_monitor_19",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M04",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6973,
+          0.6973,
+          0.6646
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          73.41,
+          79.25,
+          80.05
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M04/SM_M04.SM_M04",
+        "ue_mi": "/Game/AutoScene/AssetLib/M04/MI_M04.MI_M04"
+      }
+    },
+    "beige_crt_monitor_2_52": {
+      "id": "beige_crt_monitor_2_52",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M05",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6839,
+          0.6839,
+          0.683
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          74.46,
+          81.24,
+          77.89
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M05/SM_M05.SM_M05",
+        "ue_mi": "/Game/AutoScene/AssetLib/M05/MI_M05.MI_M05"
+      }
+    },
+    "beige_crt_monitor_34": {
+      "id": "beige_crt_monitor_34",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M03",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6891,
+          0.6891,
+          0.6568
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          73.48,
+          81.12,
+          81.0
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M03/SM_M03.SM_M03",
+        "ue_mi": "/Game/AutoScene/AssetLib/M03/MI_M03.MI_M03"
+      }
+    },
+    "beige_crt_monitor_3_53": {
+      "id": "beige_crt_monitor_3_53",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M06",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6779,
+          0.6779,
+          0.6238
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          72.59,
+          85.05,
+          85.29
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M06/SM_M06.SM_M06",
+        "ue_mi": "/Game/AutoScene/AssetLib/M06/MI_M06.MI_M06"
+      }
+    },
+    "beige_crt_monitor_46": {
+      "id": "beige_crt_monitor_46",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M02",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.6798,
+          0.6798,
+          0.6086
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          73.53,
+          83.36,
+          87.42
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M02/SM_M02.SM_M02",
+        "ue_mi": "/Game/AutoScene/AssetLib/M02/MI_M02.MI_M02"
+      }
+    },
+    "beige_crt_monitor_49": {
+      "id": "beige_crt_monitor_49",
+      "category": "crt_monitor",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_ORM.png"
+      },
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": true,
+      "meta": {
+        "kind": "library",
+        "module": "M01",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.7354,
+          0.7354,
+          0.6432
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          74.13,
+          70.71,
+          82.71
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M01/SM_M01.SM_M01",
+        "ue_mi": "/Game/AutoScene/AssetLib/M01/MI_M01.MI_M01"
+      }
+    },
+    "blue_folding_chair_00": {
+      "id": "blue_folding_chair_00",
+      "category": "chair",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png"
+      },
+      "size_cm": [
+        44.2,
+        47.1,
+        80.0
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M13",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.8696,
+          0.8696,
+          0.8696
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          49.55,
+          54.16,
+          96.99
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+        "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+      }
+    },
+    "blue_folding_chair_01": {
+      "id": "blue_folding_chair_01",
+      "category": "chair",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png"
+      },
+      "size_cm": [
+        42.6,
+        45.3,
+        77.0
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M13",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          0.8364,
+          0.8364,
+          0.8364
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          49.55,
+          54.16,
+          96.99
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+        "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+      }
+    },
+    "blue_folding_chair_02": {
+      "id": "blue_folding_chair_02",
+      "category": "chair",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png"
+      },
+      "size_cm": [
+        59.3,
+        63.1,
+        107.3
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M13",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          1.1651,
+          1.1651,
+          1.1651
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          49.55,
+          54.16,
+          96.99
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+        "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+      }
+    },
+    "blue_folding_chair_24": {
+      "id": "blue_folding_chair_24",
+      "category": "chair",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png"
+      },
+      "size_cm": [
+        55.0,
+        58.5,
+        99.4
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M13",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          1.0801,
+          1.0801,
+          1.0801
+        ],
+        "flags": [],
+        "mesh_bbox_cm": [
+          49.55,
+          54.16,
+          96.99
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+        "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+      }
+    },
+    "cable_bundle_14": {
+      "id": "cable_bundle_14",
+      "category": "cable_bundle",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_14.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_14_BC.png"
+      },
+      "size_cm": [
+        141.5,
+        2.0,
+        678.7
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "cable_bundle_26": {
+      "id": "cable_bundle_26",
+      "category": "cable_bundle",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_26.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_26_BC.png"
+      },
+      "size_cm": [
+        27.7,
+        16.6,
+        93.6
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "cable_bundle_36": {
+      "id": "cable_bundle_36",
+      "category": "cable_bundle",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_36.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_36_BC.png"
+      },
+      "size_cm": [
+        32.0,
+        19.2,
+        164.5
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "concrete_pillar_13": {
+      "id": "concrete_pillar_13",
+      "category": "concrete_pillar",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_13.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_13_BC.png"
+      },
+      "size_cm": [
+        16.5,
+        9.9,
+        222.6
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "concrete_pillar_25": {
+      "id": "concrete_pillar_25",
+      "category": "concrete_pillar",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_25.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_25_BC.png"
+      },
+      "size_cm": [
+        17.9,
+        10.7,
+        152.1
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "concrete_pillar_28": {
+      "id": "concrete_pillar_28",
+      "category": "concrete_pillar",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_28.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_28_BC.png"
+      },
+      "size_cm": [
+        74.2,
+        44.5,
+        287.0
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "floor_litter_15": {
+      "id": "floor_litter_15",
+      "category": "floor_litter",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_15.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_15_BC.png"
+      },
+      "size_cm": [
+        36.2,
+        21.7,
+        20.5
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "floor_litter_16": {
+      "id": "floor_litter_16",
+      "category": "floor_litter",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_16.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_16_BC.png"
+      },
+      "size_cm": [
+        35.9,
+        21.6,
+        19.1
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "floor_litter_27": {
+      "id": "floor_litter_27",
+      "category": "floor_litter",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_27.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_27_BC.png"
+      },
+      "size_cm": [
+        57.3,
+        34.4,
+        22.1
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "m",
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "provider": "proxy",
+      "degraded": "library_no_match",
+      "is_screen": false,
+      "meta": {
+        "kind": "proxy_box",
+        "flags": [
+          "NO_MATCH"
+        ]
+      }
+    },
+    "white_folding_table_08": {
+      "id": "white_folding_table_08",
+      "category": "folding_table",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_ORM.png"
+      },
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "M15",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "flags": [
+          "SCALE_CLAMPED",
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          58.2,
+          91.53,
+          56.61
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/M15/SM_M15.SM_M15",
+        "ue_mi": "/Game/AutoScene/AssetLib/M15/MI_M15.MI_M15"
+      }
+    },
+    "white_folding_table_32": {
+      "id": "white_folding_table_32",
+      "category": "folding_table",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\mesh.obj",
+      "textures": {
+        "BC": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_BC.jpg",
+        "N": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_N.png",
+        "ORM": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_ORM.png"
+      },
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pivot": "bottom_center",
+      "forward_axis": "+X",
+      "unit": "cm",
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "provider": "library",
+      "degraded": null,
+      "is_screen": false,
+      "meta": {
+        "kind": "library",
+        "module": "A03",
+        "method": "exact_category",
+        "confidence": 1.0,
+        "scale": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "flags": [
+          "SCALE_CLAMPED",
+          "SHAPE_MISMATCH"
+        ],
+        "mesh_bbox_cm": [
+          38.31,
+          109.35,
+          36.06
+        ],
+        "ue_asset": "/Game/AutoScene/AssetLib/A03/SM_A03.SM_A03",
+        "ue_mi": "/Game/AutoScene/AssetLib/A03/MI_A03.MI_A03"
+      }
+    }
+  },
+  "failed": [],
+  "decal_textures": {
+    "wall_poster_11": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "wall_poster_12": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "wall_poster_43": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "wall_poster_44": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "wall_poster_48": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "wall_poster_51": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png"
+  },
+  "decal_texture_pool": [
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+    "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png"
+  ]
+}

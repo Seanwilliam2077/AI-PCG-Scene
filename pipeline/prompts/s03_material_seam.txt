@@ -1,0 +1,6 @@
+This texture has a visible seam running as a cross through the centre of the image
+(one horizontal line and one vertical line).
+
+Repair ONLY those seam lines so the pattern continues naturally across them.
+Keep everything else pixel-identical: same colours, same pattern, same scale,
+same lighting. Do not restyle, do not zoom, do not add anything.

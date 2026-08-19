@@ -1,0 +1,16 @@
+Detect and segment the following items in this image: {phrases}.
+
+Output ONLY a JSON list (no markdown fences, no explanation). Each entry:
+{{
+  "box_2d": [ymin, xmin, ymax, xmax],
+  "mask": [[x, y], ...],
+  "label": "descriptive label",
+  "attached_to": "floor | wall | ceiling | <label of the supporting object>"
+}}
+
+- box_2d is [ymin, xmin, ymax, xmax] normalized to 0-1000.
+- mask is the segmentation outline as a polygon of [x, y] points, normalized to 0-1000.
+- Output one entry per visible INSTANCE (five monitors = five entries).
+- Include floor / wall / ceiling as entries when visible: they are needed for
+  room geometry even though they are not objects.
+- At most 25 entries.

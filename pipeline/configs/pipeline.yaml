@@ -1,0 +1,41 @@
+vlm_gateway:
+  # 网关端点不随包分发（端点不外发）。在线运行：此处填网关或设环境变量
+  # VLM_GATEWAY_URL；评审机保持为空 + 开启离线回放即可全流程复跑。
+  url: ''
+  timeout_seconds: 120
+  max_retries: 2
+  min_interval_seconds: 1.0
+  offline: false               # true = 离线回放：只许缓存命中，miss 报错不发请求
+models:
+  vision: gemini-3-pro-image     # 全线升级：感知/打标/氛围/视觉匹配统一用 Pro 级
+  image: gemini-3-pro-image
+  image_fast: gemini-3-pro-image
+  box3d: gemini-3-pro-image
+  box3d_enabled: true
+calibration:
+  prior_hfov_deg: 60.0
+  min_confidence: 0.5
+  max_solve_distance_m: 15.0
+gen2d:
+  chroma_preset: green
+  hero_enabled: false          # 资产库模式：真模型来自库，hero 清理图/turnaround 无用武之地
+  turnaround: false
+  max_hero_assets: 12
+  seam_threshold: 1.25
+  seam_max_rounds: 3
+  material_cap: 1024
+  decal_cap: 1024
+gen3d:
+  provider: library            # v2 默认：匹配外部预生成的资产库；云端生成路径保留可切
+  library_dir: C:/AI Pipeline Test/AssetLib_processed
+  # 云端 3D 生成后端的凭证与端点一律不随包分发：走环境变量
+  # （GEN3D_API_KEY / GEN3D_DOMAIN 等），配置缺省即回落 proxy
+  text2gen_face_count: 30000
+  text2gen_enable_pbr: true
+  text2gen_style: ''
+unreal:
+  editor_cmd: C:/Program Files/Epic Games/UE_5.5/Engine/Binaries/Win64/UnrealEditor-Cmd.exe
+  uproject: C:/AI Pipeline Test/NetEast_TA_Test/NetEast_TA_Test.uproject
+  level: /Game/Maps/GenScene
+  content_dir: /Game/AutoScene
+  timeout_seconds: 2400

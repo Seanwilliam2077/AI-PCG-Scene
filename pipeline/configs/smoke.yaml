@@ -1,0 +1,34 @@
+vlm_gateway:
+  url: ''                        # 端点不随包分发：VLM_GATEWAY_URL 环境变量或此处自行配置
+  timeout_seconds: 120
+  max_retries: 2
+  min_interval_seconds: 1.0
+  offline: false
+models:
+  vision: gemini-3-pro-image
+  image: gemini-3-pro-image
+  image_fast: gemini-3-pro-image
+  box3d: gemini-3-pro-image
+  box3d_enabled: true
+calibration:
+  prior_hfov_deg: 60.0
+  min_confidence: 0.5
+gen2d:
+  chroma_preset: green
+  hero_enabled: false
+  turnaround: false
+  max_hero_assets: 3
+  seam_threshold: 1.25
+  seam_max_rounds: 1
+  material_cap: 1024
+  decal_cap: 1024
+gen3d:
+  provider: library
+  library_dir: C:/AI Pipeline Test/AssetLib_processed
+  # 云端后端凭证/端点不随包分发（环境变量注入），缺省回落 proxy
+unreal:
+  editor_cmd: C:/Program Files/Epic Games/UE_5.5/Engine/Binaries/Win64/UnrealEditor-Cmd.exe
+  uproject: C:/AI Pipeline Test/NetEast_TA_Test/NetEast_TA_Test.uproject
+  level: /Game/Maps/GenScene
+  content_dir: /Game/AutoScene
+  timeout_seconds: 2400

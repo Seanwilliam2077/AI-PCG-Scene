@@ -1,0 +1,7 @@
+This is a poster / picture on a wall: {description}.
+
+Redraw it as a flat, head-on, full-frame image of the poster artwork itself:
+- No perspective, no wall around it, no frame, no shadow.
+- Keep the original colours, composition and graphic style.
+- {text_line}
+- Sharp, print-quality, evenly lit.

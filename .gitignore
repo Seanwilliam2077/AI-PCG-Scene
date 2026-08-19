@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# UE
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+*.pdb
+
+# 大体积产物（不入库）
+*.zip
+*.uasset
+*.umap
+AssetLib_processed/
+cache/vlm_gateway/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vs/
+.idea/

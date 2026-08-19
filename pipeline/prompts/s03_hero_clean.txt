@@ -1,0 +1,7 @@
+This photo shows: {description}.
+
+Produce a clean product shot of THAT SAME object, isolated:
+- Complete any part hidden by other objects (legs, edges) so the object is whole.
+- Remove everything else. Put it on a solid pure {chroma} background with no shadows on the background.
+- Even, neutral, diffuse studio lighting. Keep the object's real colour, material and wear.
+- Keep the same viewing angle as the input. Do not add text, labels or props.

@@ -1,0 +1,9 @@
+Shell_Floor        num_mat=1 -> ['MI_Shell_floor_15']
+Shell_Ceiling      num_mat=1 -> ['MI_Shell_ceiling_15']
+Shell_Wall_N       num_mat=1 -> ['MI_Shell_wall_15']
+Shell_Wall_S       num_mat=1 -> ['MI_Shell_wall_15']
+Shell_Wall_E       num_mat=1 -> ['MI_Shell_wall_11']
+Shell_Wall_W       num_mat=1 -> ['MI_Shell_wall_11']
+/Game/AutoScene/Materials/M_Master: 类型=Material
+/Game/AutoScene/Materials/MI_Shell_wall_15: parent=M_Master
+    BaseColorTex=T_wall_BC  Tiling=15.199999809265137

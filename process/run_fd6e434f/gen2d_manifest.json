@@ -1,0 +1,91 @@
+{
+  "hero": {},
+  "materials": {
+    "wall": {
+      "paths": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_H.png"
+      },
+      "seam_score": 1.321,
+      "seam_pass": false,
+      "rounds": 3,
+      "material_class": "glazed_tile",
+      "tile_size_cm": 100
+    },
+    "floor": {
+      "paths": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_H.png"
+      },
+      "seam_score": 1.121,
+      "seam_pass": true,
+      "rounds": 0,
+      "material_class": "concrete",
+      "tile_size_cm": 100
+    },
+    "ceiling": {
+      "paths": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_H.png"
+      },
+      "seam_score": 1.087,
+      "seam_pass": true,
+      "rounds": 0,
+      "material_class": "concrete",
+      "tile_size_cm": 100
+    }
+  },
+  "decals": {
+    "wall_poster_51": {
+      "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\decals\\wall_poster_51_BC.png",
+      "text": ""
+    },
+    "wall_poster_11": {
+      "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\decals\\wall_poster_11_BC.png",
+      "text": ""
+    },
+    "wall_poster_12": {
+      "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\decals\\wall_poster_12_BC.png",
+      "text": ""
+    },
+    "wall_poster_43": {
+      "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\decals\\wall_poster_43_BC.png",
+      "text": ""
+    },
+    "wall_poster_44": {
+      "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\decals\\wall_poster_44_BC.png",
+      "text": ""
+    }
+  },
+  "screens": {},
+  "skipped": [],
+  "ambience": {
+    "key_light": {
+      "azimuth_deg": 0,
+      "elevation_deg": 85,
+      "color_temp_k": 4200,
+      "relative_intensity": 0.6
+    },
+    "ambient": {
+      "color_temp_k": 4500,
+      "level": 0.15
+    },
+    "practicals_temp_k": 2800,
+    "fog_density": 0.04,
+    "ev_bias": -0.5,
+    "white_temp_k": 4000,
+    "mood": "grimy fluorescent computer basement",
+    "time_of_day": "artificial_only"
+  },
+  "gateway_stats": {
+    "calls": 0,
+    "cache_hits": 12,
+    "retries": 0
+  }
+}

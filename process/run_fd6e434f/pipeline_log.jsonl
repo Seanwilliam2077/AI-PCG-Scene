@@ -1,0 +1,263 @@
+{"stage": "s01_perceive", "event": "start", "fingerprint": "b22b4a204c289906", "ts": "2026-08-06T15:55:37"}
+{"stage": "s01_perceive", "event": "done", "seconds": 239.1, "objects": 19, "detections": 39, "calib_conf": 0.3, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 6, "gateway.cache_hits": 0, "gateway.retries": 0, "ts": "2026-08-06T15:59:36"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "0b1022e3673c6237", "ts": "2026-08-06T15:59:36"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 27, "room_cm": [5219.2, 1527.3, 285.0], "scale_calibration": 0.735, "low_confidence": 12, "ts": "2026-08-06T15:59:36"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "6ef644422e69b8f4", "ts": "2026-08-06T15:59:36"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "b650d9e1eb832875", "ts": "2026-08-06T16:01:25"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.3, "objects": 23, "room_cm": [5525.3, 1639.1, 285.0], "scale_calibration": 0.724, "low_confidence": 12, "ts": "2026-08-06T16:01:25"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "692c30d41d7aaa56", "ts": "2026-08-06T16:01:48"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 23, "room_cm": [5525.3, 1639.1, 285.0], "scale_calibration": 0.724, "low_confidence": 12, "ts": "2026-08-06T16:01:48"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "b22b4a204c289906", "ts": "2026-08-06T16:03:05"}
+{"stage": "s01_perceive", "event": "done", "seconds": 69.7, "objects": 19, "detections": 39, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 1, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-06T16:04:15"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "76e1c64f2dd3f7a2", "ts": "2026-08-06T16:04:15"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 23, "room_cm": [35169.0, 10127.0, 285.0], "scale_calibration": 1.0, "low_confidence": 12, "ts": "2026-08-06T16:04:15"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "8d25cea44dd92fbf", "ts": "2026-08-06T16:05:37"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.4, "objects": 27, "room_cm": [5782.5, 2353.2, 285.0], "scale_calibration": 1.0, "low_confidence": 15, "ts": "2026-08-06T16:05:37"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "58afdd507ebf90ce", "ts": "2026-08-06T16:09:55"}
+{"stage": "s01_perceive", "event": "done", "seconds": 20.4, "objects": 19, "detections": 39, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 1, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-06T16:10:16"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "561148c777de6f3c", "ts": "2026-08-06T16:10:16"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 27, "room_cm": [5782.5, 2353.2, 285.0], "scale_calibration": 1.0, "low_confidence": 15, "ts": "2026-08-06T16:10:16"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "58afdd507ebf90ce", "ts": "2026-08-06T16:11:43"}
+{"stage": "s01_perceive", "event": "done", "seconds": 70.8, "objects": 19, "detections": 39, "calib_conf": 1.0, "fov_source": "manual", "box3d": 0, "gateway.calls": 1, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-06T16:12:54"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "7f61a07732cd163d", "ts": "2026-08-06T16:12:54"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 12, "room_cm": [7318.1, 2195.8, 285.0], "scale_calibration": 0.856, "low_confidence": 3, "ts": "2026-08-06T16:12:54"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "778f32782c3d7013", "ts": "2026-08-06T16:13:37"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.3, "objects": 9, "room_cm": [200.0, 998.9, 285.0], "scale_calibration": 1.743, "low_confidence": 3, "ts": "2026-08-06T16:13:38"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "20a6e0e2d1022cc6", "ts": "2026-08-06T16:14:29"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.9, "objects": 9, "room_cm": [200.0, 607.1, 285.0], "scale_calibration": 1.0, "low_confidence": 3, "ts": "2026-08-06T16:14:30"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "eec6e12220695fff", "ts": "2026-08-06T16:14:56"}
+{"stage": "s01_perceive", "event": "done", "seconds": 85.1, "objects": 19, "detections": 74, "calib_conf": 1.0, "fov_source": "manual", "box3d": 0, "gateway.calls": 3, "gateway.cache_hits": 2, "gateway.retries": 0, "ts": "2026-08-06T16:16:21"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "678ae0656e2bbfc8", "ts": "2026-08-06T16:16:21"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 22, "room_cm": [200.0, 607.1, 285.0], "scale_calibration": 1.0, "low_confidence": 14, "ts": "2026-08-06T16:16:21"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "479f33af40e8de65", "ts": "2026-08-06T16:17:05"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 17, "room_cm": [200.0, 607.1, 285.0], "scale_calibration": 1.0, "low_confidence": 10, "ts": "2026-08-06T16:17:05"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "eec6e12220695fff", "ts": "2026-08-06T16:19:37"}
+{"stage": "s01_perceive", "event": "done", "seconds": 1.5, "objects": 19, "detections": 74, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-06T16:19:38"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "e8179ab2a5fcff46", "ts": "2026-08-06T16:19:38"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 35, "room_cm": [1034.8, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-06T16:19:38"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "1d7fe0d31df4dcd6", "ts": "2026-08-06T16:20:17"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 740.6, "hero": 7, "materials": 2, "decals": 3, "screens": 0, "skipped": 5, "gateway.calls": 25, "gateway.cache_hits": 0, "gateway.retries": 0, "ts": "2026-08-06T16:32:38"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "fa363232a1e28ea1", "ts": "2026-08-06T16:32:38"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 1.6, "assets": 7, "failed": 0, "provider": "proxy", "ts": "2026-08-06T16:32:39"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ed73566a8b4c02e4", "ts": "2026-08-06T16:32:39"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 39.6, "compiled": true, "ue": "ok", "actors": 46, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:33:19"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "1341878016d3639b", "ts": "2026-08-06T16:34:34"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 473.5, "hero": 7, "materials": 5, "decals": 3, "screens": 0, "skipped": 5, "gateway.calls": 14, "gateway.cache_hits": 21, "gateway.retries": 0, "ts": "2026-08-06T16:42:28"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "3ac5c7b214be20f5", "ts": "2026-08-06T16:42:28"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 1.4, "assets": 7, "failed": 0, "provider": "proxy", "ts": "2026-08-06T16:42:29"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "799f8eb76ca1ed49", "ts": "2026-08-06T16:42:29"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 32.3, "compiled": true, "ue": "ok", "actors": 46, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:43:01"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "e8179ab2a5fcff46", "ts": "2026-08-06T16:45:28"}
+{"stage": "s02_layout", "event": "done", "seconds": 1.7, "objects": 35, "room_cm": [1166.5, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-06T16:45:29"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "050a13dd60e9c326", "ts": "2026-08-06T16:45:41"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 51.3, "compiled": true, "ue": "ok", "actors": 46, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:46:32"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "9ab94636817b536e", "ts": "2026-08-06T16:47:53"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 31.3, "compiled": true, "ue": "ok", "actors": 46, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:48:24"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "c0e9f65c848178a4", "ts": "2026-08-06T16:48:46"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 32.7, "compiled": true, "ue": "ok", "actors": 46, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:49:19"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "df2f1f18953dbe26", "ts": "2026-08-06T16:50:51"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 36.5, "compiled": true, "ue": "ok", "actors": 74, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:51:27"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ab074a021ed2fe6f", "ts": "2026-08-06T16:53:35"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 45.8, "compiled": true, "ue": "ok", "actors": 74, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:54:21"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "3ab336ce1fa599ae", "ts": "2026-08-06T16:56:04"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 44.4, "compiled": true, "ue": "ok", "actors": 74, "errors": 0, "exit_code": 0, "ts": "2026-08-06T16:56:48"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "3a495254d529d1b2", "ts": "2026-08-07T14:32:28"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 35.1, "compiled": true, "ue": "ok", "actors": 74, "errors": 0, "exit_code": 0, "ts": "2026-08-07T14:33:04"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "e3430a247e2765bb", "ts": "2026-08-07T14:37:23"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 36.9, "compiled": true, "ue": "ok", "actors": 74, "errors": 0, "exit_code": 0, "ts": "2026-08-07T14:38:00"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "09e040a568b375b4", "ts": "2026-08-10T11:35:44"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.2, "objects": 19, "detections": 74, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T11:35:46"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "67a3b4bd6c4b765f", "ts": "2026-08-10T11:35:46"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 35, "room_cm": [1166.5, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-10T11:35:46"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "2a6508354543a599", "ts": "2026-08-10T11:35:46"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 6.1, "hero": 2, "materials": 5, "decals": 3, "screens": 0, "skipped": 1, "gateway.calls": 0, "gateway.cache_hits": 15, "gateway.retries": 0, "ts": "2026-08-10T11:35:52"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "9329e612e4d7556e", "ts": "2026-08-10T11:35:52"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.3, "assets": 2, "failed": 0, "provider": "proxy", "ts": "2026-08-10T11:35:53"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "729a6dcefb889ba8", "ts": "2026-08-10T11:35:53"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 0.0, "compiled": true, "ue": "skipped", "instances": 12, "ts": "2026-08-10T11:35:53"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "88cfa639767e420c", "ts": "2026-08-10T12:04:42"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.0, "objects": 19, "detections": 74, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T12:04:44"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "f34bd9751ec92560", "ts": "2026-08-10T12:04:44"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 35, "room_cm": [1166.5, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-10T12:04:45"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "ae59c746707a2366", "ts": "2026-08-10T12:04:45"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 26.0, "hero": 0, "materials": 5, "decals": 3, "screens": 0, "skipped": 0, "gateway.calls": 1, "gateway.cache_hits": 13, "gateway.retries": 0, "ts": "2026-08-10T12:05:11"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "52647adc3416db25", "ts": "2026-08-10T12:05:11"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 6.9, "assets": 26, "matched": 25, "proxy": 1, "flagged": 20, "provider": "library", "ts": "2026-08-10T12:05:17"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ef30c66088cccd39", "ts": "2026-08-10T12:05:17"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 0.0, "compiled": true, "ue": "skipped", "instances": 94, "ts": "2026-08-10T12:05:17"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "1a753a3e2a2cd4b5", "ts": "2026-08-10T12:12:06"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.3, "objects": 19, "detections": 74, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T12:12:08"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "1392ecc51e2ab998", "ts": "2026-08-10T12:12:08"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 35, "room_cm": [1166.5, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-10T12:12:08"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "be40772d2bf3f8ff", "ts": "2026-08-10T12:12:08"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 117.6, "hero": 0, "materials": 5, "decals": 3, "screens": 0, "skipped": 0, "gateway.calls": 4, "gateway.cache_hits": 18, "gateway.retries": 0, "ts": "2026-08-10T12:14:06"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "cd3d58bd38a10e3f", "ts": "2026-08-10T12:14:06"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.2, "assets": 26, "matched": 25, "proxy": 1, "decal_tex": 7, "flagged": 20, "provider": "library", "ts": "2026-08-10T12:14:06"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "b318b6931fd1e8aa", "ts": "2026-08-10T12:14:06"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 36.2, "compiled": true, "ue": "ok", "actors": 144, "errors": 0, "exit_code": 0, "ts": "2026-08-10T12:14:43"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "74ee40b46ecd0a46", "ts": "2026-08-10T12:17:31"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 34.6, "compiled": true, "ue": "ok", "actors": 144, "errors": 0, "exit_code": 0, "ts": "2026-08-10T12:18:06"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "1269989bdc025bec", "ts": "2026-08-10T14:34:44"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.2, "objects": 19, "detections": 74, "calib_conf": 0.9, "fov_source": "manual", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T14:34:46"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "06d9096bf03fd11e", "ts": "2026-08-10T14:34:46"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 17, "room_cm": [677.7, 597.5, 285.0], "scale_calibration": 1.0, "low_confidence": 10, "ts": "2026-08-10T14:34:46"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "9d992b7384ff772f", "ts": "2026-08-10T14:34:46"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 129.8, "hero": 0, "materials": 4, "decals": 3, "screens": 0, "skipped": 1, "gateway.calls": 4, "gateway.cache_hits": 8, "gateway.retries": 0, "ts": "2026-08-10T14:36:56"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "8fc0fb92ce5fa374", "ts": "2026-08-10T14:36:56"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 52.3, "assets": 8, "matched": 5, "proxy": 3, "decal_tex": 7, "flagged": 7, "provider": "library", "ts": "2026-08-10T14:37:48"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "f1829924c715b3b9", "ts": "2026-08-10T14:37:48"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.3, "compiled": true, "ue": "ok", "actors": 130, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:38:42"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "1269989bdc025bec", "ts": "2026-08-10T14:39:31"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.3, "objects": 19, "detections": 74, "calib_conf": 0.9, "fov_source": "manual", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T14:39:33"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "505660cf38e99d0e", "ts": "2026-08-10T14:39:33"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 19, "room_cm": [1027.5, 656.4, 285.0], "scale_calibration": 1.0, "low_confidence": 10, "ts": "2026-08-10T14:39:33"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "ebc3e4153e7fa84f", "ts": "2026-08-10T14:39:33"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 26.2, "hero": 0, "materials": 4, "decals": 3, "screens": 0, "skipped": 1, "gateway.calls": 0, "gateway.cache_hits": 12, "gateway.retries": 0, "ts": "2026-08-10T14:39:59"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "74e64edda25373b0", "ts": "2026-08-10T14:39:59"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.2, "assets": 10, "matched": 7, "proxy": 3, "decal_tex": 7, "flagged": 9, "provider": "library", "ts": "2026-08-10T14:39:59"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "8094052999a5b725", "ts": "2026-08-10T14:39:59"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 31.1, "compiled": true, "ue": "ok", "actors": 152, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:40:31"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "1269989bdc025bec", "ts": "2026-08-10T14:45:02"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.2, "objects": 19, "detections": 74, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 0, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T14:45:04"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "9e8d1f3a2e434b7a", "ts": "2026-08-10T14:45:04"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 35, "room_cm": [1166.5, 1523.0, 285.0], "scale_calibration": 1.0, "low_confidence": 13, "ts": "2026-08-10T14:45:04"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "cd4c85f43a2fe97c", "ts": "2026-08-10T14:45:04"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 23.5, "hero": 0, "materials": 4, "decals": 3, "screens": 0, "skipped": 1, "gateway.calls": 0, "gateway.cache_hits": 12, "gateway.retries": 0, "ts": "2026-08-10T14:45:28"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "fccb4adffdeafcdd", "ts": "2026-08-10T14:45:28"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 19.4, "assets": 26, "matched": 21, "proxy": 5, "decal_tex": 7, "flagged": 21, "provider": "library", "ts": "2026-08-10T14:45:47"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "4c13de85328d46fa", "ts": "2026-08-10T14:45:47"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 39.9, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:46:27"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "0d8156b03314f617", "ts": "2026-08-10T14:49:40"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 49.4, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:50:29"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "bcfab5bcca67fd9a", "ts": "2026-08-10T14:51:57"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 34.7, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:52:31"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "8d54080b8d2c56c5", "ts": "2026-08-10T14:53:58"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 34.0, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:54:32"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "05ced4d6bdce81b1", "ts": "2026-08-10T14:57:16"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.4, "assets": 26, "matched": 16, "proxy": 10, "decal_tex": 7, "flagged": 21, "provider": "library", "ts": "2026-08-10T14:57:16"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "1d35ff0d5143d61a", "ts": "2026-08-10T14:57:16"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 32.0, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T14:57:48"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "68d8b57b98f49dd5", "ts": "2026-08-10T15:01:05"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 69.8, "compiled": true, "ue": "ok", "actors": 211, "errors": 0, "exit_code": 0, "ts": "2026-08-10T15:02:14"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "46bd49f525d0fd78", "ts": "2026-08-10T16:19:28"}
+{"stage": "s01_perceive", "event": "done", "seconds": 189.3, "objects": 12, "detections": 50, "calib_conf": 0.12, "fov_source": "prior_hfov60", "box3d": 10, "gateway.calls": 6, "gateway.cache_hits": 0, "gateway.retries": 0, "ts": "2026-08-10T16:22:38"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "f1a4977edb0ab6e6", "ts": "2026-08-10T16:22:38"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.2, "objects": 36, "room_cm": [1153.7, 612.3, 285.0], "scale_calibration": 1.071, "low_confidence": 2, "ts": "2026-08-10T16:22:38"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "038a867ffdd66d08", "ts": "2026-08-10T16:22:38"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 677.7, "hero": 0, "materials": 10, "decals": 0, "screens": 0, "skipped": 1, "gateway.calls": 22, "gateway.cache_hits": 3, "gateway.retries": 0, "ts": "2026-08-10T16:33:56"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "07529c0813fd05c5", "ts": "2026-08-10T16:33:56"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.3, "assets": 28, "matched": 22, "proxy": 6, "decal_tex": 0, "flagged": 19, "provider": "library", "ts": "2026-08-10T16:33:56"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "d4edefa1565bb06b", "ts": "2026-08-10T16:33:56"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 51.5, "compiled": true, "ue": "ok", "actors": 145, "errors": 0, "exit_code": 0, "ts": "2026-08-10T16:34:47"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "33de8a9c575759f3", "ts": "2026-08-10T16:41:12"}
+{"stage": "s02_layout", "event": "done", "seconds": 1.0, "objects": 36, "room_cm": [1153.7, 612.3, 285.0], "scale_calibration": 1.071, "low_confidence": 2, "ts": "2026-08-10T16:41:13"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "1da396205e319d4c", "ts": "2026-08-10T16:41:13"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 84.2, "hero": 0, "materials": 3, "decals": 3, "screens": 0, "skipped": 0, "gateway.calls": 3, "gateway.cache_hits": 7, "gateway.retries": 0, "ts": "2026-08-10T16:42:37"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "f13fdc4498d47b53", "ts": "2026-08-10T16:42:37"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.4, "assets": 33, "matched": 22, "proxy": 11, "decal_tex": 3, "flagged": 24, "provider": "library", "ts": "2026-08-10T16:42:37"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "3a712d55bd1fc1e7", "ts": "2026-08-10T16:42:37"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 41.6, "compiled": true, "ue": "ok", "actors": 119, "errors": 0, "exit_code": 0, "ts": "2026-08-10T16:43:19"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "f13fdc4498d47b53", "ts": "2026-08-10T16:49:34"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 1.2, "assets": 33, "matched": 22, "proxy": 11, "decal_tex": 3, "flagged": 24, "provider": "library", "ts": "2026-08-10T16:49:35"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "9efd03d6a09b0bfc", "ts": "2026-08-10T16:49:35"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 48.7, "compiled": true, "ue": "ok", "actors": 131, "errors": 0, "exit_code": 0, "ts": "2026-08-10T16:50:24"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "2eb7101a17d6969b", "ts": "2026-08-10T17:00:32"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 1.3, "assets": 33, "matched": 22, "proxy": 11, "decal_tex": 3, "flagged": 24, "provider": "library", "ts": "2026-08-10T17:00:34"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "df390eb82d9a7ceb", "ts": "2026-08-10T17:00:34"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 51.3, "compiled": true, "ue": "ok", "actors": 158, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:01:25"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "309c38ced3068067", "ts": "2026-08-10T17:03:09"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 1.2, "assets": 33, "matched": 22, "proxy": 11, "decal_tex": 3, "flagged": 24, "provider": "library", "ts": "2026-08-10T17:03:10"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ec0933433ae14a51", "ts": "2026-08-10T17:03:10"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 50.2, "compiled": true, "ue": "ok", "actors": 158, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:04:00"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "8a1dfdf4f57dbda5", "ts": "2026-08-10T17:20:18"}
+{"stage": "s01_perceive", "event": "done", "seconds": 2.1, "objects": 12, "detections": 50, "calib_conf": 0.9, "fov_source": "manual", "box3d": 10, "gateway.calls": 0, "gateway.cache_hits": 5, "gateway.retries": 0, "ts": "2026-08-10T17:20:20"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "3af7562b39292be7", "ts": "2026-08-10T17:20:20"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 31, "room_cm": [1102.9, 675.9, 285.0], "scale_calibration": 1.0, "low_confidence": 8, "ts": "2026-08-10T17:20:20"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "71b96f85877cade2", "ts": "2026-08-10T17:20:20"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 2.1, "hero": 0, "materials": 3, "decals": 2, "screens": 0, "skipped": 0, "gateway.calls": 0, "gateway.cache_hits": 9, "gateway.retries": 0, "ts": "2026-08-10T17:20:23"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "e93f33a4a54f5875", "ts": "2026-08-10T17:20:23"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.3, "assets": 29, "matched": 18, "proxy": 11, "decal_tex": 2, "flagged": 18, "provider": "library", "ts": "2026-08-10T17:20:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "f36033a58b24125f", "ts": "2026-08-10T17:20:23"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 46.0, "compiled": true, "ue": "ok", "actors": 124, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:21:09"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "e36c9c073df49005", "ts": "2026-08-10T17:22:52"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.3, "compiled": true, "ue": "ok", "actors": 124, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:23:47"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "13106a23724f6b8b", "ts": "2026-08-10T17:24:54"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 46.8, "compiled": true, "ue": "ok", "actors": 124, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:25:40"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "31db8d8daf969a77", "ts": "2026-08-10T17:47:09"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.8, "objects": 31, "room_cm": [1102.9, 675.9, 285.0], "scale_calibration": 1.0, "low_confidence": 8, "ts": "2026-08-10T17:47:10"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "fb438acbcc95ea70", "ts": "2026-08-10T17:47:10"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 2.3, "hero": 0, "materials": 3, "decals": 2, "screens": 0, "skipped": 0, "gateway.calls": 0, "gateway.cache_hits": 9, "gateway.retries": 0, "ts": "2026-08-10T17:47:12"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "d30f289f7d5032bf", "ts": "2026-08-10T17:47:12"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.4, "assets": 29, "matched": 18, "proxy": 11, "decal_tex": 2, "flagged": 18, "provider": "library", "ts": "2026-08-10T17:47:12"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "1daec91dace3f83b", "ts": "2026-08-10T17:47:12"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 47.0, "compiled": true, "ue": "ok", "actors": 78, "errors": 0, "exit_code": 0, "ts": "2026-08-10T17:47:59"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "6b8d6c7dbe126aae", "ts": "2026-08-10T17:53:35"}
+{"stage": "s01_perceive", "event": "done", "seconds": 320.4, "objects": 12, "detections": 68, "calib_conf": 0.9, "fov_source": "manual", "box3d": 10, "gateway.calls": 5, "gateway.cache_hits": 5, "gateway.retries": 1, "ts": "2026-08-10T17:58:55"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "b9c3d6a7f63ed329", "ts": "2026-08-10T17:58:55"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 43, "room_cm": [1081.3, 717.6, 285.0], "scale_calibration": 1.0, "low_confidence": 11, "ts": "2026-08-10T17:58:55"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "e6bae690f0cd6b9a", "ts": "2026-08-10T17:58:55"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 77.8, "hero": 0, "materials": 3, "decals": 5, "screens": 0, "skipped": 0, "gateway.calls": 3, "gateway.cache_hits": 9, "gateway.retries": 0, "ts": "2026-08-10T18:00:13"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "ab2a444c93567361", "ts": "2026-08-10T18:00:13"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.3, "assets": 37, "matched": 26, "proxy": 11, "decal_tex": 6, "flagged": 21, "provider": "library", "ts": "2026-08-10T18:00:13"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "40c6a1bdfcb3c2a9", "ts": "2026-08-10T18:00:13"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 52.3, "compiled": true, "ue": "ok", "actors": 113, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:01:06"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "bc1426ce25fc0b09", "ts": "2026-08-10T18:03:53"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 52.1, "compiled": true, "ue": "ok", "actors": 113, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:04:45"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "1be39686d3a062bb", "ts": "2026-08-10T18:06:29"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 52.5, "compiled": true, "ue": "ok", "actors": 113, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:07:21"}
+{"stage": "s01_perceive", "event": "start", "fingerprint": "e1a1909ddc9b8ae7", "ts": "2026-08-10T18:13:38"}
+{"stage": "s01_perceive", "event": "done", "seconds": 85.6, "objects": 12, "detections": 70, "calib_conf": 0.9, "fov_source": "manual", "box3d": 10, "gateway.calls": 7, "gateway.cache_hits": 9, "gateway.retries": 0, "ts": "2026-08-10T18:15:03"}
+{"stage": "s02_layout", "event": "start", "fingerprint": "c2ffb289225d59b7", "ts": "2026-08-10T18:15:03"}
+{"stage": "s02_layout", "event": "done", "seconds": 0.0, "objects": 36, "room_cm": [1083.8, 723.3, 285.0], "scale_calibration": 1.0, "low_confidence": 6, "ts": "2026-08-10T18:15:03"}
+{"stage": "s03_gen2d", "event": "start", "fingerprint": "d4582d55d12667a2", "ts": "2026-08-10T18:15:04"}
+{"stage": "s03_gen2d", "event": "done", "seconds": 2.9, "hero": 0, "materials": 3, "decals": 5, "screens": 0, "skipped": 0, "gateway.calls": 0, "gateway.cache_hits": 12, "gateway.retries": 0, "ts": "2026-08-10T18:15:06"}
+{"stage": "s04_gen3d", "event": "start", "fingerprint": "24ccd5716e2f9813", "ts": "2026-08-10T18:15:06"}
+{"stage": "s04_gen3d", "event": "done", "seconds": 0.4, "assets": 30, "matched": 21, "proxy": 9, "decal_tex": 6, "flagged": 17, "provider": "library", "ts": "2026-08-10T18:15:07"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "8ce99324c31d1606", "ts": "2026-08-10T18:15:07"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 59.4, "compiled": true, "ue": "ok", "actors": 113, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:16:06"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "5410397cb63f1372", "ts": "2026-08-10T18:18:32"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 50.9, "compiled": true, "ue": "ok", "actors": 116, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:19:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "b958556223cbc434", "ts": "2026-08-10T18:21:32"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 51.1, "compiled": true, "ue": "ok", "actors": 121, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:22:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "824e3b80fbf15d2a", "ts": "2026-08-10T18:24:21"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 49.9, "compiled": true, "ue": "ok", "actors": 123, "errors": 0, "exit_code": 0, "ts": "2026-08-10T18:25:11"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "4a1c5204879f3c21", "ts": "2026-08-10T19:40:48"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 56.7, "compiled": true, "ue": "ok", "actors": 123, "errors": 0, "exit_code": 0, "ts": "2026-08-10T19:41:44"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "00c49b4c17d6f02b", "ts": "2026-08-10T19:43:38"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 52.3, "compiled": true, "ue": "ok", "actors": 123, "errors": 0, "exit_code": 0, "ts": "2026-08-10T19:44:30"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "83b5489df4b15aa2", "ts": "2026-08-10T19:54:27"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 56.1, "compiled": true, "ue": "ok", "actors": 123, "errors": 0, "exit_code": 0, "ts": "2026-08-10T19:55:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "663c809309927cf0", "ts": "2026-08-10T20:07:46"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 57.4, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:08:43"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "29c42b0c477e5120", "ts": "2026-08-10T20:10:10"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 57.2, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:11:07"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "b46fec707080709e", "ts": "2026-08-10T20:19:26"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 56.3, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:20:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "78f21d2973f68b32", "ts": "2026-08-10T20:22:14"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 56.7, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:23:11"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "5fc11f2aee51d66e", "ts": "2026-08-10T20:24:22"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 53.0, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:25:15"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "78783eb7b1333d8d", "ts": "2026-08-10T20:32:39"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.7, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:33:34"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "963cc210d3d201d2", "ts": "2026-08-10T20:35:35"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.0, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:36:29"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "99e326a2de942044", "ts": "2026-08-10T20:39:36"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 57.8, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:40:34"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "8aa8201a5c93f1e2", "ts": "2026-08-10T20:43:30"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 55.0, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:44:25"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "8aa8201a5c93f1e2", "ts": "2026-08-10T20:48:25"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.4, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T20:49:20"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "2c5a864f0ff12993", "ts": "2026-08-10T21:04:20"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 53.9, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T21:05:14"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "a8c409b683b6a732", "ts": "2026-08-10T21:06:12"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 53.0, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T21:07:05"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "170806c782984fd6", "ts": "2026-08-10T21:11:10"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 54.2, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T21:12:04"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ca45b2387ee0fa05", "ts": "2026-08-10T21:17:28"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 53.1, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T21:18:21"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "660e0a1b1cdb74ed", "ts": "2026-08-10T22:01:29"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 53.2, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T22:02:23"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "50ffea76ebcb7bda", "ts": "2026-08-10T22:25:44"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 56.8, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T22:26:41"}
+{"stage": "s05_build_scene", "event": "start", "fingerprint": "ad43589c55b17790", "ts": "2026-08-10T22:29:08"}
+{"stage": "s05_build_scene", "event": "done", "seconds": 57.8, "compiled": true, "ue": "ok", "actors": 127, "errors": 0, "exit_code": 0, "ts": "2026-08-10T22:30:06"}

@@ -1,0 +1,18 @@
+You are labeling one 3D-generated asset for a scene-building asset library. The attached image is a clean white-background render of the asset.
+
+Pick the single best category from this CLOSED list (use "misc" only if truly nothing fits):
+{categories}
+
+Return ONLY a JSON object, no markdown fences, with exactly these keys:
+{{
+  "category": "<one word from the list>",
+  "variant_desc": "<short Chinese description of what distinguishes this variant, e.g. 米色外壳/屏幕偏紫/带散热格栅>",
+  "aliases": ["<0-3 lowercase english alternative names>"],
+  "is_screen": <true if the asset has a display screen surface>,
+  "is_flat_print": <true if it is a flat printed thing: poster / newspaper / sign / banner / loose paper>,
+  "poster_text": "<if is_flat_print and readable text is visible, the main text, else null>",
+  "est_size_cm": [<width>, <depth>, <height>],
+  "confidence": <0.0-1.0 how sure you are about the category>
+}}
+
+est_size_cm is your common-sense estimate of the REAL-WORLD size of this object in centimeters (e.g. a CRT monitor ≈ [40, 40, 38], a folding table ≈ [180, 75, 74]). It is used only to cross-check the mesh, not to scale it.

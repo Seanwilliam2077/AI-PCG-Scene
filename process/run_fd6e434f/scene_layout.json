@@ -1,0 +1,2371 @@
+{
+  "meta": {
+    "source_image": "ref.jpg",
+    "coordinate_system": "UE_LHS_Zup",
+    "units": "cm",
+    "pipeline_version": "2.0",
+    "perception_backend": "gemini-3-pro-image",
+    "scale_calibration": 1.0,
+    "fov_search": null
+  },
+  "camera": {
+    "position_cm": [
+      0.0,
+      0.0,
+      78.0
+    ],
+    "rotation_deg": {
+      "pitch": -0.8,
+      "yaw": 0.0,
+      "roll": -0.35
+    },
+    "hfov_deg": 95.0,
+    "vfov_deg": 62.73,
+    "aspect": 1.7902,
+    "fov_source": "manual",
+    "calib_confidence": 0.9
+  },
+  "room": {
+    "size_cm": [
+      1083.8,
+      723.3,
+      285.0
+    ],
+    "center_cm": [
+      461.9,
+      132.5,
+      0.0
+    ],
+    "wall_thickness_cm": 20.0,
+    "wall_yaws_deg": [
+      0.0,
+      90.0
+    ]
+  },
+  "objects": [
+    {
+      "id": "beige_computer_tower_07",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        307.9,
+        -0.8,
+        0.0
+      ],
+      "size_cm": [
+        71.7,
+        43.0,
+        66.9
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.446,
+        0.541,
+        0.553,
+        0.72
+      ],
+      "mask_poly": [
+        [
+          0.541,
+          0.446
+        ],
+        [
+          0.548,
+          0.548
+        ],
+        [
+          0.713,
+          0.553
+        ],
+        [
+          0.72,
+          0.453
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 119.3,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_1_54",
+      "category": "beige_computer_tower_1",
+      "label": "beige computer tower 1",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        306.0,
+        -18.7,
+        0.0
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        70.0
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.4486,
+        0.5332,
+        0.4966,
+        0.7216
+      ],
+      "mask_poly": [
+        [
+          0.5332,
+          0.4486
+        ],
+        [
+          0.5332,
+          0.49660000000000004
+        ],
+        [
+          0.7216,
+          0.49660000000000004
+        ],
+        [
+          0.7216,
+          0.4486
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 120.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_20",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        322.2,
+        -21.2,
+        0.0
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        67.9
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.4477,
+        0.5375,
+        0.4933,
+        0.71105
+      ],
+      "mask_poly": [
+        [
+          0.5462,
+          0.41113999999999995
+        ],
+        [
+          0.6814800000000001,
+          0.41113999999999995
+        ],
+        [
+          0.6814800000000001,
+          0.46964
+        ],
+        [
+          0.5462,
+          0.46964
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 114.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_21",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        331.4,
+        24.7,
+        0.0
+      ],
+      "size_cm": [
+        26.3,
+        15.8,
+        66.2
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.51671,
+        0.54023,
+        0.55319,
+        0.70481
+      ],
+      "mask_poly": [
+        [
+          0.548328,
+          0.49967
+        ],
+        [
+          0.6766160000000001,
+          0.49967
+        ],
+        [
+          0.6766160000000001,
+          0.54647
+        ],
+        [
+          0.548328,
+          0.54647
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 110.8,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_2_55",
+      "category": "beige_computer_tower_2",
+      "label": "beige computer tower 2",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        335.5,
+        25.3,
+        0.0
+      ],
+      "size_cm": [
+        26.7,
+        16.0,
+        66.7
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.517,
+        0.5386,
+        0.5536,
+        0.7024
+      ],
+      "mask_poly": [
+        [
+          0.5386,
+          0.517
+        ],
+        [
+          0.5386,
+          0.5536
+        ],
+        [
+          0.7024,
+          0.5536
+        ],
+        [
+          0.7024,
+          0.517
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 109.4,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_35",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        937.3,
+        454.2,
+        0.0
+      ],
+      "size_cm": [
+        133.1,
+        79.9,
+        166.1
+      ],
+      "yaw_deg": -90.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.6389,
+        0.45353,
+        0.6878,
+        0.55941
+      ],
+      "mask_poly": [
+        [
+          0.6389,
+          0.45353
+        ],
+        [
+          0.6878,
+          0.45353
+        ],
+        [
+          0.6878,
+          0.559405
+        ],
+        [
+          0.6389,
+          0.559405
+        ]
+      ],
+      "confidence": 0.685,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 28.5,
+        "clamped_into_room_m": 3.503
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_50",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        446.4,
+        -199.8,
+        0.0
+      ],
+      "size_cm": [
+        91.8,
+        55.1,
+        85.7
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.2484,
+        0.4996,
+        0.3414,
+        0.6574
+      ],
+      "mask_poly": [
+        [
+          0.09960000000000001,
+          0.6814
+        ],
+        [
+          0.09960000000000001,
+          0.7414000000000001
+        ],
+        [
+          0.1278,
+          0.7414000000000001
+        ],
+        [
+          0.2244,
+          0.7318
+        ],
+        [
+          0.25739999999999996,
+          0.7036
+        ],
+        [
+          0.25739999999999996,
+          0.6868000000000001
+        ],
+        [
+          0.1584,
+          0.6484
+        ],
+        [
+          0.111,
+          0.6484
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 82.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_19",
+      "category": "crt_monitor",
+      "label": "beige crt monitor",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        924.9,
+        346.6,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.66202,
+        0.47822,
+        0.68239,
+        0.57884
+      ],
+      "mask_poly": [
+        [
+          0.49999200000000005,
+          0.6860900000000001
+        ],
+        [
+          0.578424,
+          0.6860900000000001
+        ],
+        [
+          0.578424,
+          0.7122200000000001
+        ],
+        [
+          0.49999200000000005,
+          0.7122200000000001
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 39.6,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_2_52",
+      "category": "crt_monitor",
+      "label": "beige crt monitor 2",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        624.3,
+        289.8,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -90.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.682,
+        0.5128,
+        0.745,
+        0.6118
+      ],
+      "mask_poly": [
+        [
+          0.5128,
+          0.6819999999999999
+        ],
+        [
+          0.5128,
+          0.745
+        ],
+        [
+          0.6118,
+          0.745
+        ],
+        [
+          0.6118,
+          0.6819999999999999
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 58.7,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_34",
+      "category": "crt_monitor",
+      "label": "beige crt monitor",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        613.0,
+        284.3,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -90.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.6818,
+        0.51282,
+        0.7448,
+        0.61369
+      ],
+      "mask_poly": [
+        [
+          0.6818,
+          0.51282
+        ],
+        [
+          0.7448,
+          0.51282
+        ],
+        [
+          0.7448,
+          0.6136900000000001
+        ],
+        [
+          0.6818,
+          0.6136900000000001
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 59.8,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_3_53",
+      "category": "crt_monitor",
+      "label": "beige crt monitor 3",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        965.9,
+        380.8,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.6622,
+        0.4768,
+        0.7,
+        0.5758
+      ],
+      "mask_poly": [
+        [
+          0.4768,
+          0.6622
+        ],
+        [
+          0.4768,
+          0.7
+        ],
+        [
+          0.5758,
+          0.7
+        ],
+        [
+          0.5758,
+          0.6622
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 37.9,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_46",
+      "category": "crt_monitor",
+      "label": "beige crt monitor",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        869.0,
+        343.0,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.6628,
+        0.4752,
+        0.7,
+        0.5832
+      ],
+      "mask_poly": [
+        [
+          0.8752,
+          0.2628
+        ],
+        [
+          0.8752,
+          0.3
+        ],
+        [
+          0.9832,
+          0.3
+        ],
+        [
+          0.9832,
+          0.2628
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 42.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_49",
+      "category": "crt_monitor",
+      "label": "beige crt monitor",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        337.0,
+        -190.0,
+        0.0
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.1962,
+        0.5482,
+        0.2868,
+        0.7048
+      ],
+      "mask_poly": [
+        [
+          0.1962,
+          0.6448
+        ],
+        [
+          0.17099999999999999,
+          0.6772
+        ],
+        [
+          0.207,
+          0.6868000000000001
+        ],
+        [
+          0.2562,
+          0.6796
+        ],
+        [
+          0.2748,
+          0.6532
+        ],
+        [
+          0.28859999999999997,
+          0.6322
+        ],
+        [
+          0.28859999999999997,
+          0.6112
+        ],
+        [
+          0.2748,
+          0.6022000000000001
+        ],
+        [
+          0.2376,
+          0.5962000000000001
+        ],
+        [
+          0.1962,
+          0.5992000000000001
+        ],
+        [
+          0.17099999999999999,
+          0.6052000000000001
+        ],
+        [
+          0.1584,
+          0.613
+        ],
+        [
+          0.1482,
+          0.6262
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 109.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "blue_folding_chair_00",
+      "category": "chair",
+      "label": "blue folding chair",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        135.3,
+        -129.5,
+        0.0
+      ],
+      "size_cm": [
+        44.2,
+        47.1,
+        80.0
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.0,
+        0.504,
+        0.119,
+        0.993
+      ],
+      "mask_poly": [
+        [
+          0.504,
+          0.0
+        ],
+        [
+          0.515,
+          0.113
+        ],
+        [
+          0.705,
+          0.119
+        ],
+        [
+          0.748,
+          0.098
+        ],
+        [
+          0.993,
+          0.082
+        ],
+        [
+          0.993,
+          0.0
+        ]
+      ],
+      "confidence": 0.65,
+      "size_clamped": false,
+      "occluded": true,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 272.7,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "blue_folding_chair_01",
+      "category": "chair",
+      "label": "blue folding chair",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        134.7,
+        -65.8,
+        0.0
+      ],
+      "size_cm": [
+        42.6,
+        45.3,
+        77.0
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.166,
+        0.52,
+        0.386,
+        0.993
+      ],
+      "mask_poly": [
+        [
+          0.52,
+          0.288
+        ],
+        [
+          0.537,
+          0.381
+        ],
+        [
+          0.74,
+          0.353
+        ],
+        [
+          0.785,
+          0.333
+        ],
+        [
+          0.893,
+          0.246
+        ],
+        [
+          0.826,
+          0.166
+        ],
+        [
+          0.715,
+          0.256
+        ],
+        [
+          0.695,
+          0.26
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 274.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "blue_folding_chair_02",
+      "category": "chair",
+      "label": "blue folding chair",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        339.5,
+        170.8,
+        0.0
+      ],
+      "size_cm": [
+        59.3,
+        63.1,
+        107.3
+      ],
+      "yaw_deg": -90.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.686,
+        0.438,
+        0.778,
+        0.698
+      ],
+      "mask_poly": [
+        [
+          0.438,
+          0.688
+        ],
+        [
+          0.451,
+          0.718
+        ],
+        [
+          0.541,
+          0.773
+        ],
+        [
+          0.572,
+          0.778
+        ],
+        [
+          0.618,
+          0.755
+        ],
+        [
+          0.558,
+          0.693
+        ],
+        [
+          0.538,
+          0.703
+        ],
+        [
+          0.498,
+          0.693
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 108.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "blue_folding_chair_24",
+      "category": "chair",
+      "label": "blue folding chair",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        577.0,
+        95.2,
+        0.0
+      ],
+      "size_cm": [
+        55.0,
+        58.5,
+        99.4
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.55106,
+        0.48017,
+        0.60122,
+        0.62174
+      ],
+      "mask_poly": [
+        [
+          0.5015120000000001,
+          0.54374
+        ],
+        [
+          0.6118640000000001,
+          0.54374
+        ],
+        [
+          0.6118640000000001,
+          0.60809
+        ],
+        [
+          0.5015120000000001,
+          0.60809
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 63.6,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "cable_bundle_26",
+      "category": "cable_bundle",
+      "label": "cable bundle",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        425.3,
+        97.0,
+        0.0
+      ],
+      "size_cm": [
+        27.7,
+        16.6,
+        93.6
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "beige computer tower",
+      "bbox_2d": [
+        0.59028,
+        0.48017,
+        0.62038,
+        0.66113
+      ],
+      "mask_poly": [
+        [
+          0.5015120000000001,
+          0.59405
+        ],
+        [
+          0.642568,
+          0.59405
+        ],
+        [
+          0.642568,
+          0.63266
+        ],
+        [
+          0.5015120000000001,
+          0.63266
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 86.3,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "cable_bundle_36",
+      "category": "cable_bundle",
+      "label": "cable bundle",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        355.7,
+        276.8,
+        0.0
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        164.5
+      ],
+      "yaw_deg": -90.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete ceiling",
+      "bbox_2d": [
+        0.8372,
+        0.308,
+        0.8795,
+        0.688
+      ],
+      "mask_poly": [
+        [
+          0.8371999999999999,
+          0.30799999999999994
+        ],
+        [
+          0.8795,
+          0.30799999999999994
+        ],
+        [
+          0.8795,
+          0.6879950000000001
+        ],
+        [
+          0.8371999999999999,
+          0.6879950000000001
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 103.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "concrete_pillar_13",
+      "category": "concrete_pillar",
+      "label": "concrete pillar",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        229.9,
+        2.8,
+        0.0
+      ],
+      "size_cm": [
+        16.5,
+        9.9,
+        222.6
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.49,
+        0.0,
+        0.523,
+        0.791
+      ],
+      "mask_poly": [
+        [
+          0.0,
+          0.49
+        ],
+        [
+          0.0,
+          0.518
+        ],
+        [
+          0.786,
+          0.523
+        ],
+        [
+          0.791,
+          0.495
+        ]
+      ],
+      "confidence": 0.65,
+      "size_clamped": false,
+      "occluded": true,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 159.9,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "concrete_pillar_25",
+      "category": "concrete_pillar",
+      "label": "concrete pillar",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        321.6,
+        4.4,
+        0.0
+      ],
+      "size_cm": [
+        17.9,
+        10.7,
+        152.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.49422,
+        0.323,
+        0.51975,
+        0.71105
+      ],
+      "mask_poly": [
+        [
+          0.379,
+          0.47081
+        ],
+        [
+          0.6814800000000001,
+          0.47081
+        ],
+        [
+          0.6814800000000001,
+          0.5035700000000001
+        ],
+        [
+          0.379,
+          0.5035700000000001
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 114.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "concrete_pillar_28",
+      "category": "concrete_pillar",
+      "label": "concrete pillar",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        845.8,
+        208.5,
+        0.0
+      ],
+      "size_cm": [
+        74.2,
+        44.5,
+        287.0
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.593,
+        0.308,
+        0.6338,
+        0.58597
+      ],
+      "mask_poly": [
+        [
+          0.593,
+          0.30799999999999994
+        ],
+        [
+          0.6338,
+          0.30799999999999994
+        ],
+        [
+          0.6338,
+          0.58597
+        ],
+        [
+          0.593,
+          0.58597
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 43.3,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "floor_litter_15",
+      "category": "floor_litter",
+      "label": "floor litter",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        166.7,
+        -5.6,
+        0.0
+      ],
+      "size_cm": [
+        36.2,
+        21.7,
+        20.5
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.436,
+        0.796,
+        0.536,
+        0.898
+      ],
+      "mask_poly": [
+        [
+          0.796,
+          0.436
+        ],
+        [
+          0.801,
+          0.531
+        ],
+        [
+          0.893,
+          0.536
+        ],
+        [
+          0.898,
+          0.441
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 221.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "floor_litter_16",
+      "category": "floor_litter",
+      "label": "floor litter",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        250.9,
+        -172.0,
+        0.0
+      ],
+      "size_cm": [
+        35.9,
+        21.6,
+        19.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.153,
+        0.708,
+        0.218,
+        0.771
+      ],
+      "mask_poly": [
+        [
+          0.708,
+          0.153
+        ],
+        [
+          0.713,
+          0.213
+        ],
+        [
+          0.766,
+          0.218
+        ],
+        [
+          0.771,
+          0.158
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 146.5,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "floor_litter_27",
+      "category": "floor_litter",
+      "label": "floor litter",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        406.9,
+        78.9,
+        0.0
+      ],
+      "size_cm": [
+        57.3,
+        34.4,
+        22.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "concrete floor",
+      "bbox_2d": [
+        0.55714,
+        0.6233,
+        0.6222,
+        0.66815
+      ],
+      "mask_poly": [
+        [
+          0.6130800000000001,
+          0.55154
+        ],
+        [
+          0.6480400000000001,
+          0.55154
+        ],
+        [
+          0.6480400000000001,
+          0.635
+        ],
+        [
+          0.6130800000000001,
+          0.635
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 90.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_51",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        252.3,
+        -172.7,
+        0.0
+      ],
+      "size_cm": [
+        37.5,
+        1.5,
+        52.5
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.1548,
+        0.7018,
+        0.2172,
+        0.7696
+      ],
+      "mask_poly": [
+        [
+          0.3018,
+          0.5992000000000001
+        ],
+        [
+          0.3018,
+          0.6112
+        ],
+        [
+          0.33959999999999996,
+          0.6172
+        ],
+        [
+          0.3696,
+          0.5584
+        ],
+        [
+          0.33180000000000004,
+          0.5548
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 145.7,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "white_folding_table_08",
+      "category": "folding_table",
+      "label": "white folding table",
+      "description": "白色塑料折叠桌，金属腿",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        396.4,
+        26.2,
+        -0.0
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "metal"
+      ],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.419,
+        0.423,
+        0.643,
+        0.673
+      ],
+      "mask_poly": [
+        [
+          0.423,
+          0.419
+        ],
+        [
+          0.428,
+          0.638
+        ],
+        [
+          0.468,
+          0.643
+        ],
+        [
+          0.473,
+          0.423
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 92.6,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "white_folding_table_32",
+      "category": "folding_table",
+      "label": "white folding table",
+      "description": "白色塑料折叠桌，金属腿",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        426.3,
+        108.6,
+        0.0
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [
+        "plastic",
+        "metal"
+      ],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "floor",
+      "bbox_2d": [
+        0.593,
+        0.45353,
+        0.6422,
+        0.66066
+      ],
+      "mask_poly": [
+        [
+          0.593,
+          0.45353
+        ],
+        [
+          0.6422,
+          0.45353
+        ],
+        [
+          0.6422,
+          0.66066
+        ],
+        [
+          0.593,
+          0.66066
+        ]
+      ],
+      "confidence": 0.9,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "ground_ray",
+        "support_id": null,
+        "margin_px": 86.1,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_computer_tower_06",
+      "category": "beige_computer_tower",
+      "label": "beige computer tower",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        340.5,
+        66.7,
+        99.8
+      ],
+      "size_cm": [
+        44.4,
+        26.7,
+        71.7
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "follow_support",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white folding table",
+      "bbox_2d": [
+        0.551,
+        0.286,
+        0.628,
+        0.458
+      ],
+      "mask_poly": [
+        [
+          0.286,
+          0.551
+        ],
+        [
+          0.291,
+          0.623
+        ],
+        [
+          0.453,
+          0.628
+        ],
+        [
+          0.458,
+          0.555
+        ]
+      ],
+      "confidence": 0.6,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "support_ray",
+        "support_id": "white_folding_table_32",
+        "margin_px": -30.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "beige_crt_monitor_04",
+      "category": "crt_monitor",
+      "label": "beige crt monitor",
+      "description": "米色旧式CRT显示器，屏幕发光",
+      "asset_strategy": "hero",
+      "count": 2,
+      "position_cm": [
+        274.7,
+        -14.1,
+        99.8
+      ],
+      "size_cm": [
+        42.8,
+        45.0,
+        43.9
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "follow_support",
+      "material_tags": [
+        "plastic",
+        "glass"
+      ],
+      "is_emissive": true,
+      "emissive_color": "#FF55FF",
+      "text_content": "MPRICE",
+      "thin": false,
+      "attached_to": "white folding table",
+      "bbox_2d": [
+        0.445,
+        0.316,
+        0.496,
+        0.431
+      ],
+      "mask_poly": [
+        [
+          0.316,
+          0.445
+        ],
+        [
+          0.321,
+          0.493
+        ],
+        [
+          0.418,
+          0.496
+        ],
+        [
+          0.431,
+          0.448
+        ]
+      ],
+      "confidence": 0.4,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "support_ray",
+        "support_id": "white_folding_table_08",
+        "margin_px": -46.2,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "cable_bundle_14",
+      "category": "cable_bundle",
+      "label": "cable bundle",
+      "description": "",
+      "asset_strategy": "hero",
+      "count": 1,
+      "position_cm": [
+        589.5,
+        494.2,
+        162.1
+      ],
+      "size_cm": [
+        141.5,
+        2.0,
+        678.7
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_normal",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "wall",
+      "bbox_2d": [
+        0.828,
+        0.013,
+        0.938,
+        0.768
+      ],
+      "mask_poly": [
+        [
+          0.013,
+          0.828
+        ],
+        [
+          0.018,
+          0.933
+        ],
+        [
+          0.763,
+          0.938
+        ],
+        [
+          0.768,
+          0.833
+        ]
+      ],
+      "confidence": 0.6,
+      "size_clamped": false,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_11",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        333.1,
+        -229.1,
+        218.6
+      ],
+      "size_cm": [
+        66.5,
+        2.7,
+        93.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white tiled wall",
+      "bbox_2d": [
+        0.156,
+        0.043,
+        0.215,
+        0.298
+      ],
+      "mask_poly": [
+        [
+          0.043,
+          0.156
+        ],
+        [
+          0.048,
+          0.21
+        ],
+        [
+          0.293,
+          0.215
+        ],
+        [
+          0.298,
+          0.161
+        ]
+      ],
+      "confidence": 0.45,
+      "size_clamped": true,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_12",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        435.2,
+        -229.1,
+        242.6
+      ],
+      "size_cm": [
+        66.5,
+        2.7,
+        93.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white tiled wall",
+      "bbox_2d": [
+        0.24,
+        0.123,
+        0.278,
+        0.288
+      ],
+      "mask_poly": [
+        [
+          0.123,
+          0.24
+        ],
+        [
+          0.128,
+          0.273
+        ],
+        [
+          0.283,
+          0.278
+        ],
+        [
+          0.288,
+          0.245
+        ]
+      ],
+      "confidence": 0.45,
+      "size_clamped": true,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_43",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        423.3,
+        -229.1,
+        252.5
+      ],
+      "size_cm": [
+        66.5,
+        2.7,
+        93.1
+      ],
+      "yaw_deg": -270.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white tiled wall",
+      "bbox_2d": [
+        0.1536,
+        0.0402,
+        0.351,
+        0.3156
+      ],
+      "mask_poly": [
+        [
+          0.1536,
+          0.0402
+        ],
+        [
+          0.351,
+          0.0402
+        ],
+        [
+          0.351,
+          0.3156
+        ],
+        [
+          0.1536,
+          0.3156
+        ]
+      ],
+      "confidence": 0.45,
+      "size_clamped": true,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_44",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        1003.8,
+        -144.6,
+        370.7
+      ],
+      "size_cm": [
+        66.5,
+        2.7,
+        93.1
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white tiled wall",
+      "bbox_2d": [
+        0.384,
+        0.2196,
+        0.483,
+        0.3282
+      ],
+      "mask_poly": [
+        [
+          0.384,
+          0.2196
+        ],
+        [
+          0.483,
+          0.2196
+        ],
+        [
+          0.483,
+          0.3282
+        ],
+        [
+          0.384,
+          0.3282
+        ]
+      ],
+      "confidence": 0.45,
+      "size_clamped": true,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    },
+    {
+      "id": "wall_poster_48",
+      "category": "wall_poster",
+      "label": "wall poster",
+      "description": "",
+      "asset_strategy": "decal",
+      "count": 1,
+      "position_cm": [
+        1003.8,
+        414.2,
+        397.7
+      ],
+      "size_cm": [
+        66.5,
+        2.7,
+        93.1
+      ],
+      "yaw_deg": -180.0,
+      "yaw_source": "wall_axis_snap",
+      "material_tags": [],
+      "is_emissive": false,
+      "emissive_color": null,
+      "text_content": null,
+      "thin": false,
+      "attached_to": "white tiled wall",
+      "bbox_2d": [
+        0.6784,
+        0.195,
+        0.6964,
+        0.3036
+      ],
+      "mask_poly": [
+        [
+          0.595,
+          0.2784
+        ],
+        [
+          0.595,
+          0.2964
+        ],
+        [
+          0.7036,
+          0.2964
+        ],
+        [
+          0.7036,
+          0.2784
+        ]
+      ],
+      "confidence": 0.45,
+      "size_clamped": true,
+      "occluded": false,
+      "solve": {
+        "method": "wall_ray",
+        "support_id": null,
+        "margin_px": 0.0,
+        "clamped_into_room_m": null
+      },
+      "box3d_raw": null
+    }
+  ],
+  "lighting": [
+    {
+      "type": "ceiling_panel",
+      "position_desc": "Four fluorescent fixtures mounted on the ceiling.",
+      "color_temp_k": 5000,
+      "color_hex": "#EAF4FF",
+      "relative_intensity": 1.0,
+      "source_object_id": "fluorescent_light"
+    },
+    {
+      "type": "screen_glow",
+      "position_desc": "Glow from multiple CRT monitors on the tables.",
+      "color_temp_k": null,
+      "color_hex": "#FF55FF",
+      "relative_intensity": 0.6,
+      "source_object_id": "crt_monitor_main"
+    },
+    {
+      "type": "ambient",
+      "position_desc": "General dim ambient light filling the room.",
+      "color_temp_k": 4500,
+      "color_hex": "#C0C0C0",
+      "relative_intensity": 0.3,
+      "source_object_id": null
+    }
+  ],
+  "palette": [
+    "#2A2D32",
+    "#A0A0A0",
+    "#EAF4FF",
+    "#FF55FF",
+    "#3A4D72",
+    "#6B5B4A"
+  ],
+  "style_tags": [
+    "retro",
+    "cyberpunk",
+    "industrial",
+    "grimy",
+    "dystopian"
+  ]
+}

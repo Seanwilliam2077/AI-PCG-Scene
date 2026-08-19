@@ -1,0 +1,3134 @@
+{
+  "content_dir": "/Game/AutoScene",
+  "room_box": {
+    "size_cm": [
+      1083.8,
+      723.3,
+      285.0
+    ],
+    "center_cm": [
+      461.9,
+      132.5,
+      0.0
+    ],
+    "wall_thickness_cm": 20.0,
+    "materials": {
+      "floor": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_floor_H.png"
+      },
+      "ceiling": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_ceiling_H.png"
+      },
+      "wall": {
+        "BC": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_BC.png",
+        "N": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_N.png",
+        "ORM": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_ORM.png",
+        "H": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\gen2d\\materials\\T_wall_H.png"
+      }
+    }
+  },
+  "assets": [
+    {
+      "id": "beige_computer_tower_06",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        44.4,
+        26.7,
+        71.7
+      ],
+      "scale": [
+        0.7527,
+        0.7527,
+        0.7527
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M08/SM_M08.SM_M08",
+      "ue_mi": "/Game/AutoScene/AssetLib/M08/MI_M08.MI_M08"
+    },
+    {
+      "id": "beige_computer_tower_07",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        71.7,
+        43.0,
+        66.9
+      ],
+      "scale": [
+        0.7727,
+        0.7727,
+        0.7727
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+      "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+    },
+    {
+      "id": "beige_computer_tower_1_54",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        70.0
+      ],
+      "scale": [
+        0.782,
+        0.782,
+        0.782
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M10/SM_M10.SM_M10",
+      "ue_mi": "/Game/AutoScene/AssetLib/M10/MI_M10.MI_M10"
+    },
+    {
+      "id": "beige_computer_tower_20",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        67.9
+      ],
+      "scale": [
+        0.7842,
+        0.7842,
+        0.7842
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+      "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+    },
+    {
+      "id": "beige_computer_tower_21",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\A02\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        26.3,
+        15.8,
+        66.2
+      ],
+      "scale": [
+        0.6836,
+        0.6836,
+        0.6836
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/A02/SM_A02.SM_A02",
+      "ue_mi": "/Game/AutoScene/AssetLib/A02/MI_A02.MI_A02"
+    },
+    {
+      "id": "beige_computer_tower_2_55",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M08\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        26.7,
+        16.0,
+        66.7
+      ],
+      "scale": [
+        0.5153,
+        0.5153,
+        0.5153
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M08/SM_M08.SM_M08",
+      "ue_mi": "/Game/AutoScene/AssetLib/M08/MI_M08.MI_M08"
+    },
+    {
+      "id": "beige_computer_tower_35",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M09\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        133.1,
+        79.9,
+        166.1
+      ],
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M09/SM_M09.SM_M09",
+      "ue_mi": "/Game/AutoScene/AssetLib/M09/MI_M09.MI_M09"
+    },
+    {
+      "id": "beige_computer_tower_50",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M10\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        91.8,
+        55.1,
+        85.7
+      ],
+      "scale": [
+        0.9574,
+        0.9574,
+        0.9574
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M10/SM_M10.SM_M10",
+      "ue_mi": "/Game/AutoScene/AssetLib/M10/MI_M10.MI_M10"
+    },
+    {
+      "id": "beige_crt_monitor_04",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        42.8,
+        45.0,
+        43.9
+      ],
+      "scale": [
+        0.6069,
+        0.6069,
+        0.5308
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M01/SM_M01.SM_M01",
+      "ue_mi": "/Game/AutoScene/AssetLib/M01/MI_M01.MI_M01"
+    },
+    {
+      "id": "beige_crt_monitor_19",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M04\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.6973,
+        0.6973,
+        0.6646
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M04/SM_M04.SM_M04",
+      "ue_mi": "/Game/AutoScene/AssetLib/M04/MI_M04.MI_M04"
+    },
+    {
+      "id": "beige_crt_monitor_2_52",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M05\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.6839,
+        0.6839,
+        0.683
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M05/SM_M05.SM_M05",
+      "ue_mi": "/Game/AutoScene/AssetLib/M05/MI_M05.MI_M05"
+    },
+    {
+      "id": "beige_crt_monitor_34",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M03\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.6891,
+        0.6891,
+        0.6568
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M03/SM_M03.SM_M03",
+      "ue_mi": "/Game/AutoScene/AssetLib/M03/MI_M03.MI_M03"
+    },
+    {
+      "id": "beige_crt_monitor_3_53",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M06\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.6779,
+        0.6779,
+        0.6238
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M06/SM_M06.SM_M06",
+      "ue_mi": "/Game/AutoScene/AssetLib/M06/MI_M06.MI_M06"
+    },
+    {
+      "id": "beige_crt_monitor_46",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M02\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.6798,
+        0.6798,
+        0.6086
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M02/SM_M02.SM_M02",
+      "ue_mi": "/Game/AutoScene/AssetLib/M02/MI_M02.MI_M02"
+    },
+    {
+      "id": "beige_crt_monitor_49",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M01\\T_ORM.png",
+      "is_screen": true,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "scale": [
+        0.7354,
+        0.7354,
+        0.6432
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M01/SM_M01.SM_M01",
+      "ue_mi": "/Game/AutoScene/AssetLib/M01/MI_M01.MI_M01"
+    },
+    {
+      "id": "blue_folding_chair_00",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        44.2,
+        47.1,
+        80.0
+      ],
+      "scale": [
+        0.8696,
+        0.8696,
+        0.8696
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+      "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+    },
+    {
+      "id": "blue_folding_chair_01",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        42.6,
+        45.3,
+        77.0
+      ],
+      "scale": [
+        0.8364,
+        0.8364,
+        0.8364
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+      "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+    },
+    {
+      "id": "blue_folding_chair_02",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        59.3,
+        63.1,
+        107.3
+      ],
+      "scale": [
+        1.1651,
+        1.1651,
+        1.1651
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+      "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+    },
+    {
+      "id": "blue_folding_chair_24",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M13\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        55.0,
+        58.5,
+        99.4
+      ],
+      "scale": [
+        1.0801,
+        1.0801,
+        1.0801
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M13/SM_M13.SM_M13",
+      "ue_mi": "/Game/AutoScene/AssetLib/M13/MI_M13.MI_M13"
+    },
+    {
+      "id": "cable_bundle_14",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_14.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_14_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        141.5,
+        2.0,
+        678.7
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "cable_bundle_26",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_26.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_26_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        27.7,
+        16.6,
+        93.6
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "cable_bundle_36",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_36.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\cable_bundle_36_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        164.5
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "concrete_pillar_13",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_13.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_13_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        16.5,
+        9.9,
+        222.6
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "concrete_pillar_25",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_25.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_25_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        17.9,
+        10.7,
+        152.1
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "concrete_pillar_28",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_28.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\concrete_pillar_28_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        74.2,
+        44.5,
+        287.0
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "floor_litter_15",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_15.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_15_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        36.2,
+        21.7,
+        20.5
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "floor_litter_16",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_16.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_16_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        35.9,
+        21.6,
+        19.1
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "floor_litter_27",
+      "mesh_kind": "proxy_box",
+      "mesh": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_27.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\pipeline\\output\\run_fd6e434f\\assets_clean\\floor_litter_27_BC.png",
+      "tex_n": null,
+      "tex_orm": null,
+      "is_screen": false,
+      "polygon_type": "quad",
+      "uv_source": "procedural",
+      "pbr_maps": [
+        "BC"
+      ],
+      "size_cm": [
+        57.3,
+        34.4,
+        22.1
+      ],
+      "scale": null,
+      "ue_asset": null,
+      "ue_mi": null
+    },
+    {
+      "id": "white_folding_table_08",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\M15\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/M15/SM_M15.SM_M15",
+      "ue_mi": "/Game/AutoScene/AssetLib/M15/MI_M15.MI_M15"
+    },
+    {
+      "id": "white_folding_table_32",
+      "mesh_kind": "library",
+      "mesh": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\mesh.obj",
+      "tex_bc": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_BC.jpg",
+      "tex_n": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_N.png",
+      "tex_orm": "C:\\AI Pipeline Test\\AssetLib_processed\\A03\\T_ORM.png",
+      "is_screen": false,
+      "polygon_type": "tri",
+      "uv_source": "provider",
+      "pbr_maps": [
+        "BC",
+        "N",
+        "ORM"
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "ue_asset": "/Game/AutoScene/AssetLib/A03/SM_A03.SM_A03",
+      "ue_mi": "/Game/AutoScene/AssetLib/A03/MI_A03.MI_A03"
+    }
+  ],
+  "instances": [
+    {
+      "id": "beige_computer_tower_07",
+      "asset_id": "beige_computer_tower_07",
+      "name": "SM_beige_computer_tower_07",
+      "location_cm": [
+        280.4,
+        -0.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.7727,
+        0.7727,
+        0.7727
+      ],
+      "size_cm": [
+        71.7,
+        43.0,
+        66.9
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_computer_tower_1_54",
+      "asset_id": "beige_computer_tower_1_54",
+      "name": "SM_beige_computer_tower_1_54",
+      "location_cm": [
+        306.0,
+        -33.4,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.782,
+        0.782,
+        0.782
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        70.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_computer_tower_21",
+      "asset_id": "beige_computer_tower_21",
+      "name": "SM_beige_computer_tower_21",
+      "location_cm": [
+        295.5,
+        31.9,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6836,
+        0.6836,
+        0.6836
+      ],
+      "size_cm": [
+        26.3,
+        15.8,
+        66.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_computer_tower_2_55",
+      "asset_id": "beige_computer_tower_2_55",
+      "name": "SM_beige_computer_tower_2_55",
+      "location_cm": [
+        335.5,
+        36.2,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.5153,
+        0.5153,
+        0.5153
+      ],
+      "size_cm": [
+        26.7,
+        16.0,
+        66.7
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_computer_tower_35",
+      "asset_id": "beige_computer_tower_35",
+      "name": "SM_beige_computer_tower_35",
+      "location_cm": [
+        937.3,
+        325.5,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "size_cm": [
+        133.1,
+        79.9,
+        166.1
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_computer_tower_50",
+      "asset_id": "beige_computer_tower_50",
+      "name": "SM_beige_computer_tower_50",
+      "location_cm": [
+        446.4,
+        -199.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.9574,
+        0.9574,
+        0.9574
+      ],
+      "size_cm": [
+        91.8,
+        55.1,
+        85.7
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_19_00",
+      "asset_id": "beige_crt_monitor_19",
+      "name": "SM_beige_crt_monitor_19_00",
+      "location_cm": [
+        861.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6973,
+        0.6973,
+        0.6646
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "asset_id": "beige_crt_monitor_19",
+      "name": "SM_beige_crt_monitor_19_01",
+      "location_cm": [
+        910.7,
+        390.1,
+        74.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -180.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6973,
+        0.6973,
+        0.6646
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_2_52_00",
+      "asset_id": "beige_crt_monitor_2_52",
+      "name": "SM_beige_crt_monitor_2_52_00",
+      "location_cm": [
+        613.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6839,
+        0.6839,
+        0.683
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_2_52_01",
+      "asset_id": "beige_crt_monitor_2_52",
+      "name": "SM_beige_crt_monitor_2_52_01",
+      "location_cm": [
+        675.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6839,
+        0.6839,
+        0.683
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_34_00",
+      "asset_id": "beige_crt_monitor_34",
+      "name": "SM_beige_crt_monitor_34_00",
+      "location_cm": [
+        551.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6891,
+        0.6891,
+        0.6568
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_3_53_00",
+      "asset_id": "beige_crt_monitor_3_53",
+      "name": "SM_beige_crt_monitor_3_53_00",
+      "location_cm": [
+        965.9,
+        454.0,
+        74.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -180.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6779,
+        0.6779,
+        0.6238
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_3_53_01",
+      "asset_id": "beige_crt_monitor_3_53",
+      "name": "SM_beige_crt_monitor_3_53_01",
+      "location_cm": [
+        965.9,
+        391.3,
+        74.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -180.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6779,
+        0.6779,
+        0.6238
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_46_00",
+      "asset_id": "beige_crt_monitor_46",
+      "name": "SM_beige_crt_monitor_46_00",
+      "location_cm": [
+        737.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6798,
+        0.6798,
+        0.6086
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_46_01",
+      "asset_id": "beige_crt_monitor_46",
+      "name": "SM_beige_crt_monitor_46_01",
+      "location_cm": [
+        799.6,
+        422.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6798,
+        0.6798,
+        0.6086
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_49_00",
+      "asset_id": "beige_crt_monitor_49",
+      "name": "SM_beige_crt_monitor_49_00",
+      "location_cm": [
+        856.6,
+        -157.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.7354,
+        0.7354,
+        0.6432
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_49_01",
+      "asset_id": "beige_crt_monitor_49",
+      "name": "SM_beige_crt_monitor_49_01",
+      "location_cm": [
+        722.2,
+        -157.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.7354,
+        0.7354,
+        0.6432
+      ],
+      "size_cm": [
+        51.9,
+        54.5,
+        53.2
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "blue_folding_chair_00",
+      "asset_id": "blue_folding_chair_00",
+      "name": "SM_blue_folding_chair_00",
+      "location_cm": [
+        100.0,
+        -129.5,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.8696,
+        0.8696,
+        0.8696
+      ],
+      "size_cm": [
+        44.2,
+        47.1,
+        80.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "blue_folding_chair_01",
+      "asset_id": "blue_folding_chair_01",
+      "name": "SM_blue_folding_chair_01",
+      "location_cm": [
+        284.7,
+        -65.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.8364,
+        0.8364,
+        0.8364
+      ],
+      "size_cm": [
+        42.6,
+        45.3,
+        77.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "blue_folding_chair_02",
+      "asset_id": "blue_folding_chair_02",
+      "name": "SM_blue_folding_chair_02",
+      "location_cm": [
+        189.5,
+        170.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.1651,
+        1.1651,
+        1.1651
+      ],
+      "size_cm": [
+        59.3,
+        63.1,
+        107.3
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "blue_folding_chair_24",
+      "asset_id": "blue_folding_chair_24",
+      "name": "SM_blue_folding_chair_24",
+      "location_cm": [
+        427.0,
+        95.2,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0801,
+        1.0801,
+        1.0801
+      ],
+      "size_cm": [
+        55.0,
+        58.5,
+        99.4
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "cable_bundle_26",
+      "asset_id": "cable_bundle_26",
+      "name": "SM_cable_bundle_26",
+      "location_cm": [
+        425.3,
+        97.0,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        27.7,
+        16.6,
+        93.6
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "cable_bundle_36",
+      "asset_id": "cable_bundle_36",
+      "name": "SM_cable_bundle_36",
+      "location_cm": [
+        355.7,
+        276.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        32.0,
+        19.2,
+        164.5
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "concrete_pillar_13",
+      "asset_id": "concrete_pillar_13",
+      "name": "SM_concrete_pillar_13",
+      "location_cm": [
+        229.9,
+        2.8,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        16.5,
+        9.9,
+        285.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "concrete_pillar_25",
+      "asset_id": "concrete_pillar_25",
+      "name": "SM_concrete_pillar_25",
+      "location_cm": [
+        321.6,
+        4.4,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        17.9,
+        10.7,
+        285.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "concrete_pillar_28",
+      "asset_id": "concrete_pillar_28",
+      "name": "SM_concrete_pillar_28",
+      "location_cm": [
+        845.8,
+        208.5,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -180.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        74.2,
+        44.5,
+        285.0
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "floor_litter_15",
+      "asset_id": "floor_litter_15",
+      "name": "SM_floor_litter_15",
+      "location_cm": [
+        166.7,
+        -5.6,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        36.2,
+        21.7,
+        20.5
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "floor_litter_16",
+      "asset_id": "floor_litter_16",
+      "name": "SM_floor_litter_16",
+      "location_cm": [
+        250.9,
+        -172.0,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        35.9,
+        21.6,
+        19.1
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "floor_litter_27",
+      "asset_id": "floor_litter_27",
+      "name": "SM_floor_litter_27",
+      "location_cm": [
+        406.9,
+        78.9,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        57.3,
+        34.4,
+        22.1
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "white_folding_table_08_00",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_white_folding_table_08_00",
+      "location_cm": [
+        570.4,
+        26.2,
+        -0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pcg_surface": "desk"
+    },
+    {
+      "id": "white_folding_table_08_01",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_white_folding_table_08_01",
+      "location_cm": [
+        409.8,
+        26.2,
+        -0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pcg_surface": "desk"
+    },
+    {
+      "id": "white_folding_table_32_00",
+      "asset_id": "white_folding_table_32",
+      "name": "SM_white_folding_table_32_00",
+      "location_cm": [
+        578.4,
+        108.6,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pcg_surface": "desk"
+    },
+    {
+      "id": "white_folding_table_32_01",
+      "asset_id": "white_folding_table_32",
+      "name": "SM_white_folding_table_32_01",
+      "location_cm": [
+        274.2,
+        108.6,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "size_cm": [
+        243.4,
+        101.1,
+        99.8
+      ],
+      "pcg_surface": "desk"
+    },
+    {
+      "id": "beige_computer_tower_06",
+      "asset_id": "beige_computer_tower_06",
+      "name": "SM_beige_computer_tower_06",
+      "location_cm": [
+        340.5,
+        73.0,
+        96.2
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.7527,
+        0.7527,
+        0.7527
+      ],
+      "size_cm": [
+        44.4,
+        26.7,
+        71.7
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_04_00",
+      "asset_id": "beige_crt_monitor_04",
+      "name": "SM_beige_crt_monitor_04_00",
+      "location_cm": [
+        587.8,
+        -157.3,
+        76.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 90.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6069,
+        0.6069,
+        0.5308
+      ],
+      "size_cm": [
+        42.8,
+        45.0,
+        43.9
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "beige_crt_monitor_04_01",
+      "asset_id": "beige_crt_monitor_04",
+      "name": "SM_beige_crt_monitor_04_01",
+      "location_cm": [
+        274.7,
+        12.7,
+        66.9
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        0.6069,
+        0.6069,
+        0.5308
+      ],
+      "size_cm": [
+        42.8,
+        45.0,
+        43.9
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "cable_bundle_14",
+      "asset_id": "cable_bundle_14",
+      "name": "SM_cable_bundle_14",
+      "location_cm": [
+        589.5,
+        484.1,
+        74.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": -270.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "size_cm": [
+        141.5,
+        2.0,
+        678.7
+      ],
+      "pcg_surface": null
+    },
+    {
+      "id": "band_l_00",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_l_00",
+      "location_cm": [
+        580.6,
+        422.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_l_01",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_l_01",
+      "location_cm": [
+        700.6,
+        422.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_l_02",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_l_02",
+      "location_cm": [
+        820.6,
+        422.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_l_03",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_l_03",
+      "location_cm": [
+        940.6,
+        422.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_r_00",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_r_00",
+      "location_cm": [
+        580.6,
+        -157.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_r_01",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_r_01",
+      "location_cm": [
+        700.6,
+        -157.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_r_02",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_r_02",
+      "location_cm": [
+        820.6,
+        -157.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    },
+    {
+      "id": "band_r_03",
+      "asset_id": "white_folding_table_08",
+      "name": "SM_band_r_03",
+      "location_cm": [
+        940.6,
+        -157.3,
+        0.0
+      ],
+      "rotation_deg": {
+        "pitch": 0.0,
+        "yaw": 0.0,
+        "roll": 0.0
+      },
+      "scale": [
+        1.3072,
+        1.3072,
+        1.3072
+      ],
+      "size_cm": [
+        120.0,
+        119.64705882352942,
+        74.0
+      ]
+    }
+  ],
+  "decals": [
+    {
+      "id": "wall_poster_51_00",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.3622,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_01",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.4733,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_02",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.5844,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_03",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.6955,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_04",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.8066,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_05",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.9177,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_06",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.04,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_07",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.1399,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_51_08",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.251,
+        0.18
+      ],
+      "size_cm": [
+        37.5,
+        52.5
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_00",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.4368,
+        0.707
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_01",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.5479,
+        0.847
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_02",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.659,
+        0.707
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_03",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.7701,
+        0.847
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_04",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.8812,
+        0.707
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_05",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.96,
+        0.847
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_06",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.1034,
+        0.707
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_07",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.2145,
+        0.847
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_11_08",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.3256,
+        0.707
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_00",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.531,
+        0.7912
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_01",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.6421,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_02",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.7532,
+        0.7912
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_03",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.8643,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_04",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.96,
+        0.7912
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_05",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.0865,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_06",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.1976,
+        0.7912
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_07",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.3087,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_12_08",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.4198,
+        0.7912
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_00",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.52,
+        0.826
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_01",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.6311,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_02",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.7422,
+        0.826
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_03",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.8533,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_04",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.96,
+        0.826
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_05",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.0755,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_06",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.1866,
+        0.826
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_07",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.2977,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_43_08",
+      "name": "wall_poster",
+      "wall": "W",
+      "uv": [
+        0.4088,
+        0.826
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_00",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.2002,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_01",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.3669,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_02",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.5336,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M39\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_03",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.7002,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_04",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.8669,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_44_05",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.04,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_00",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.96,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M24\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_01",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.1395,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M28\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_02",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.3062,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M35\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_03",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.4728,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M40\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_04",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.6395,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M27\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    },
+    {
+      "id": "wall_poster_48_05",
+      "name": "wall_poster",
+      "wall": "N",
+      "uv": [
+        0.8062,
+        0.88
+      ],
+      "size_cm": [
+        66.5,
+        93.1
+      ],
+      "texture": "C:\\AI Pipeline Test\\AssetLib_processed\\M29\\preview.png",
+      "emissive": false,
+      "emissive_color": null
+    }
+  ],
+  "lighting": {
+    "ceiling_panels": [
+      {
+        "location_cm": [
+          55.5,
+          -48.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          55.5,
+          313.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          326.4,
+          -48.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          326.4,
+          313.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          597.4,
+          -48.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          597.4,
+          313.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          868.3,
+          -48.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      },
+      {
+        "location_cm": [
+          868.3,
+          313.3,
+          282.0
+        ],
+        "size_cm": [
+          118,
+          58
+        ],
+        "kelvin": 5000,
+        "lumen": 5000.0
+      }
+    ],
+    "screen_fill_lights": [
+      {
+        "location_cm": [
+          0,
+          0,
+          100
+        ],
+        "rgb": [
+          1.0,
+          0.3333333333333333,
+          1.0
+        ],
+        "lumen": 212.0,
+        "radius_cm": 180
+      }
+    ],
+    "spots": [],
+    "fog_density": 0.04
+  },
+  "warnings": [
+    {
+      "id": "beige_computer_tower_20_00",
+      "why": "同类近位去重（25cm 内已有 beige_computer_tower）"
+    },
+    {
+      "id": "beige_crt_monitor_34_01",
+      "why": "同类近位去重（31cm 内已有 crt_monitor）"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "桌带座位不足，溢出屏未重排"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_00",
+      "why": "桌带座位不足，溢出屏未重排"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_01",
+      "why": "桌带座位不足，溢出屏未重排"
+    },
+    {
+      "id": "band_l",
+      "why": "结构补全：9 台屏幕重排上贴墙桌带"
+    },
+    {
+      "id": "band_r",
+      "why": "对称镜像桌带（3 台屏幕上桌）"
+    },
+    {
+      "id": "blue_folding_chair_00",
+      "why": "侧带椅前移 1.5m"
+    },
+    {
+      "id": "blue_folding_chair_01",
+      "why": "中央椅后移 1.5m"
+    },
+    {
+      "id": "blue_folding_chair_02",
+      "why": "侧带椅前移 1.5m"
+    },
+    {
+      "id": "blue_folding_chair_24",
+      "why": "侧带椅前移 1.5m"
+    },
+    {
+      "id": "beige_computer_tower_1_54",
+      "why": "去穿插：与 beige_computer_tower_07 重叠 58×10cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_21",
+      "why": "去穿插：与 beige_computer_tower_07 重叠 34×2cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_2_55",
+      "why": "去穿插：与 beige_computer_tower_07 重叠 11×6cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_07",
+      "why": "去穿插：与 concrete_pillar_25 重叠 11×18cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_21",
+      "why": "去穿插：与 beige_computer_tower_2_55 重叠 16×26cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_00",
+      "why": "去穿插：与 beige_computer_tower_35 重叠 49×20cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_35",
+      "why": "去穿插：与 band_l_03 重叠 76×60cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_00 重叠 9×46cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_00",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 49×47cm，已推开"
+    },
+    {
+      "id": "white_folding_table_08_01",
+      "why": "去穿插：与 concrete_pillar_25 重叠 6×18cm，已推开"
+    },
+    {
+      "id": "white_folding_table_08_00",
+      "why": "去穿插：与 white_folding_table_08_01 重叠 17×99cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_computer_tower_35 重叠 51×8cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_01",
+      "why": "去穿插：与 beige_computer_tower_35 重叠 49×9cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_00 重叠 4×6cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_3_53_00",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 49×9cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_19_00 重叠 4×21cm，已推开"
+    },
+    {
+      "id": "beige_crt_monitor_19_01",
+      "why": "去穿插：与 beige_crt_monitor_3_53_01 重叠 4×55cm，已推开"
+    },
+    {
+      "id": "beige_computer_tower_06",
+      "why": "重力吸附：悬空 4cm → 落到 96"
+    },
+    {
+      "id": "beige_crt_monitor_04_01",
+      "why": "重力吸附：悬空 33cm → 落到 67"
+    },
+    {
+      "id": "cable_bundle_14",
+      "why": "重力吸附：悬空 88cm → 落到 74"
+    }
+  ],
+  "post": {
+    "ev_bias": 0.85,
+    "bloom": 0.8,
+    "vignette": 0.45,
+    "white_temp": 6500.0
+  },
+  "ambience": {
+    "key_light": {
+      "azimuth_deg": 0,
+      "elevation_deg": 85,
+      "color_temp_k": 4200,
+      "relative_intensity": 0.6
+    },
+    "ambient": {
+      "color_temp_k": 4500,
+      "level": 0.15
+    },
+    "practicals_temp_k": 2800,
+    "fog_density": 0.04,
+    "ev_bias": -0.5,
+    "white_temp_k": 4000,
+    "mood": "grimy fluorescent computer basement",
+    "time_of_day": "artificial_only"
+  },
+  "camera": {
+    "location_cm": [
+      0.0,
+      0.0,
+      78.0
+    ],
+    "rotation_deg": {
+      "pitch": -0.8,
+      "yaw": 0.0,
+      "roll": -0.35
+    },
+    "hfov_deg": 95.0,
+    "aspect": 1.7902,
+    "focal_mm": 16.49,
+    "sensor_width_mm": 36.0
+  },
+  "palette": [
+    "#2A2D32",
+    "#A0A0A0",
+    "#EAF4FF",
+    "#FF55FF",
+    "#3A4D72",
+    "#6B5B4A"
+  ]
+}

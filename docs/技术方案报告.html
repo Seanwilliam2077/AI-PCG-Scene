@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>AI 驱动的自动化场景建构管线 — 技术方案报告</title>
+<style>
+  @page { size: A4; margin: 14mm 14mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+         font-size: 10pt; line-height: 1.55; color: #1a1a1a; margin: 0; }
+  h1 { font-size: 15pt; border-bottom: 2.5px solid #E87722; padding-bottom: 5px;
+       margin: 18px 0 10px; break-after: avoid; }
+  h2 { font-size: 11.5pt; margin: 12px 0 6px; color: #B45309; break-after: avoid; }
+  p { margin: 5px 0; text-align: justify; }
+  .cover { text-align: center; padding-top: 40px; }
+  .cover h1 { border: none; font-size: 22pt; margin-bottom: 4px; }
+  .cover .sub { font-size: 12pt; color: #555; }
+  .cover .meta { margin-top: 14px; color: #777; font-size: 9pt; line-height: 1.8; }
+  .pagebreak { break-before: page; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 8.8pt; }
+  th, td { border: 1px solid #ccc; padding: 4px 7px; text-align: left; vertical-align: top; }
+  th { background: #FDF3E7; font-weight: 600; }
+  tr { break-inside: avoid; }
+  code { font-family: Consolas, monospace; font-size: 8.5pt; background: #f4f4f4;
+         padding: 0 3px; border-radius: 2px; }
+  .figure { text-align: center; margin: 8px 0; break-inside: avoid; }
+  .figure img { max-width: 100%; border: 1px solid #ddd; }
+  .figure .cap { font-size: 8.5pt; color: #666; margin-top: 3px; }
+  .two-col { display: flex; gap: 8px; }
+  .two-col > div { flex: 1; }
+  .kv { background: #FDF3E7; border-left: 4px solid #E87722; padding: 6px 10px;
+        margin: 8px 0; font-size: 9.5pt; break-inside: avoid; }
+  ul, ol { margin: 4px 0; padding-left: 20px; }
+  li { margin: 2px 0; }
+</style>
+</head>
+<body>
+
+<!-- 封面 + 效果 -->
+<div class="cover">
+  <h1>AI 驱动的自动化场景建构管线</h1>
+  <div class="sub">技术方案报告 · 测试题 2 —— 一张参考图 → UE5 编辑器内自动搭建的完整关卡</div>
+  <div class="meta">Unreal Engine 5.5.4（内嵌 Python 3.11）· 云端 VLM 网关（Gemini 3 Pro）· 云端图像拆分工具 + 云端图生 3D<br>
+  全管线运行于编辑器 Mode 内 · 评审机零环境依赖 · 离线可复现 · 2026 年 8 月</div>
+</div>
+<div class="figure">
+  <img src="../process/figures/comparison.png">
+  <div class="cap">参考图（左）与管线自动重建的 UE5 场景（右，对齐机位自动截图）。三排桌骨架、CRT 阵列、海报墙、立柱、灯光氛围均由管线自动完成。</div>
+</div>
+<table>
+  <tr><th style="width:30%">指标</th><th>实测</th></tr>
+  <tr><td>端到端耗时</td><td>温缓存约 3 分钟；全冷跑（真实 API）约 20 分钟</td></tr>
+  <tr><td>装配结果</td><td>127 actors / 0 errors，含穿模自动检测报告</td></tr>
+  <tr><td>资产匹配</td><td>37 个感知对象，26 命中资产库真模型，零静默丢弃</td></tr>
+  <tr><td>交付工程包</td><td>约 382 MB（限 500 MB），含预编译二进制与离线回放缓存</td></tr>
+</table>
+<div class="kv"><b>三条设计主线</b>：① 整条管线跑在 UE 编辑器进程内（依赖 vendor 随插件，评审机零 pip）；② <b>AI 出提案，规则做裁决</b>（所有 AI 输出经确定性校验/钳制/推导）；③ 产物级可复现（请求哈希缓存随工程附带，离线回放开关一键复跑）。</div>
+
+<!-- 架构 -->
+<div class="pagebreak"></div>
+<h1>1. Pipeline 架构</h1>
+<div class="figure">
+<svg viewBox="0 0 1060 640" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; border:1px solid #ddd; background:#fff;">
+  <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 z" fill="#555"/></marker></defs>
+  <style>
+    .lane { fill:#FAFAFA; stroke:#bbb; stroke-dasharray:4 3; }
+    .lanetitle { font: bold 15px "Microsoft YaHei"; fill:#888; }
+    .box { fill:#FDF3E7; stroke:#E87722; stroke-width:1.5; }
+    .aibox { fill:#EAF2FB; stroke:#3B76B8; stroke-width:1.5; }
+    .uebox { fill:#F0F7F0; stroke:#3B8A3E; stroke-width:1.5; }
+    .t { font: 13px "Microsoft YaHei"; } .tb { font: bold 13px "Microsoft YaHei"; }
+    .ts { font: 10.5px "Microsoft YaHei"; fill:#555; }
+    .flow { stroke:#555; stroke-width:1.6; fill:none; marker-end:url(#arr); }
+    .legend { font: 11px "Microsoft YaHei"; fill:#555; }
+  </style>
+  <rect class="lane" x="10" y="10" width="1040" height="150"/>
+  <text class="lanetitle" x="24" y="34">① 离线资产段（一次性）</text>
+  <rect class="aibox" x="30" y="52" width="180" height="88" rx="6"/>
+  <text class="tb" x="44" y="76">拆分 + 3D 生成</text>
+  <text class="ts" x="44" y="95">云端图像拆分工具 拆 42 张单件图</text>
+  <text class="ts" x="44" y="111">云端图生 3D 高模 + PBR</text>
+  <text class="ts" x="44" y="127">150 万面 / 4K × 40</text>
+  <rect class="box" x="250" y="52" width="180" height="88" rx="6"/>
+  <text class="tb" x="264" y="76">预处理</text>
+  <text class="ts" x="264" y="95">QEM 减面 8–20 万（保 UV）</text>
+  <text class="ts" x="264" y="111">贴图 2K/1K · ORM 合并</text>
+  <text class="ts" x="264" y="127">Z-up 厘米 · pivot 归位</text>
+  <rect class="aibox" x="470" y="52" width="180" height="88" rx="6"/>
+  <text class="tb" x="484" y="76">VLM 打标注册</text>
+  <text class="ts" x="484" y="95">受控词表 · 尺寸交叉校验</text>
+  <text class="ts" x="484" y="111">needs_review 人工在环</text>
+  <text class="ts" x="484" y="127">→ library_registry.json</text>
+  <rect class="uebox" x="690" y="52" width="180" height="88" rx="6"/>
+  <text class="tb" x="704" y="76">UE 预导入</text>
+  <text class="ts" x="704" y="95">Nanite + 碰撞 + 材质实例</text>
+  <text class="ts" x="704" y="111">→ /Game/AutoScene/AssetLib</text>
+  <text class="ts" x="704" y="127">运行时零导入等待</text>
+  <rect class="box" x="910" y="52" width="120" height="88" rx="6"/>
+  <text class="tb" x="922" y="76">资产库</text>
+  <text class="ts" x="922" y="95">39 模块 uasset</text>
+  <text class="ts" x="922" y="111">16 类别索引</text>
+  <line class="flow" x1="210" y1="96" x2="248" y2="96"/>
+  <line class="flow" x1="430" y1="96" x2="468" y2="96"/>
+  <line class="flow" x1="650" y1="96" x2="688" y2="96"/>
+  <line class="flow" x1="870" y1="96" x2="908" y2="96"/>
+  <rect class="lane" x="10" y="176" width="1040" height="270"/>
+  <text class="lanetitle" x="24" y="200">② 运行时段（每张参考图，UE 内嵌 Python 后台线程）</text>
+  <rect class="aibox" x="30" y="222" width="188" height="94" rx="6"/>
+  <text class="tb" x="44" y="246">s01 感知 / 标定</text>
+  <text class="ts" x="44" y="265">检测/分割 + 分块提召回</text>
+  <text class="ts" x="44" y="281">+ 逐件枚举拆分</text>
+  <text class="ts" x="44" y="297">标定：纯 OpenCV 消失点</text>
+  <rect class="box" x="248" y="222" width="188" height="94" rx="6"/>
+  <text class="tb" x="262" y="246">s02 布局求解</text>
+  <text class="ts" x="262" y="265">地面射线法逐检测定位</text>
+  <text class="ts" x="262" y="281">纯 numpy，无 AI</text>
+  <text class="ts" x="262" y="297">count 只补遮挡缺口</text>
+  <rect class="aibox" x="466" y="222" width="188" height="94" rx="6"/>
+  <text class="tb" x="480" y="246">s03 素材 / 氛围</text>
+  <text class="ts" x="480" y="265">真实像素无缝材质</text>
+  <text class="ts" x="480" y="281">海报文字重绘 · 估光</text>
+  <text class="ts" x="480" y="297">PBR 通道确定性推导</text>
+  <rect class="box" x="684" y="222" width="188" height="94" rx="6"/>
+  <text class="tb" x="698" y="246">s04 资产库匹配</text>
+  <text class="ts" x="698" y="265">四级瀑布 + 畸形保护</text>
+  <text class="ts" x="698" y="281">海报贴图库轮换</text>
+  <text class="ts" x="698" y="297">→ match_report.json</text>
+  <rect class="uebox" x="902" y="222" width="132" height="94" rx="6"/>
+  <text class="tb" x="914" y="246">s05 装配</text>
+  <text class="ts" x="914" y="265">load_asset 快路径</text>
+  <text class="ts" x="914" y="281">布局规则链 + 去穿插</text>
+  <text class="ts" x="914" y="297">→ 关卡 + 回执</text>
+  <line class="flow" x1="218" y1="269" x2="246" y2="269"/>
+  <line class="flow" x1="436" y1="269" x2="464" y2="269"/>
+  <line class="flow" x1="654" y1="269" x2="682" y2="269"/>
+  <line class="flow" x1="872" y1="269" x2="900" y2="269"/>
+  <line class="flow" x1="970" y1="140" x2="778" y2="220"/>
+  <rect class="box" x="30" y="336" width="416" height="92" rx="6"/>
+  <text class="tb" x="44" y="360">布局规则链（compile_layout）</text>
+  <text class="ts" x="44" y="379">房间收拢 → 相机重定位 → 三排桌骨架（实证建带+镜像）</text>
+  <text class="ts" x="44" y="395">→ 桌岛停靠/中央豁免 → 支撑吸附 → 椅子纵深调度</text>
+  <text class="ts" x="44" y="411">→ 近场清空 → 近位去重 → AABB 去穿插 + 穿模检测</text>
+  <rect class="box" x="466" y="336" width="404" height="92" rx="6"/>
+  <text class="tb" x="480" y="360">人工在环（存在即覆盖）</text>
+  <text class="ts" x="480" y="379">calib_manual.json（fSpy 手标） · match_overrides.json（改指）</text>
+  <text class="ts" x="480" y="395">library_registry 人工核对位 · 布局指令 → 规则化沉淀</text>
+  <text class="ts" x="480" y="411">离线回放开关 · api_calls.jsonl 逐调用留痕</text>
+  <rect class="uebox" x="902" y="336" width="132" height="92" rx="6"/>
+  <text class="tb" x="914" y="360">回执闭环</text>
+  <text class="ts" x="914" y="379">scene_manifest</text>
+  <text class="ts" x="914" y="395">overlaps 穿模报告</text>
+  <text class="ts" x="914" y="411">match_report</text>
+  <rect class="lane" x="10" y="462" width="1040" height="162"/>
+  <text class="lanetitle" x="24" y="486">③ 宿主：UE5.5 编辑器 Mode（AISceneBuilder 插件）</text>
+  <rect class="uebox" x="30" y="504" width="330" height="102" rx="6"/>
+  <text class="tb" x="44" y="528">Mode 面板（UEdMode）</text>
+  <text class="ts" x="44" y="547">五步向导 · 环境自检 · API 端点/Key 显示</text>
+  <text class="ts" x="44" y="563">离线回放开关 · 进度通知 · 状态恢复</text>
+  <rect class="uebox" x="390" y="504" width="330" height="102" rx="6"/>
+  <text class="tb" x="404" y="528">内嵌 Python 3.11 执行层</text>
+  <text class="ts" x="404" y="547">s01–s04 后台线程（纯 Python，禁 unreal API）</text>
+  <text class="ts" x="404" y="563">s05 GameThread 进程内 · 原子进度文件轮询</text>
+  <rect class="uebox" x="750" y="504" width="284" height="102" rx="6"/>
+  <text class="tb" x="764" y="528">零环境依赖</text>
+  <text class="ts" x="764" y="547">numpy/OpenCV/PyYAML wheel 随插件</text>
+  <text class="ts" x="764" y="563">评审机零 pip · CLI 入口留调试</text>
+  <rect x="700" y="12" width="14" height="14" class="aibox"/><text class="legend" x="720" y="23">AI 环节</text>
+  <rect x="790" y="12" width="14" height="14" class="box"/><text class="legend" x="810" y="23">确定性规则</text>
+  <rect x="905" y="12" width="14" height="14" class="uebox"/><text class="legend" x="925" y="23">UE 引擎内</text>
+</svg>
+<div class="cap">图 1　管线总架构。蓝=AI，橙=确定性规则，绿=UE 引擎内。阶段间只走文件（可断点续跑、可人工编辑后续行）。</div>
+</div>
+
+<!-- 资产工作流 -->
+<div class="pagebreak"></div>
+<h1>2. 资产库工作流</h1>
+<div class="figure">
+  <img src="../process/figures/assetlib_sheet.png" style="max-width:82%;">
+  <div class="cap">图 2　资产库 39 个模块（云端图像拆分工具 拆分参考图 → 云端图生 3D 生成 → 管线预处理）。VLM 打标：CRT×6、主机塔×5、标牌×10、桌/椅/键盘/插排等。</div>
+</div>
+<p><b>四步</b>：① 减面（150万→8–20万面，保 UV）+ 贴图 2K/1K + ORM 通道合并 + 坐标系归位 → ② VLM 受控词表打标（与感知共用同一份词表，运行时匹配退化为字符串相等；尺寸交叉校验进人工复核）→ ③ UE 批量预导入（Nanite/碰撞/材质实例，运行时装配只 <code>load_asset</code>，30–60 秒完成）→ ④ 运行时<b>四级瀑布匹配</b>：人工覆盖 → 类别命中+变体轮换 → VLM 视觉兜底 → 参考图贴图代理盒。缩放四档畸形保护，细长物/未知类禁入库匹配，全程零静默丢弃。</p>
+
+<!-- AI 标注 -->
+<h1>3. AI 使用标注</h1>
+<table>
+  <tr><th style="width:17%">环节</th><th style="width:20%">模型/服务</th><th>对 AI 输出的后处理与逻辑控制</th></tr>
+  <tr><td>资产生成（离线）</td><td>云端图像拆分工具 + 云端图生 3D</td><td>减面/降采样/通道重打包/坐标系归位——全确定性脚本</td></tr>
+  <tr><td>资产打标（离线）</td><td>Gemini 3 Pro（经 云端 VLM 网关）</td><td>闭集词表钳制；估计尺寸 vs 实测交叉校验；人工核对位不被重打标覆盖</td></tr>
+  <tr><td>s01 感知</td><td>Gemini 3 Pro</td><td>JSON 校验+修复重试；分块检测统一 NMS；<b>相机标定不用 AI</b></td></tr>
+  <tr><td>s03 材质/海报</td><td>Gemini 3 Pro（图像）</td><td>取样滑窗选亮；ECC 对齐回原图；接缝分数质检循环；<b>法线/粗糙度/AO 确定性推导</b></td></tr>
+  <tr><td>s03 氛围估计</td><td>Gemini 3 Pro</td><td>白平衡钳 [6500,8000]、曝光/雾密度钳制；失败回默认值不断链</td></tr>
+  <tr><td>s04 视觉兜底</td><td>Gemini 3 Pro</td><td>置信度 ≥0.6 才采纳；缩放畸形四档保护，误匹配直接拒绝</td></tr>
+  <tr><td>s05 装配</td><td>—（无 AI）</td><td>100% 确定性；布局规则链 + AABB 去穿插 + 穿模检测报告</td></tr>
+</table>
+<p style="font-size:9pt; color:#555;">每次运行逐调用留痕于 <code>output/run_*/api_calls.jsonl</code>（阶段/模型/缓存命中/耗时）；离线回放模式下全部命中随工程附带的缓存，评审机无 Key 可完整复跑。</p>
+
+<!-- 还原度 -->
+<div class="pagebreak"></div>
+<h1>4. 还原度：布局与视角双重验证</h1>
+<div class="two-col">
+  <div class="figure"><img src="../process/figures/ue_shot.png"><div class="cap">图 3　对齐机位自动截图（相机由标定反解）</div></div>
+  <div class="figure"><img src="../process/figures/topdown.png" style="max-height:74mm; width:auto;"><div class="cap">图 4　俯视布局：三排桌骨架（左带/中岛/右带）+ 走道 + 柱</div></div>
+</div>
+<div class="kv"><b>布局骨架来自证据推理而非硬编码</b>：显示器逐台检出 → 屏幕簇即桌带存在的证据 → 实证建带 + 对称镜像补带；检测框横向居中的桌子留作中央桌岛；人工布局指令（靠墙/前后移）沉淀为可复用规则。终局 AABB 去穿插（yaw 感知包络；结构物不动，可动物直接跳到分离落点，落点校验避开结构物与相机近场）+ 装配后真实包围盒穿模检测写入回执（本次交付实测 0 穿模）。</div>
+<p><b>代表性问题与修法</b>（完整过程见工程内迭代记录）：同名资产复用导致旧贴图僵尸（装配前整树清理）；UE 体积雾默认天蓝散射色染蓝全场（显式中性灰）；VLM 光源色温误用为白平衡（钳制区间）；细长物匹配成假墙（禁入库走代理盒）；桌面物支撑失联悬空（支撑面吸附）。</p>
+
+<!-- 引用 + 总结 -->
+<h1>5. 开源与服务引用</h1>
+<table>
+  <tr><th style="width:26%">项目/服务</th><th style="width:18%">性质</th><th>用途</th></tr>
+  <tr><td>云端图像拆分 / 图生 3D 服务</td><td>云服务</td><td>参考图拆分 42 单件；图生 3D 高模 + PBR 贴图</td></tr>
+  <tr><td>云端 VLM 网关 → Gemini 3 Pro</td><td>云端网关</td><td>感知/打标/氛围/兜底匹配与图像生成</td></tr>
+  <tr><td>NumPy / OpenCV / PyYAML</td><td>BSD / Apache / MIT</td><td>布局求解、标定、图像处理、配置</td></tr>
+  <tr><td>PyMeshLab</td><td>GPL-3（仅作者侧）</td><td>保 UV 减面，不随工程分发</td></tr>
+  <tr><td>UE5.5 PythonScriptPlugin 等</td><td>引擎自带</td><td>内嵌 Python、编辑器脚本化</td></tr>
+</table>
+<p style="font-size:9pt; color:#555;">未使用 ComfyUI；未引入第三方美术资产——全部网格/贴图由上述 AI 服务从参考图生成或管线程序化创建。</p>
+
+<h1>6. 总结与反思</h1>
+<h2>优点</h2>
+<ul>
+  <li>换图即换场景（资产库/词表/配置皆数据）；可复现可审计（离线回放、逐调用留痕、穿模/悬空自检回执）；
+      人工在环成本低（"存在即覆盖"文件钩子）；单件失败不断链，场景始终完整。</li>
+</ul>
+
+<h2>为什么与原图仍有差距——根因分析与改进路线</h2>
+<table>
+  <tr><th style="width:9%">层</th><th style="width:30%">根因</th><th style="width:26%">画面表现</th><th>改进路线（写给下一版）</th></tr>
+  <tr><td><b>感知</b></td>
+      <td>VLM 把整排设备并成一框、贴墙桌带被框成画面内部框——结构证据缺失，只能靠规则推断补全</td>
+      <td>桌带位置/密度与原图错位；数量偏少（CRT 召回 13/16）</td>
+      <td>开放词汇检测器（Grounding-DINO/SAM2）逐实例召回+掩码；分块检测已验证有效（50→68），下一步实例分割</td></tr>
+  <tr><td><b>深度/标定</b></td>
+      <td>单目无度量深度：box3d 绝对深度误差 ±30–50%，地面射线假设物体贴地，叠放/架空物解算错位</td>
+      <td>全场尺度漂移、前后关系与原图不符</td>
+      <td>度量深度模型（Metric3D / Depth-Anything）逐像素深度直接摆放；灭点标定常态化；多图/视频输入消歧</td></tr>
+  <tr><td><b>布局</b></td>
+      <td>一次性前馈：规则补全（镜像带/等距上桌）是"合理化"而非"复原"，均匀间距抹掉原图的有机杂乱</td>
+      <td>排布过于整齐、密度不足、局部空旷</td>
+      <td>闭环布局优化：装配→截图→VLM 与参考图比对打分→增量修正指令（回执寻址机制已为此预留）</td></tr>
+  <tr><td><b>资产/尺寸</b></td>
+      <td>注册表 bbox 与真实网格实测差达 1.56×；词表类别匹配挑不准款式；缩放钳制"信资产不信深度"</td>
+      <td>个别比例失真、款式对应错位</td>
+      <td>UE 实测 bbox 回写注册表（本版穿模/悬空双修已实证"实测为准"）；预览图 embedding（DINOv2）款式级检索</td></tr>
+  <tr><td><b>材质/光照</b></td>
+      <td>单点取样重铺产生平板感（白釉砖 → 偏米黄）；面板灯近似，无原图光传输匹配</td>
+      <td>墙面质感差异明显、氛围偏暖偏平</td>
+      <td>tileable 感知材质生成或 PBR 库检索；渲染图↔参考图的曝光/白平衡自动校准闭环</td></tr>
+</table>
+<div class="kv"><b>核心结论</b>：差距的根本原因是<b>管线是单向前馈的</b>——感知误差逐级放大且无法回收。
+下一代的主干应是「装配后截图 ↔ 参考图」的闭环迭代（本版的装配回执、对象寻址与离线缓存机制正是为此铺路）；
+工程侧另有 s03 并行化（预估提速 4 倍）与装配分帧两项确定性优化。</div>
+
+<h1>附录：评审快速上手（约 5 分钟）</h1>
+<ol>
+  <li>UE <b>5.5.4</b> 打开 <code>NetEast_TA_Test.uproject</code>（含预编译二进制；首开等 shader 编译 5–15 分钟）。</li>
+  <li>Project Settings → Plugins → AI Scene Builder → 勾选<b>「离线回放」</b>（无网/无 Key 必开）。</li>
+  <li><b>Tools → AI Scene Builder</b>：选参考图 <code>Plugins/AISceneBuilder/Python/refs/ref_original.jpg</code> → 依次五步 → 装配。</li>
+  <li>产物：关卡 <code>/Game/Maps/GenScene</code>；回执/对比图/调用留痕在 <code>.../Python/output/run_*/</code>。</li>
+</ol>
+
+</body>
+</html>

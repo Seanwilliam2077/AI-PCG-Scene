@@ -1,0 +1,403 @@
+{
+  "run": "run_fd6e434f",
+  "registry_version": 4,
+  "matches": [
+    {
+      "object_id": "beige_computer_tower_06",
+      "category": "computer_tower",
+      "module": "M08",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.7527,
+        0.7527,
+        0.7527
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_computer_tower_07",
+      "category": "computer_tower",
+      "module": "M09",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.7727,
+        0.7727,
+        0.7727
+      ],
+      "flags": [
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_computer_tower_1_54",
+      "category": "computer_tower",
+      "module": "M10",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.782,
+        0.782,
+        0.782
+      ],
+      "flags": [
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_computer_tower_20",
+      "category": "computer_tower",
+      "module": "M09",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.7842,
+        0.7842,
+        0.7842
+      ],
+      "flags": [
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_computer_tower_21",
+      "category": "computer_tower",
+      "module": "A02",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6836,
+        0.6836,
+        0.6836
+      ],
+      "flags": [
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_computer_tower_2_55",
+      "category": "computer_tower",
+      "module": "M08",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.5153,
+        0.5153,
+        0.5153
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_computer_tower_35",
+      "category": "computer_tower",
+      "module": "M09",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "flags": [
+        "SCALE_CLAMPED",
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_computer_tower_50",
+      "category": "computer_tower",
+      "module": "M10",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.9574,
+        0.9574,
+        0.9574
+      ],
+      "flags": [
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "beige_crt_monitor_04",
+      "category": "crt_monitor",
+      "module": "M01",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6069,
+        0.6069,
+        0.5308
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_19",
+      "category": "crt_monitor",
+      "module": "M04",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6973,
+        0.6973,
+        0.6646
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_2_52",
+      "category": "crt_monitor",
+      "module": "M05",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6839,
+        0.6839,
+        0.683
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_34",
+      "category": "crt_monitor",
+      "module": "M03",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6891,
+        0.6891,
+        0.6568
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_3_53",
+      "category": "crt_monitor",
+      "module": "M06",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6779,
+        0.6779,
+        0.6238
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_46",
+      "category": "crt_monitor",
+      "module": "M02",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.6798,
+        0.6798,
+        0.6086
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "beige_crt_monitor_49",
+      "category": "crt_monitor",
+      "module": "M01",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.7354,
+        0.7354,
+        0.6432
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "blue_folding_chair_00",
+      "category": "folding_chair",
+      "module": "M13",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.8696,
+        0.8696,
+        0.8696
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "blue_folding_chair_01",
+      "category": "folding_chair",
+      "module": "M13",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        0.8364,
+        0.8364,
+        0.8364
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "blue_folding_chair_02",
+      "category": "folding_chair",
+      "module": "M13",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        1.1651,
+        1.1651,
+        1.1651
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "blue_folding_chair_24",
+      "category": "folding_chair",
+      "module": "M13",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        1.0801,
+        1.0801,
+        1.0801
+      ],
+      "flags": []
+    },
+    {
+      "object_id": "cable_bundle_14",
+      "category": "cable",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "cable_bundle_26",
+      "category": "cable",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "cable_bundle_36",
+      "category": "cable",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "concrete_pillar_13",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "concrete_pillar_25",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "concrete_pillar_28",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "floor_litter_15",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "floor_litter_16",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "floor_litter_27",
+      "category": "misc",
+      "module": null,
+      "method": "proxy_fallback",
+      "confidence": 0.0,
+      "scale": null,
+      "flags": [
+        "NO_MATCH"
+      ]
+    },
+    {
+      "object_id": "white_folding_table_08",
+      "category": "long_table",
+      "module": "M15",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "flags": [
+        "SCALE_CLAMPED",
+        "SHAPE_MISMATCH"
+      ]
+    },
+    {
+      "object_id": "white_folding_table_32",
+      "category": "long_table",
+      "module": "A03",
+      "method": "exact_category",
+      "confidence": 1.0,
+      "scale": [
+        1.7,
+        1.7,
+        1.7
+      ],
+      "flags": [
+        "SCALE_CLAMPED",
+        "SHAPE_MISMATCH"
+      ]
+    }
+  ],
+  "decal_textures": 6,
+  "summary": {
+    "library": 21,
+    "proxy": 9,
+    "flagged": 17
+  }
+}

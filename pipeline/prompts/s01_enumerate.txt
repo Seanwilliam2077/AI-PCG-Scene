@@ -1,0 +1,8 @@
+This image crop contains one or more "{label}". Your job is to box EACH INDIVIDUAL one separately — do NOT merge a row or group into a single box.
+
+Return ONLY a JSON array, no markdown fences. One entry per individual object:
+[
+  {{"label": "{label}", "box_2d": [ymin, xmin, ymax, xmax], "confidence": 0.0-1.0}}
+]
+
+Coordinates are 0-1000 normalized to THIS crop. Include partially visible ones at the crop edges. If there is truly only one, return a single entry.
