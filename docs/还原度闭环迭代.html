@@ -2,571 +2,591 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>还原度闭环迭代 — 从一张参考图到可度量的 3D 场景</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>还原度闭环迭代 — 交互版</title>
 <style>
-  @page { size: A4; margin: 14mm 13mm; }
-  * { box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "Noto Sans SC", "PingFang SC", sans-serif;
-         font-size: 10.5pt; line-height: 1.68; color: #1a1a1a; margin: 0;
-         background: #fff; }
-  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 26px 70px; }
+:root{
+  --bg:#faf8f5;--panel:#fff;--ink:#191714;--dim:#5f5852;--faint:#8c847c;
+  --rule:#e4ddd4;--acc:#E87722;--acc2:#B45309;--good:#1c7a3f;--bad:#B02A37;
+  --edge:#2f7fd6;--ssim:#8b5cf6;--hist:#12915f;
+}
+:root:not([data-theme="light"]){@media (prefers-color-scheme:dark){
+  --bg:#131110;--panel:#1c1917;--ink:#ece7e1;--dim:#a9a19a;--faint:#7c746c;
+  --rule:#2e2a26;--acc:#F0902F;--acc2:#E0A34A;--good:#4ec97f;--bad:#ff6b74;
+  --edge:#6bb3ff;--ssim:#b79cff;--hist:#3ddba0;
+}}
+[data-theme="dark"]{
+  --bg:#131110;--panel:#1c1917;--ink:#ece7e1;--dim:#a9a19a;--faint:#7c746c;
+  --rule:#2e2a26;--acc:#F0902F;--acc2:#E0A34A;--good:#4ec97f;--bad:#ff6b74;
+  --edge:#6bb3ff;--ssim:#b79cff;--hist:#3ddba0;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Microsoft YaHei","Noto Sans SC","PingFang SC",system-ui,sans-serif;
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px 90px}
+h1{font-size:clamp(25px,4vw,38px);line-height:1.18;margin:0 0 12px}
+h2{font-size:clamp(19px,2.5vw,25px);margin:0 0 6px;scroll-margin-top:70px}
+h3{font-size:17px;margin:22px 0 6px;color:var(--acc2)}
+p{margin:9px 0}
+.lead{color:var(--dim);font-size:17px;max-width:70ch}
+.sec{padding:44px 0;border-top:1px solid var(--rule)}
+.sec>.tag{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--acc);font-weight:700;margin-bottom:6px}
+.muted{color:var(--dim);font-size:14.5px}
+.tiny{color:var(--faint);font-size:13px}
+b,strong{font-weight:700}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:13.5px;
+  background:var(--panel);border:1px solid var(--rule);padding:1px 5px;border-radius:3px}
+pre{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--acc);
+  padding:12px 14px;overflow-x:auto;font-size:13px;line-height:1.65;border-radius:4px}
+pre code{background:none;border:none;padding:0}
+.key{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;margin:16px 0}
+.warn{border-left:3px solid var(--bad);background:var(--panel);padding:12px 16px;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:12px 0}
+th,td{border:1px solid var(--rule);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600}
+td.n{text-align:right;font-variant-numeric:tabular-nums;
+  font-family:Consolas,"Cascadia Mono",monospace;white-space:nowrap}
+.win{color:var(--good);font-weight:600}.loss{color:var(--bad);font-weight:600}
 
-  h1 { font-size: 15.5pt; border-bottom: 2.5px solid #E87722; padding-bottom: 5px;
-       margin: 30px 0 12px; break-after: avoid; }
-  h2 { font-size: 12pt; margin: 20px 0 7px; color: #B45309; break-after: avoid; }
-  h3 { font-size: 10.5pt; margin: 14px 0 5px; color: #7C3A06; break-after: avoid; }
-  p { margin: 7px 0; text-align: justify; }
-  ul, ol { margin: 7px 0 7px 22px; padding: 0; }
-  li { margin: 4px 0; }
+/* ---------- sticky nav ---------- */
+nav{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(9px);border-bottom:1px solid var(--rule);margin-bottom:0}
+nav .in{max-width:1120px;margin:0 auto;padding:9px 22px;display:flex;gap:6px;
+  align-items:center;flex-wrap:wrap}
+nav a{font-size:13px;color:var(--dim);text-decoration:none;padding:4px 9px;border-radius:4px}
+nav a:hover,nav a:focus-visible{color:var(--acc);background:var(--panel);outline:none}
+nav .sp{flex:1}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--panel);border:1px solid var(--rule);color:var(--ink);
+  padding:5px 12px;border-radius:5px;font-size:13.5px}
+.btn:hover{border-color:var(--acc)}
+.btn[aria-pressed="true"],.btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
 
-  .cover { text-align: center; padding: 44px 0 18px; }
-  .cover h1 { border: none; font-size: 23pt; margin: 0 0 6px; }
-  .cover .sub { font-size: 12pt; color: #555; }
-  .cover .meta { margin-top: 14px; color: #777; font-size: 9pt; line-height: 1.85; }
+/* ---------- wipe ---------- */
+.wipe{position:relative;user-select:none;touch-action:none;border:1px solid var(--rule);
+  overflow:hidden;background:#000;cursor:ew-resize}
+.wipe img{display:block;width:100%;height:auto}
+.wipe .top{position:absolute;inset:0;overflow:hidden}
+.wipe .top img{position:absolute;top:0;left:0;width:100%;height:100%}
+.wipe .bar{position:absolute;top:0;bottom:0;width:2px;background:var(--acc);
+  box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+.wipe .knob{position:absolute;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;
+  border-radius:50%;background:var(--acc);border:2px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);display:grid;place-items:center;color:#fff;
+  font-size:14px;font-weight:700}
+.wipe .lbl{position:absolute;top:9px;font-size:12px;padding:3px 9px;border-radius:3px;
+  background:rgba(0,0,0,.62);color:#fff;letter-spacing:.05em}
 
-  figure { margin: 14px 0 6px; }
-  figure img { display: block; width: 100%; height: auto; border: 1px solid #ddd; }
-  figcaption { font-size: 8.8pt; color: #666; margin-top: 5px; text-align: center;
-               line-height: 1.5; }
+/* ---------- stepper ---------- */
+.step-wrap{display:grid;gap:18px;grid-template-columns:1fr;margin-top:14px}
+@media(min-width:900px){.step-wrap{grid-template-columns:1.35fr .95fr}}
+.step-img{position:relative;border:1px solid var(--rule);background:var(--panel)}
+.step-img img{display:block;width:100%;height:auto}
+.step-badge{position:absolute;left:0;top:0;background:var(--acc);color:#fff;
+  font-size:12.5px;font-weight:700;padding:4px 11px;letter-spacing:.05em}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0 4px}
+.dot{width:32px;height:32px;border-radius:5px;border:1px solid var(--rule);
+  background:var(--panel);color:var(--dim);font-size:13px;font-weight:600}
+.dot.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin:12px 0}
+.mcell{background:var(--panel);border:1px solid var(--rule);padding:8px 10px;border-radius:5px}
+.mcell .k{font-size:11px;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+.mcell .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;
+  font-family:Consolas,"Cascadia Mono",monospace}
+.mcell .d{font-size:11.5px;font-variant-numeric:tabular-nums}
 
-  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9pt; }
-  th, td { border: 1px solid #ccc; padding: 5px 8px; text-align: left;
-           vertical-align: top; }
-  th { background: #FDF3E7; font-weight: 600; }
-  td.n { text-align: right; font-variant-numeric: tabular-nums;
-         font-family: Consolas, "Cascadia Mono", monospace; white-space: nowrap; }
-  tr { break-inside: avoid; }
-  .win { color: #1c7a3f; font-weight: 600; }
-  .loss { color: #B02A37; font-weight: 600; }
+/* ---------- chart ---------- */
+.chart{background:var(--panel);border:1px solid var(--rule);border-radius:5px;padding:10px}
+.chart svg{display:block;width:100%;height:auto;overflow:hidden}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;
+  border:1px solid var(--rule);border-radius:20px;background:var(--panel);color:var(--dim)}
+.lg .sw{width:11px;height:11px;border-radius:50%}
+.lg.off{opacity:.36}
 
-  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 9pt;
-         background: #F5F2EE; padding: 1px 4px; border: 1px solid #E6E0D8; }
-  pre { background: #F7F5F2; border: 1px solid #E2DCD4; border-left: 3px solid #E87722;
-        padding: 9px 12px; overflow-x: auto; font-size: 8.8pt; line-height: 1.6;
-        margin: 10px 0; }
-  pre code { background: none; border: none; padding: 0; }
+/* ---------- region probe ---------- */
+.probe{position:relative;border:1px solid var(--rule);line-height:0}
+.probe img{display:block;width:100%;height:auto}
+.rbox{position:absolute;border:1.5px solid transparent;cursor:pointer;transition:.12s}
+.rbox:hover,.rbox.on{border-color:var(--acc);background:rgba(232,119,34,.16)}
+.rlist{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.rchip{font-size:12.5px;padding:4px 9px;border:1px solid var(--rule);border-radius:14px;
+  background:var(--panel);color:var(--dim);font-variant-numeric:tabular-nums}
+.rchip.on{border-color:var(--acc);color:var(--acc);font-weight:600}
+.readout{background:var(--panel);border:1px solid var(--rule);border-radius:5px;
+  padding:11px 14px;margin-top:10px;min-height:74px;font-size:14px}
 
-  .key { border-left: 3px solid #E87722; background: #FDF8F2; padding: 9px 14px;
-         margin: 12px 0; }
-  .key strong { color: #B45309; }
-  .warn { border-left: 3px solid #B02A37; background: #FDF4F4; padding: 9px 14px;
-          margin: 12px 0; }
-  .lead { font-size: 11pt; color: #333; }
-  .toc { background: #FAF8F5; border: 1px solid #E6E0D8; padding: 12px 18px;
-         margin: 18px 0; font-size: 9.5pt; }
-  .toc ol { margin: 4px 0 0 20px; }
-  .toc a { color: #B45309; text-decoration: none; }
-  .pagebreak { break-before: page; }
-  hr { border: none; border-top: 1px solid #E2DCD4; margin: 26px 0; }
-  .foot { color: #888; font-size: 8.6pt; margin-top: 30px; border-top: 1px solid #ddd;
-          padding-top: 12px; }
+/* ---------- align table ---------- */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel)}
+tbody tr.on{background:color-mix(in srgb,var(--acc) 16%,transparent)}
+
+/* ---------- accordion ---------- */
+details{border:1px solid var(--rule);border-radius:5px;background:var(--panel);
+  margin:10px 0;padding:0 15px}
+details[open]{padding-bottom:12px}
+summary{cursor:pointer;padding:12px 0;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--acc)}
+details[open] summary::before{content:"▾ "}
+.foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:13px;color:var(--faint)}
+.foot a{color:var(--acc2)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<div class="cover">
+<nav><div class="in">
+  <a href="#top">顶部</a><a href="#iter">九步迭代</a><a href="#metric">指标轨迹</a>
+  <a href="#ssim">SSIM 反例</a><a href="#region">分区探针</a><a href="#align">逐物体配准</a>
+  <a href="#wrong">被推翻的结论</a><a href="#tech">技术框架</a>
+  <span class="sp"></span>
+  <button class="btn" id="theme" title="切换主题">◐</button>
+</div></nav>
+
+<div class="wrap" id="top">
+
+<div class="sec" style="border-top:none">
+  <div class="tag">线 3 · Blender + Cycles</div>
   <h1>还原度闭环迭代</h1>
-  <div class="sub">从一张参考图到一个可度量的 3D 场景</div>
-  <div class="meta">
-    Blender 4.2 / Cycles &nbsp;·&nbsp; 参考图 1024&times;572 &nbsp;·&nbsp;
-    166 物体 / 568 万三角面 &nbsp;·&nbsp; 480 spp 单帧 38 秒（RTX 3080）<br>
-    边缘 F 分数 0.260 &rarr; <strong>0.650</strong> &nbsp;·&nbsp;
-    16 分区曝光误差和 5.62 &rarr; <strong>2.44 档</strong>
+  <p class="lead">给一张参考图，允许「渲染 → 度量 → 定位病因 → 改」无限循环，
+  还原度的上限在哪。下面每一处都可以动手：拖动对比、逐步播放、切换指标、
+  在图上探针分区、筛选逐物体配准。</p>
+
+  <div class="mgrid" style="margin-top:18px">
+    <div class="mcell"><div class="k">边缘 F</div><div class="v" style="color:var(--good)">0.650</div><div class="d muted">起点 0.260</div></div>
+    <div class="mcell"><div class="k">边缘精确率</div><div class="v" style="color:var(--good)">0.701</div><div class="d muted">起点 0.203</div></div>
+    <div class="mcell"><div class="k">分区误差和</div><div class="v" style="color:var(--good)">2.44</div><div class="d muted">档，起点 5.62</div></div>
+    <div class="mcell"><div class="k">曝光误差</div><div class="v">+0.15</div><div class="d muted">档，起点 +0.33</div></div>
+    <div class="mcell"><div class="k">SSIM</div><div class="v">0.417</div><div class="d muted">起点 0.386</div></div>
+    <div class="mcell"><div class="k">物体 / 三角面</div><div class="v">166</div><div class="d muted">568 万面</div></div>
   </div>
 </div>
 
-<figure>
-  <img src="../process/recon/sbs.jpg" alt="参考图与重建结果并排对比">
-  <figcaption>左：输入参考图　|　右：重建场景在解算机位下的 Cycles 渲染。
-  没有把原图合成进画面，也没有用投影贴图替代几何。</figcaption>
-</figure>
-
-<div class="toc">
-  <strong>目录</strong>
-  <ol>
-    <li><a href="#s0">这份文档补的是哪个洞</a></li>
-    <li><a href="#s1">第一个判断：把「像不像」变成可测量的量</a></li>
-    <li><a href="#s2">第二个判断：先解相机，其余全挂在它上面</a></li>
-    <li><a href="#s3">第三个判断：布局写在图像空间，不写坐标</a></li>
-    <li><a href="#s4">第四个判断：先闭环，再好看</a></li>
-    <li><a href="#s5">九步迭代：效果图与指标轨迹</a></li>
-    <li><a href="#s6">并发怎么拆才不打架</a></li>
-    <li><a href="#s7">独立审查发现了作者发现不了的东西</a></li>
-    <li><a href="#s8">被推翻的三个「我自己的结论」</a></li>
-    <li><a href="#s9">现状、仍然错的地方、以及为什么不修</a></li>
-    <li><a href="#s10">复现</a></li>
-  </ol>
+<div class="sec">
+  <div class="tag">参考图 vs 结果</div>
+  <h2>拖动分割线</h2>
+  <p class="muted">左边是输入的参考图，右边是重建场景在解算机位下的 Cycles 渲染。
+  没有把原图合成进画面，也没有用投影贴图替代几何。</p>
+  <div class="wipe" id="wipe">
+    <img id="wA" alt="重建结果">
+    <div class="top" id="wtop"><img id="wB" alt="参考图"></div>
+    <div class="lbl" style="left:10px">参考图</div>
+    <div class="lbl" style="right:10px">重建</div>
+    <div class="bar" id="wbar"></div>
+    <div class="knob" id="wknob">⇔</div>
+  </div>
+  <p class="tiny">拖动、点击，或用 ← → 方向键。</p>
 </div>
 
-<hr>
-
-<h1 id="s0">1. 这份文档补的是哪个洞</h1>
-
-<p class="lead">主线 UE 管线的结论里有一句自我批评：</p>
-
-<div class="key">
-  「根本原因是管线<strong>单向前馈</strong>，误差逐级放大无法回收；下一代主干应是
-  <strong>闭环迭代</strong>。」<br>
-  <span style="color:#777;font-size:9pt">—— 本仓库 README「已知短板不藏」</span>
+<div class="sec" id="iter">
+  <div class="tag">过程</div>
+  <h2>九步迭代</h2>
+  <p class="muted">按顺序走一遍。每步的指标是当时实测的，不是事后补的。</p>
+  <div class="dots" id="dots"></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+    <button class="btn" id="prev">‹ 上一步</button>
+    <button class="btn" id="play">▶ 自动播放</button>
+    <button class="btn" id="next">下一步 ›</button>
+    <span class="tiny" id="stepPos"></span>
+  </div>
+  <div class="step-wrap">
+    <div class="step-img"><div class="step-badge" id="sBadge"></div><img id="sImg" alt=""></div>
+    <div>
+      <h3 id="sTitle" style="margin-top:0"></h3>
+      <p id="sWhat"></p>
+      <div class="key"><span id="sGain"></span></div>
+      <div class="mgrid" id="sMetrics"></div>
+    </div>
+  </div>
 </div>
 
-<p>这份文档就是那条闭环线的原型实现。它和 UE 管线是<strong>并行</strong>关系，不是替代：
-UE 那条是可交付、可离线复跑的<em>产品管线</em>；这条是回答另一个问题的<em>还原度上限探索</em>
-—— 如果允许「渲染 → 度量 → 定位病因 → 改 → 再渲染」无限循环，同一张参考图能被逼到多近。</p>
-
-<p>技术栈也故意不同：全程 Blender + Cycles，<strong>零云端调用、零 API Key</strong>，
-所有数据来自参考图本身与本地 39 模块资产库。因此这条线不存在脱敏问题，
-仓库里的实现就是完整实现。</p>
-
-<h2>目标场景</h2>
-<p>一间脏旧的地下机房：白色刷漆砖墙、墙挂木板架上一排米色 CRT（屏幕发洋红/青/蓝光）、
-中央折叠长桌、正中一根暗红钢立柱、前景两把蓝色折叠椅、顶上荧光灯管、
-密集海报墙、右墙垂落的黑色缆束与赭黄悬链、湿反光的深色水泥地。</p>
-
-<hr class="pagebreak">
-
-<h1 id="s1">2. 第一个判断：把「像不像」变成可测量的量</h1>
-
-<p>这类任务最容易走的弯路是<strong>凭眼睛调</strong>：看一眼觉得墙太亮，调暗一点，再看一眼。
-问题是人眼对整体亮度极不敏感、对局部错位又极敏感，凭感觉调会在两三轮后开始互相抵消。
-所以第一件事不是建模，是先定<strong>目标函数</strong>。</p>
-
-<h2>SSIM 是错的目标函数（这点是实测出来的）</h2>
-
-<p>直觉上 SSIM 该是首选。实际上在这个任务里它几乎不动，而且方向是错的：</p>
-
-<div class="warn">
-  <strong>实测反例。</strong>把砖缝调亮，SSIM 会<strong>单调上升</strong>，一直越过
-  「渲染砖缝振幅已经低于参考图（0.043 对 0.049）」这个点。也就是说
-  <strong>SSIM 奖励一面空白墙胜过一面正确的墙</strong>。
-  原因：1024&times;572 的杂乱室内照，SSIM 被高频纹理一致性主导 —— 污渍斑块、
-  单块砖的色差、地上的碎屑 —— 这些没有任何重建能逐像素复现。
+<div class="sec" id="metric">
+  <div class="tag">指标</div>
+  <h2>指标轨迹</h2>
+  <p class="muted">点图例可以开关曲线，鼠标移到图上读数值，点某一步会跳到上面的播放器。
+  这张图就是「为什么 SSIM 不能当目标函数」最直观的证据：边缘 F 翻倍以上，SSIM 几乎不动。</p>
+  <div class="legend" id="legend"></div>
+  <div class="chart"><svg id="chart" viewBox="0 0 900 340" role="img" aria-label="指标轨迹"></svg></div>
 </div>
 
-<p>所以砖缝的最终值是按<strong>振幅</strong>定的，不是按 SSIM 定的。SSIM 全程只作为
-<em>回归护栏</em>保留（防止某次改动把画面整体搞坏），不作为优化目标。</p>
+<div class="sec" id="ssim">
+  <div class="tag">方法</div>
+  <h2>SSIM 是错的目标函数 —— 实测反例</h2>
+  <p>直觉上 SSIM 该是首选。但在这个任务里它被高频纹理一致性主导（污渍、单块砖的色差、
+  地上的碎屑），而这些没有任何重建能逐像素复现。结果是它<b>奖励一面空白墙胜过一面正确的墙</b>。</p>
+  <p class="muted">下面是砖缝暗度的实验：拖动滑块，看 SSIM 一路上升，
+  而渲染出的砖缝振幅早已跌到参考图（虚线）之下。砖缝最终按<b>振幅</b>定，不按 SSIM 定。</p>
+  <div style="display:flex;gap:12px;align-items:center;margin:14px 0 4px;flex-wrap:wrap">
+    <span class="tiny">砖缝暗度 bed_mul</span>
+    <input type="range" id="bedR" min="0" max="4" step="1" value="3" style="flex:1;min-width:200px">
+    <span class="rchip on" id="bedV"></span>
+  </div>
+  <div class="chart"><svg id="bedChart" viewBox="0 0 900 260" role="img" aria-label="砖缝实验"></svg></div>
+  <div class="readout" id="bedOut"></div>
+</div>
 
-<h2>真正有判别力的四件量</h2>
+<div class="sec" id="region">
+  <div class="tag">度量</div>
+  <h2>16 分区探针</h2>
+  <p class="muted">整图指标说不清「哪里」不对。把画面切成 16 个有名字的区域，
+  逐区报亮度差（档）、饱和度、圆均值色相。把鼠标移到图上的框、或点下面的标签。</p>
+  <div class="probe" id="probe"><img id="probeImg" alt="重建结果分区"></div>
+  <div class="rlist" id="rlist"></div>
+  <div class="readout" id="rOut">把鼠标移到任意区域上。</div>
+</div>
 
-<table>
-<thead><tr><th>量</th><th>它回答什么</th><th>为什么可信</th></tr></thead>
-<tbody>
-<tr><td><strong>容差边缘 F 分数</strong></td>
-    <td>结构对不对：东西在不在正确位置</td>
-    <td>双向膨胀 5px 后算 IoU，容忍 1–2px 抖动但不容忍错位。全程从 0.260 涨到 0.650</td></tr>
-<tr><td><strong>16 分区曝光/色相表</strong></td>
-    <td><em>哪里</em>不对、<em>怎么</em>不对</td>
-    <td>按档（stop）报亮度差、报饱和度与圆均值色相，直接指向要改哪盏灯或哪个反射率</td></tr>
-<tr><td><strong>直方图交集</strong></td>
-    <td>影调分布对不对</td>
-    <td>不受空间错位影响，能把「整体太亮」和「局部错位」分开</td></tr>
-<tr><td><strong>逐物体互相关偏移</strong></td>
-    <td>具体哪个物体错位、错多少像素</td>
-    <td>整图指标永远答不了这个问题（详见第 6 节）</td></tr>
-</tbody>
-</table>
+<div class="sec" id="align">
+  <div class="tag">度量</div>
+  <h2>逐物体配准</h2>
+  <p class="muted">把每个物体的渲染块拿去参考图里做归一化互相关，得出它该往哪挪、挪多少像素。
+  <b>可信度比数值更重要</b> —— 点筛选按钮看不同判定，点某一行会在图上高亮它。</p>
+  <div class="filters" id="afilters"></div>
+  <div class="probe" id="aprobe"><img id="aImg" alt="参考图"></div>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>物体</th><th>资产</th><th class="n">dx</th><th class="n">dy</th>
+      <th class="n">位移</th><th class="n">相关峰</th><th>判定</th></tr></thead>
+    <tbody id="abody"></tbody>
+  </table></div>
+  <div class="warn"><b>这个工具本身也会骗人。</b>靠画面边缘的物体，搜索窗被裁切，
+  <code>dy</code> 只可能取到一侧；处在一排几乎相同的米色 CRT 里的物体，相关器会锁到邻居身上。
+  实测噪声地板：12 个接触像素<b>可证明没有移动</b>的物体，报出的 dy 平均变化了 10.2 px。
+  所以它指的是「去哪里看」，不是「移动多少」。</div>
+</div>
 
-<p>参考图本身的影调目标也是量出来的，用来当配光的靶子：</p>
+<div class="sec" id="wrong">
+  <div class="tag">诚实</div>
+  <h2>被推翻的三个「我自己的结论」</h2>
+  <p class="muted">都曾被当成缺陷记录，后来被测量推翻。保留而不删除，因为推翻的过程比结论更有用。</p>
 
-<table>
-<thead><tr><th>亮度百分位</th><td class="n">0.1</td><td class="n">1</td><td class="n">5</td>
-<td class="n">25</td><td class="n">50</td><td class="n">75</td><td class="n">95</td>
-<td class="n">99</td><td class="n">99.9</td></tr></thead>
-<tbody><tr><th>参考图</th><td class="n">0.024</td><td class="n">0.031</td><td class="n">0.047</td>
-<td class="n">0.094</td><td class="n">0.192</td><td class="n">0.369</td><td class="n">0.710</td>
-<td class="n">0.867</td><td class="n">0.992</td></tr></tbody>
-</table>
+  <details><summary>①「前景那把椅子太小、太远」—— 撤回</summary>
+    <p>判断来自缩略图而不是测量。实际它靠背顶点与参考图相差 3 px、后腿脚 5 px、
+    靠背轮廓宽 117 px 对 117 px。</p>
+  </details>
 
-<p>中位数 0.192、只有 <strong>0.51%</strong> 的像素超过 0.95（灯管和屏幕芯）、
-<strong>5.98%</strong> 低于 0.05。这才是要打的靶：<strong>暗中位 + 长而稀的高光尾</strong>，
-而不是「整体增益改一改」。</p>
+  <details><summary>②「左前那台 CRT 纵深错了 0.93 m」—— 错的是公式</summary>
+    <p>那个数字来自我自己推的一个「视宽 → 纵深」闭式近似。改用直接投影网格重解之后，
+    原摆放误差只有 6 px —— 错的是近似式，不是摆放。</p>
+  </details>
 
-<hr>
+  <details><summary>③「存在 −6.3 px 的系统性竖直偏移」—— 前提本身是错的</summary>
+    <p>这条是我作为<b>前提</b>交给 agent 去诊断的，结果它把前提推翻了：</p>
+    <ul>
+      <li>趋势由单个物体造成。<code>chair_edge</code> 占 57% 面积权重，
+        而它的搜索窗被画面下缘和左缘<b>裁切</b>，<code>dy</code> 只可能落在 [−40,0]。
+        剔掉这一行，加权均值从 −6.3 翻成 +2.6。</li>
+      <li>相机俯仰：需要的 −0.754° 会把地平线推离实测消失点 6.3 px，A/B 渲染后每项指标都变差。</li>
+      <li>相机高度：高度误差有 1/纵深 的特征，而实测 dy 与纵深<b>零相关</b>
+        （Pearson r = −0.09, t = −0.37, n = 19）。</li>
+      <li>共享支撑高度：同一支撑面上 CRT 平均 dy +18.6 而托架 −5.3，
+        <b>同一面里 24 px 的分裂</b>。</li>
+    </ul>
+    <p>它还指出一个我自己架构上的性质我没想到：<b>相机改动在原理上就修不了这些数</b> ——
+    布局写在图像空间并通过同一台相机重新解算，所以任何俯仰/高度改动下，
+    锚定物体的接触像素移动量 ≤ 0.011 px。我却让它去考虑改相机。</p>
+    <p>后续闭合得很干净：区域 owner 实际去修 <code>chair_edge</code>（它确实近了 0.26 m、
+    偏航错了 108°），修完那个「系统性趋势」自己消失了 —— 加权均值 dy 从 −6.3 变成 +2.4。</p>
+  </details>
+</div>
 
-<h1 id="s2">3. 第二个判断：先解相机，其余全挂在它上面</h1>
+<div class="sec" id="tech">
+  <div class="tag">技术框架</div>
+  <h2>四个前置判断</h2>
 
-<p>相机错了，后面所有摆放都是在错的投影下拟合，越调越偏。所以先把它锁死。</p>
+  <h3>一、先把「像不像」变成可测量的量</h3>
+  <p>人眼对整体亮度极不敏感、对局部错位又极敏感，凭感觉调会在两三轮后开始互相抵消。
+  所以第一件事不是建模，是先定目标函数。真正有判别力的是四件量：
+  容差边缘 F 分数（结构）、16 分区曝光/色相表（哪里、怎么错）、
+  直方图交集（影调分布）、逐物体互相关（哪个物体错位）。</p>
 
-<h2>三步解算，每步用不同的证据</h2>
-<ol>
-  <li><strong>偏航与消失点。</strong>LSD 线段检测 + RANSAC，对 61 条纵深族线段
-      （砖缝、板架边、地面伸缩缝）求共同消失点，得 (517.4, 201.5)。它只偏离画面中心列
-      5 像素 —— 这本身就证明<strong>相机在房间中轴线上、无偏航</strong>。</li>
-  <li><strong>俯仰。</strong>消失点所在行直接给出俯仰（给定焦距）。</li>
-  <li><strong>机高。</strong>用地平线比例法：两把折叠椅是已知 0.82 m 且跨越地平线的物体，
-      由此得到的机高<strong>与焦距无关</strong>，把尺度和焦距解耦开。</li>
-</ol>
-
-<pre><code>hfov 95.0°   f 469.16 px   pitch −10.2°   yaw +0.4°   roll −0.35°
+  <h3>二、先解相机，其余全挂在它上面</h3>
+  <p>LSD + RANSAC 对 61 条纵深族线段求消失点得 (517.4, 201.5)，只偏离画面中心列 5 px，
+  证明相机在中轴线上；消失点所在行给出俯仰；机高用地平线比例法从两把已知 0.82 m 的椅子解出，
+  <b>与焦距无关</b>，把尺度和焦距解耦。</p>
+  <pre><code>hfov 95.0°   f 469.16 px   pitch −10.2°   yaw +0.4°   roll −0.35°
 相机 (0, 0, 1.18) m      房间 3.95 × 7.00 × 2.55 m</code></pre>
+  <p class="muted">上限也要承认：参考图是 AI 生成图，<b>自身透视不自洽约 ±15 px</b>
+  （同一面墙不同砖缝外推的消失点能差 30 px）。追求亚分米级解算没有意义，
+  早点转入闭环才对。</p>
 
-<figure>
-  <img src="../process/recon/calib.jpg" alt="房间线框、地面栅格与地平线叠在参考图上">
-  <figcaption>把解出来的房间线框、0.5 m 地面栅格与地平线画回参考图。
-  后墙两角落在 378 / 668 px，参考图实测 370 / 670 —— 这就是验收方式。</figcaption>
-</figure>
+  <h3>三、布局写在图像空间，不写坐标</h3>
+  <p>每个物体记的是<b>它与支撑面接触的那个像素</b>加支撑面名字，由反投影解算成米。
+  移动一个物体 = 改一个像素值；改房间尺寸时所有摆放自动重新推导。</p>
+  <pre><code>{"id":"crt_L2","asset":"M02","support":"shelf_L",
+ "anchor_px":[300,250],"yaw":88}</code></pre>
+  <p class="muted">代价：掠射墙上这个办法是<b>病态</b>的（读数差几像素、纵深差几米），
+  墙架必须改成同时约束投影宽度、中心、顶行、底行的联合拟合 ——
+  只用宽度一项是退化的，侧视的深物体和正视的浅物体投出同样宽度。</p>
 
-<h2>一个必须承认的上限</h2>
-<p>参考图是 AI 生成图，<strong>自身透视并不自洽</strong>：同一面墙上不同砖缝外推出的消失点
-能差 30 像素，即 ±15px 量级的内部不一致。所以追求亚分米级解算是没有意义的，
-早点转入「渲染—度量—修」闭环才是对的。这个判断让后面省了很多力气。</p>
+  <h3>四、先闭环，再好看</h3>
+  <p>第一版渲染很难看，但它跑通了：spec 驱动、五模块各自建、相机对齐、出图、量分。
+  此后每个改动都能立刻被量化。反过来的顺序会让人在无法验证的东西上花掉大半时间。</p>
 
-<hr class="pagebreak">
+  <h3>并发怎么拆才不打架</h3>
+  <ul>
+    <li><b>所有权按文件切</b>：每人只写自己那份 spec 片段，按实例 id 合并，集合互不相交。</li>
+    <li><b>每人一条独立构建道</b>：<code>merge_parts --out spec/scene_&lt;tag&gt;.json</code>
+      再用 <code>--spec</code> 构建。没这条，两人同时合并就会互相踩主 spec。</li>
+    <li><b>有先后依赖的不并发</b>：系统性分量必须先定，否则四个区域 owner 会把系统误差
+      各自吸收进坐标里，事后无法拆分。</li>
+    <li><b>整合环节要有回滚权</b>：不采信自我归因，做 2×2 消融分离贡献。</li>
+  </ul>
+  <p class="muted">真实成本：三轮并发共 13 个 agent、约 155 万 token；
+  第一轮 16 个 agent 因 API 529 全部失败、零产出。</p>
 
-<h1 id="s3">4. 第三个判断：布局写在图像空间，不写坐标</h1>
-
-<p>常规做法是给每个物体填 3D 坐标。这里换了一种：每个物体记的是
-<strong>它与支撑面接触的那个像素</strong>，加上支撑面的名字。</p>
-
-<pre><code>{"id": "crt_L2", "asset": "M02", "support": "shelf_L",
- "anchor_px": [300, 250], "yaw": 88, "note": "左架第二台，粉屏"}</code></pre>
-
-<p>由 <code>tools/resolve.py</code> 反投影成米。好处有三个，都在后面兑现了：</p>
-<ul>
-  <li>移动一个物体等于改一个像素值，跟人读图的方式一致；</li>
-  <li>改房间尺寸或改支撑高度时，<strong>所有摆放自动重新推导</strong>，不会各自漂移；</li>
-  <li>它使布局对相机变化<strong>不变</strong> —— 这一条后来成了关键证据（第 8 节）。</li>
-</ul>
-
-<figure>
-  <img src="../process/recon/layout.jpg" alt="所有实例的投影包围盒画在参考图上">
-  <figcaption>每个实例的投影包围盒画在参考图上。检查摆放用这张图只要毫秒，
-  渲染一次要一分钟 —— 内循环必须走便宜的那条。</figcaption>
-</figure>
-
-<div class="warn">
-  <strong>这个办法在掠射墙面上是病态的。</strong>左墙几乎与视线平行，
-  读数差几个像素、反投影出来的纵深就差几米。两排墙架因此改用另一种拟合：
-  <strong>把物体的投影范围（宽度、中心、底行）同时去匹配参考图里的范围，
-  联合解纵深与朝向</strong>。这个拟合顺带揭示了两件事 —— 显示器朝向各不相同
-  （有的朝房间、有的朝相机），以及右架比左架高 0.12 m（两次独立测量一致）。
-</div>
-
-<h2>资产不是造的，是配的</h2>
-<figure>
-  <img src="../process/recon/catalog.jpg" alt="资产库四朝向接触表局部">
-  <figcaption>39 个模块逐个渲四个朝向的接触表（局部）。
-  用来定每个资产的真实高度和「正面朝 −Y」需要的偏航修正 —— 注册表里的
-  <code>est_size_cm</code> 是 AI 估的，不可信，得自己量。</figcaption>
-</figure>
-
-<hr>
-
-<h1 id="s4">5. 第四个判断：先闭环，再好看</h1>
-
-<p>第一版渲染很难看：墙是平灰的、没有海报、没有线缆、屏幕过曝成白块。
-但它<strong>跑通了</strong> —— spec 驱动、五个模块各自建、相机对齐、出图、量分。
-这一步的价值不在画面，在于此后每一个改动都能立刻被量化。</p>
-
-<p>反过来的顺序（先把砖墙材质做精致，再想怎么组装）会让人在无法验证的东西上花掉大半时间。</p>
-
-<hr class="pagebreak">
-
-<h1 id="s5">6. 九步迭代：效果图与指标轨迹</h1>
-
-<figure>
-  <img src="../process/recon/iteration_strip.jpg" alt="九个里程碑渲染依次排列，每格标注改了什么与当时的指标">
-  <figcaption>九个里程碑，按时间顺序。每格下方是当时实测的
-  ssim / 边缘 F / 边缘精确率 / 直方图交集 / 全局曝光。</figcaption>
-</figure>
-
-<figure>
-  <img src="../process/recon/metric_curve.jpg" alt="三条指标在九个里程碑上的轨迹">
-  <figcaption>同一批里程碑上的指标轨迹。边缘 F 翻倍以上，
-  而 SSIM 直到最后两步才动 —— 这正是第 2 节那个判断的实证。</figcaption>
-</figure>
-
-<h2>逐步在改什么</h2>
-
-<table>
-<thead><tr><th>步</th><th>改了什么</th><th class="n">ssim</th><th class="n">边缘F</th>
-<th class="n">曝光</th><th>这一步真正的收获</th></tr></thead>
-<tbody>
-<tr><td>01</td><td>首次端到端：外壳 + 资产 + 灯管</td><td class="n">0.386</td>
-    <td class="n">0.260</td><td class="n">+0.33</td>
-    <td>闭环通了；砖纹完全没出来（UV 问题）</td></tr>
-<tr><td>02</td><td>转 Cycles；屏幕按纹理饱和度自发光</td><td class="n">0.337</td>
-    <td class="n">0.584</td><td class="n">+0.64</td>
-    <td>边缘 F 一步 +0.32：结构开始对上</td></tr>
-<tr><td>03</td><td>海报层：参考图自身海报矫正回贴</td><td class="n">0.335</td>
-    <td class="n">0.602</td><td class="n">+0.60</td>
-    <td>内容补齐；此时整体还偏亮 0.6 档</td></tr>
-<tr><td>04</td><td>线缆、管路、地面走线</td><td class="n">0.328</td>
-    <td class="n">0.603</td><td class="n">+0.44</td>
-    <td>内容先于调色 —— 内容会改变所有分区读数</td></tr>
-<tr><td>05</td><td>光度定标：按分区表配光与调色</td><td class="n">0.383</td>
-    <td class="n">0.591</td><td class="n">+0.03</td>
-    <td>曝光基本归零；对比度 0.206 对参考 0.210</td></tr>
-<tr><td>06</td><td>外壳法线朝内；删掉不该有的门洞</td><td class="n">0.390</td>
-    <td class="n">0.577</td><td class="n">+0.17</td>
-    <td>单是法线一项就值 +0.005 ssim / +0.012 直方图</td></tr>
-<tr><td>07</td><td><strong>并发</strong>：海报 + 材质两个 owner</td><td class="n">0.383</td>
-    <td class="n">0.617</td><td class="n">+0.15</td>
-    <td>公告板发现（第 7 节）；砖缝按振幅定标</td></tr>
-<tr><td>08</td><td>相机偏航符号修正</td><td class="n">0.398</td>
-    <td class="n">0.620</td><td class="n">+0.15</td>
-    <td><strong>全项目单步 ssim 收益最大的一次</strong></td></tr>
-<tr><td>09</td><td><strong>并发</strong>：系统性分量 + 四区域逐物体归位</td>
-    <td class="n">0.417</td><td class="n">0.650</td><td class="n">+0.15</td>
-    <td>无匹配物体 7 → 4；已对齐 0 → 4</td></tr>
-</tbody>
-</table>
-
-<h2>总账</h2>
-<table>
-<thead><tr><th>指标</th><th class="n">起点</th><th class="n">终点</th><th>说明</th></tr></thead>
-<tbody>
-<tr><td>容差边缘 F 分数</td><td class="n">0.260</td><td class="n win">0.650</td>
-    <td>结构匹配，翻倍以上</td></tr>
-<tr><td>边缘精确率</td><td class="n">0.203</td><td class="n win">0.701</td>
-    <td>新画出来的边落在参考图的边上</td></tr>
-<tr><td>边缘召回率</td><td class="n">—</td><td class="n win">0.605</td><td></td></tr>
-<tr><td>直方图交集</td><td class="n">0.733</td><td class="n">0.812</td>
-    <td>峰值曾到 0.817，最后一轮让掉 0.005</td></tr>
-<tr><td>全局曝光误差</td><td class="n">+0.33 档</td><td class="n win">+0.15 档</td>
-    <td>中景地面曾是 +1.02，现 +0.17</td></tr>
-<tr><td>亮度标准差（对比度）</td><td class="n">0.201</td><td class="n win">0.215</td>
-    <td>参考图 0.210</td></tr>
-<tr><td>平均绝对误差</td><td class="n">0.153</td><td class="n win">0.132</td><td></td></tr>
-<tr><td>16 分区误差绝对值之和</td><td class="n">5.62 档</td><td class="n win">2.44 档</td>
-    <td>最差分区 +1.02 → +0.36</td></tr>
-<tr><td>SSIM</td><td class="n">0.386</td><td class="n">0.417</td>
-    <td>大半程低于起点；不是目标函数</td></tr>
-</tbody>
-</table>
-
-<figure>
-  <img src="../process/recon/compare4.jpg" alt="四联图：参考、渲染、逆SSIM热图、边缘叠图">
-  <figcaption>四联图。右下是边缘叠图：绿=参考图、红=渲染、黄=两者重合。
-  黄色越多越好；一个错位的物体在这张图上一眼可见。</figcaption>
-</figure>
-
-<figure>
-  <img src="../process/recon/views.jpg" alt="同一场景的四个不同机位渲染">
-  <figcaption>同一份 spec 在参考机位之外的三个机位。这是「它确实是个 3D 场景」
-  的证据 —— 没有任何东西是只在一个角度成立的取巧。</figcaption>
-</figure>
-
-<hr class="pagebreak">
-
-<h1 id="s6">7. 并发怎么拆才不打架</h1>
-
-<p>拆并发的难点不是分任务，是<strong>让并行的人不互相覆盖</strong>。这里用三条约束解决：</p>
-
-<h3>① 所有权按文件切，不按功能切</h3>
-<p>每个 owner 只写自己那一份 <code>spec/parts/*.json</code> 片段，
-由 <code>tools/merge_parts.py</code> 按实例 id 合并进主 spec。谁都不许直接写
-<code>spec/scene.json</code>。片段之间的实例集合互不相交，合并天然无冲突。</p>
-
-<h3>② 每人一条独立构建道</h3>
-<pre><code>python tools/merge_parts.py --resolve --out spec/scene_&lt;tag&gt;.json
-blender -b --python build.py -- --spec spec/scene_&lt;tag&gt;.json ...</code></pre>
-<p>合并时会读<em>所有</em>片段，所以每个人始终看到别人的最新进展，
-但各自渲染各自的副本。<strong>没有这条，两个 owner 同时跑合并就会互相踩主 spec</strong>
-—— 这是第一次尝试并发时真实存在的隐患。</p>
-
-<h3>③ 有先后依赖的，就不要并发</h3>
-<p>第 9 步本来打算五个区域一起并发。但当时有一个疑似<strong>系统性</strong>偏移
-（所有物体整体偏移），如果不先定下来，四个区域 owner 会各自把这个系统误差
-<strong>吸收进自己的坐标里</strong>，事后无法拆分。所以改成三阶段流水：
-系统性 owner 单独先跑 → 四区域并发 → 整合 owner 合并、渲染、复测、按区域裁决。</p>
-
-<h3>整合环节必须有裁决权</h3>
-<p>整合 owner 的职责不是「把大家的改动合起来」，而是<strong>独立复测并有权回滚</strong>。
-第 7 步的整合者没有采信任何 owner 的自我归因，而是做了 2&times;2 消融
-（老/新材质 &times; 老/新海报，四次全分辨率渲染）来分离贡献，
-并发现材质 owner 的砖缝暗度过冲了 21%（它用的百分位统计量会被缝宽偏置），
-换成对缝宽稳健的统计量重新定标后才放行。</p>
-
-<div class="key">
-  三轮并发共 13 个 agent、约 130 万 token。<strong>第一轮 16 个 agent 全部因
-  API 529 失败、零产出</strong>，只能退回单线程；这是真实成本的一部分，
-  也是为什么工具链必须能被单人独立驱动。
-</div>
-
-<hr>
-
-<h1 id="s7">8. 独立审查发现了作者发现不了的东西</h1>
-
-<p>三个 bug 全都是<strong>某个数字拒绝改善</strong>时才暴露的，不是看图看出来的。
-这一点值得单独强调：它们在渲染图上都不显眼。</p>
-
-<h2>① 右墙洗墙灯照到了左墙</h2>
-<p>XYZ 欧拉角符号错。症状是「右侧偏暗 + 左侧偏亮」两个现象，
-被当成两个独立问题调了好几轮。<strong>永久对策</strong>：
-<code>modules/lighting.py</code> 现在把每盏灯算出的朝向向量打进 build report，
-灯打反了不渲染就能看见。</p>
-
-<h2>② 同一个符号错误又犯了一次</h2>
-<p>后方补光照回了相机，所以加上它反而是近处地面变亮、远墙依旧暗。</p>
-
-<h2>③ 房间外壳每一面的法线都朝房间外</h2>
-<p>旋转 plane 拼外壳留下了反向绕序。Cycles 的漫反射两面都着色所以看不出来，
-但 Bump 链是按翻转后的法线求值的，掠射面会被压黑。修正后单这一项
-+0.005 ssim、+0.012 直方图交集。</p>
-
-<h2>④ 海报根本不是贴在砖上的</h2>
-<figure>
-  <img src="../process/recon/rect.jpg" alt="后墙矫正展开后的样子，可见无砖缝的公告板">
-  <figcaption>把后墙按墙面矫正展开之后，结构一目了然：
-  海报都在一块<strong>没有砖缝的公告板</strong>上，不是直接贴砖。</figcaption>
-</figure>
-<p>这是海报 owner 在矫正视图里看出来的。按「偏离局部中位数」找海报的像素规则
-<strong>永远看不见板子</strong> —— 板子本身是均匀的，不会偏离自己的中位数。
-这正是后墙分区长期偏亮 0.48 档的真因：那里渲染的是一片裸砖。</p>
-
-<h2>⑥ 整排左墙显示器的朝向是反的</h2>
-<p>这是第 9 步最实质的发现，来自左区 owner。参考图里左架每台 CRT 都是<strong>近乎侧视</strong>的：
-<code>crt_L1</code> 只在 u 272–288 露出 16 px 宽的洋红细条，u 168–270 全是素色米白机壳；
-<code>crt_L2</code> 是 u 297–306 的 9 px 红条。而 spec 里的偏航是 4–69° ——
-对于 x ≈ −1.7 的显示器，这个角度把屏幕正对着视线。<strong>靠左墙架子上的显示器应该朝 +X</strong>，
-即从这个机位看约 +90…+105°。这一个错误就是 <code>crt_L1</code> 报「无匹配」的原因：
-渲染在参考图放素色机壳的地方放了一块正对镜头的粉屏。</p>
-<p>而 <code>crt_floorL</code> 恰好反过来：它的青屏在参考图里是<strong>朝墙</strong>的（约 −52°），
-那片朝墙的光正是砖墙 u 150–205 上那块宽青色洗光 —— 之前的实测笔记里已经记着
-「这块洗光缺失」，当时没想到病因是朝向。</p>
-<div class="key">
-  <strong>为什么我自己的拟合会拟合错。</strong>第 3 节那个「匹配投影范围」的拟合，
-  单看<strong>宽度</strong>是<strong>退化</strong>的：一个侧视的深显示器和一个正视的浅显示器
-  可以投出同样的宽度。它和高度耦合在一起 —— 左区 owner 同时发现这批物体比
-  <code>ASSET_TUNE</code> 高 20–40%，而且这是被几何逼出来的：z = 1.20 只比机位高 0.02 m，
-  所以 0.78 m 板上一台 0.42 m CRT 的顶点在这面墙上<strong>任何纵深</strong>都投在 v = 195–199，
-  而参考图实测顶点在 v = 166–193，要够到 v = 168 顶点得在 z ≈ 1.37。
-  两个自由度一起错，宽度一项就还是对得上 —— 拟合的观测量太少。
-</div>
-<p>顺带它把 <code>shelf_z_L = 0.78</code> 又验了一次（因为尺寸结论看着可疑）：
-板子前上沿在 u 300–410 上贴合实测边缘约 1 px，而 z = 0.90 差 20 px。左架高度是对的。</p>
-
-<h2>⑤ 逐物体互相关本身也会骗人</h2>
-<p>系统性 owner 用它自己的 A/B 证明了噪声地板：在一次俯仰 A/B 中，
-12 个<strong>接触像素可证明没有移动</strong>的锚定物体，报出的 dy 平均变化了 10.2 px
-—— 纯粹因为周围渲染内容变了、相关器重新锁定。而且在一排几乎一样的米色 CRT 里，
-相关器会<strong>锁到邻居身上</strong>：crt_R2 报 dx −39、crt_R3 报 dx +33，
-那是邻居误配，不是摆放误差。</p>
-
-<div class="key">
-  <strong>方法论上的收获：</strong>度量工具本身也要被审查。
-  我把一个带偏置的聚合量当成事实交给了 agent，是它把这个前提推翻的。
-</div>
-
-<hr class="pagebreak">
-
-<h1 id="s8">9. 被推翻的三个「我自己的结论」</h1>
-
-<p>这三条都曾被我当成缺陷记录下来，后来被测量推翻。保留而不删除，
-因为<strong>推翻的过程比结论更有用</strong>。</p>
-
-<h2>①「前景那把椅子太小、太远」</h2>
-<figure>
-  <img src="../process/recon/chair.jpg" alt="前景椅子区域，参考图与渲染并排">
-  <figcaption>左参考、右渲染。当时凭缩略图判断椅子太小，实际它靠背顶点与参考图
-  相差 3 px、后腿脚 5 px、靠背轮廓宽 117 px 对 117 px。</figcaption>
-</figure>
-<p>结论：判断来自缩略图而不是测量。撤回。</p>
-
-<h2>②「左前那台 CRT 纵深错了 0.93 m」</h2>
-<p>这个数字来自我自己推的一个「视宽 → 纵深」闭式近似。改用<strong>直接投影网格</strong>
-重解之后，原摆放误差只有 6 px —— 错的是那个近似式，不是摆放。</p>
-
-<h2>③「存在 −6.3 px 的系统性竖直偏移」</h2>
-<p>这条是我作为前提<strong>交给 agent 去诊断</strong>的，结果它把前提本身推翻了：</p>
-<ul>
-  <li>该趋势由单个物体造成。<code>chair_edge</code> 占了 57% 的面积权重，
-      而它的相关搜索窗被画面下缘和左缘<strong>裁切</strong>，
-      导致 <code>dy</code> 只可能落在 [−40, 0]。剔掉这一行，加权均值从 −6.3
-      翻成 +2.6。</li>
-  <li>相机俯仰：需要的 −0.754° 会把地平线推离实测消失点 6.3 px，并让三条已定标的
-      结构行各偏 6–8 px。A/B 渲染后每项指标都变差。</li>
-  <li>相机高度：高度误差有 1/纵深 的特征（1.6 m 处 263 px/m，7.6 m 处 61 px/m），
-      而实测 dy 与纵深<strong>零相关</strong>（Pearson r = −0.09, t = −0.37, n = 19）。</li>
-  <li>共享支撑高度：同一支撑面上，CRT 平均 dy +18.6 而托架 −5.3，
-      <strong>同一面里 24 px 的分裂</strong>，不可能是支撑面整体高低。</li>
-</ul>
-
-<div class="key">
-  它还指出了一个我自己架构上的性质我没想到：<strong>相机改动在原理上就修不了这些数</strong>。
-  布局写在图像空间、并通过同一台相机重新解算，所以任何俯仰/高度改动下，
-  锚定物体的接触像素移动量 ≤ 0.011 px；只有 9 个 <code>support:"fixed"</code>
-  的条目会平移。我却让它去考虑改相机。
-</div>
-
-<p>后续验证闭合得很干净：区域 owner 实际去修 <code>chair_edge</code>
-（它确实近了 0.26 m、偏航错了 108°），修完之后那个「系统性趋势」自己消失了 ——
-加权均值 dy 从 −6.3 变成 +2.4。</p>
-
-<figure>
-  <img src="../process/recon/align.jpg" alt="逐物体配准箭头画在参考图上">
-  <figcaption>逐物体配准箭头（放大 3 倍）：绿 ≤3px、琥珀 ≤8px、红 &gt;8px。
-  读它的时候要带上上面的告警：靠画面边缘的物体受搜索窗裁切偏置，
-  处在一排相似 CRT 中的物体可能锁到了邻居。它指的是「去哪里看」，不是「移动多少」。</figcaption>
-</figure>
-
-<hr>
-
-<h1 id="s9">10. 现状、仍然错的地方、以及为什么不修</h1>
-
-<table>
-<thead><tr><th>#</th><th>问题</th><th>为什么还在</th></tr></thead>
-<tbody>
-<tr><td>1</td><td>左墙远端的海报是糊的</td>
-    <td><strong>参考图本身在那段只有 21 px/m 的采样率。</strong>矫正不能凭空造出
-    从未被拍下的细节；换成自己画的海报就不再是「对这张图的重建」了。这是信息上限，不是缺陷。</td></tr>
-<tr><td>2</td><td>左架分区偏亮 +0.36 档</td>
-    <td>目前 16 个分区里最差的一个。资产自身反射率与背后砖墙想要的值不一致。</td></tr>
-<tr><td>3</td><td>地面细碎垃圾不足</td>
-    <td>大件都在，程序化颗粒也有，但参考图地面那些一颗颗的碎屑没有逐个摆。</td></tr>
-<tr><td>4</td><td>折叠椅框是暖铜色</td>
-    <td>参考图里是冷灰钢。这是<strong>资产属性</strong>，不是配光问题。</td></tr>
-<tr><td>5</td><td>近景地面色相偏冷 18°</td>
-    <td>参考图湿地面拾取的暖反弹比我们多。</td></tr>
-<tr><td>6</td><td>天花缺少模板纹理</td>
-    <td>我们是斑驳混凝土；参考图有清晰的支模痕迹与污渍条纹。</td></tr>
-</tbody>
-</table>
-
-<p>另外记两个仍然存在的越界：<code>cab_floorR</code> 解算到 y = 7.538（后墙在 7.0），
-<code>tower_floorR1</code> 到 x = 2.026（半宽 1.975）。都在外壳之外，属于下一轮要收的账。</p>
-
-<hr>
-
-<h1 id="s10">11. 复现</h1>
-
-<pre><code>python tools/bake_wall_layer.py                # 从参考图烘出矫正后的海报层
-python tools/merge_parts.py --resolve          # 片段合并进主 spec 并重解锚点
+  <h3>复现</h3>
+  <pre><code>python tools/bake_wall_layer.py
+python tools/merge_parts.py --resolve
 blender -b --python build.py -- --engine CYCLES --samples 480 \
         --out out/render_final.png --save-blend
-python tools/compare.py    --render out/render_final.png --tag final
-python tools/align_check.py --render out/render_final.png --vis
-blender -b --python tools/views.py -- --engine CYCLES --samples 140</code></pre>
-
-<h2>工具清单</h2>
-<table>
-<thead><tr><th>工具</th><th>作用</th></tr></thead>
-<tbody>
-<tr><td><code>tools/calib.py</code></td><td>LSD + RANSAC 解消失点</td></tr>
-<tr><td><code>tools/overlay.py</code></td><td>房间线框叠回参考图（标定验收）</td></tr>
-<tr><td><code>tools/place.py</code></td><td>像素 ↔ 米互转，任意支撑平面</td></tr>
-<tr><td><code>tools/resolve.py</code></td><td>把 anchor_px 反投影成 pos</td></tr>
-<tr><td><code>tools/spec_overlay.py</code></td><td>实例包围盒叠回参考图（摆放内循环）</td></tr>
-<tr><td><code>tools/compare.py</code></td><td>整图 + 16 分区打分，出四联审查图</td></tr>
-<tr><td><code>tools/align_check.py</code></td><td>逐物体互相关配准，带可信度裁决</td></tr>
-<tr><td><code>tools/check_camera.py</code></td><td>校验渲染相机与投影器一致（60 点，超 3px 报警）</td></tr>
-<tr><td><code>tools/bake_wall_layer.py</code></td><td>墙面矫正烘海报层（含公告板）</td></tr>
-<tr><td><code>tools/probe_pixel.py</code></td><td>射线追某个像素，报出打到了哪个物体</td></tr>
-<tr><td><code>tools/views.py</code></td><td>换机位渲染，验证是真 3D 场景</td></tr>
-<tr><td><code>tools/catalog.py</code></td><td>资产库四朝向接触表</td></tr>
-<tr><td><code>tools/merge_parts.py</code></td><td>片段合并（支持显式 null 删除键）</td></tr>
-</tbody>
-</table>
+python tools/compare.py     --render out/render_final.png --tag final
+python tools/align_check.py --render out/render_final.png --vis</code></pre>
+</div>
 
 <div class="foot">
-  Blender 4.2.3 LTS · Cycles / OptiX · RTX 3080 · 参考图 1024&times;572 ·
+  Blender 4.2.3 LTS · Cycles / OptiX · RTX 3080 · 参考图 1024×572 ·
   39 模块贴图资产库 · 全程无云端调用、无 API Key<br>
-  本文所有数字均为实测，可用上面的命令复现；被推翻的结论按原样保留。
+  所有数字均为实测，可用上面的命令复现；被推翻的结论按原样保留。
+  ← <a href="../index.html">返回三条方案总览</a>
 </div>
 
 </div>
+
+<script id="D" type="application/json">{"milestones":[{"n":1,"img":"steps/step1.jpg","title":"首次端到端","what":"外壳 + 资产实例 + 灯管，EEVEE 冒烟测试。砖纹完全没出来 —— UV 映射错了。","gain":"闭环通了：spec 驱动、五模块各自建、相机对齐、出图、量分。画面难看，但此后每个改动都能被量化。","ssim":0.3857,"edge":0.2597,"prec":0.2034,"hist":0.7332,"exp":0.33,"mae":0.1529},{"n":2,"img":"steps/step2.jpg","title":"转 Cycles","what":"GPU 路径追踪；屏幕改为按纹理饱和度自发光，露出 CRT 自己的画面内容。","gain":"边缘 F 一步 +0.32，结构开始对上。曝光还高 0.64 档。","ssim":0.3369,"edge":0.5843,"prec":0.6082,"hist":0.6153,"exp":0.64,"mae":0.1953},{"n":3,"img":"steps/step3.jpg","title":"海报层","what":"把参考图自身的海报按墙面矫正后贴回去，而不是画一批假海报。","gain":"内容补齐比调色优先 —— 内容会改变所有分区读数，先调色等于白调。","ssim":0.3345,"edge":0.6024,"prec":0.6412,"hist":0.621,"exp":0.6,"mae":0.191},{"n":4,"img":"steps/step4.jpg","title":"线缆管路","what":"黑色缆束、赭黄悬链、立管、地面走线。","gain":"边缘 F 到 0.603。此时仍偏亮 0.44 档，但先不动。","ssim":0.3283,"edge":0.6032,"prec":0.6391,"hist":0.6498,"exp":0.44,"mae":0.177},{"n":5,"img":"steps/step5.jpg","title":"光度定标","what":"按实测直方图与 16 分区表配光调色，不靠眼睛。","gain":"曝光 +0.44 → +0.03 档，对比度 0.206 对参考 0.210。","ssim":0.3828,"edge":0.5909,"prec":0.5985,"hist":0.8089,"exp":0.03,"mae":0.144},{"n":6,"img":"steps/step6.jpg","title":"法线 + 门洞","what":"外壳面法线全部朝房间外（旋转 plane 留下的反向绕序）；顺手删掉一个不该有的门洞。","gain":"单是法线一项值 +0.005 ssim / +0.012 直方图。Cycles 漫反射两面都着色，所以看不出来，但 Bump 链按翻转法线求值。","ssim":0.3895,"edge":0.5768,"prec":0.5944,"hist":0.8145,"exp":0.17,"mae":0.1471},{"n":7,"img":"steps/step7.jpg","title":"并发：海报 + 材质","what":"两个 owner 并行。海报 owner 发现参考图的海报根本不贴在砖上 —— 每面墙有一块无砖缝的公告板。","gain":"按「偏离局部中位数」找海报的像素规则永远看不见板子（板子本身均匀），这是后墙长期偏亮 0.48 档的真因。","ssim":0.3834,"edge":0.6168,"prec":0.6643,"hist":0.8152,"exp":0.15,"mae":0.1419},{"n":8,"img":"steps/step8.jpg","title":"相机偏航修正","what":"投影器 +yaw 右转（复现实测消失点），Blender 绕 +Z 左转。两边都没动，渲染把所有物体放到规格右侧 7.4px。","gain":"全项目单步 ssim 收益最大的一次：+0.015。它能潜伏这么久是因为单帧看不出来 —— 没有一处「看着不对」，只是整体轻微错位。","ssim":0.3982,"edge":0.6198,"prec":0.6679,"hist":0.8171,"exp":0.15,"mae":0.1399},{"n":9,"img":"steps/step9.jpg","title":"并发：逐物体归位","what":"系统性分量先单独定，再四区域并行拟合位置与朝向。","gain":"无匹配物体 7 → 4，已对齐 0 → 4。左墙整排 CRT 的偏航原来是反的：参考图里它们几乎全是侧视。","ssim":0.4172,"edge":0.6499,"prec":0.7008,"hist":0.8116,"exp":0.15,"mae":0.1317}],"regions":{"ceiling":{"rect":[280,0,780,90],"lum_ref":0.3066,"lum_render":0.3488,"lum_delta":0.0422,"stops":0.19,"sat_ref":0.11,"sat_render":0.177,"hue_ref":25.434682846069336,"hue_render":26.869062423706055,"hue_delta":1.4},"wall_left":{"rect":[60,60,330,230],"lum_ref":0.4252,"lum_render":0.4248,"lum_delta":-0.0004,"stops":-0.0,"sat_ref":0.331,"sat_render":0.298,"hue_ref":27.946041107177734,"hue_render":24.250593185424805,"hue_delta":3.7},"wall_right":{"rect":[700,60,980,230],"lum_ref":0.5863,"lum_render":0.5329,"lum_delta":-0.0534,"stops":-0.14,"sat_ref":0.245,"sat_render":0.225,"hue_ref":34.71189880371094,"hue_render":29.735530853271484,"hue_delta":5.0},"wall_back":{"rect":[390,95,660,260],"lum_ref":0.4392,"lum_render":0.4577,"lum_delta":0.0185,"stops":0.06,"sat_ref":0.257,"sat_render":0.275,"hue_ref":30.171154022216797,"hue_render":24.279802322387695,"hue_delta":5.9},"shelf_left":{"rect":[150,180,400,300],"lum_ref":0.3169,"lum_render":0.3818,"lum_delta":0.065,"stops":0.27,"sat_ref":0.373,"sat_render":0.415,"hue_ref":26.650253295898438,"hue_render":25.166683197021484,"hue_delta":1.5},"shelf_right":{"rect":[650,175,900,290],"lum_ref":0.4684,"lum_render":0.4011,"lum_delta":-0.0673,"stops":-0.22,"sat_ref":0.282,"sat_render":0.325,"hue_ref":35.548763275146484,"hue_render":24.120880126953125,"hue_delta":11.4},"table_island":{"rect":[410,170,660,290],"lum_ref":0.423,"lum_render":0.379,"lum_delta":-0.044,"stops":-0.16,"sat_ref":0.298,"sat_render":0.381,"hue_ref":28.049863815307617,"hue_render":23.955181121826172,"hue_delta":4.1},"floor_near":{"rect":[250,430,800,570],"lum_ref":0.1369,"lum_render":0.1484,"lum_delta":0.0115,"stops":0.12,"sat_ref":0.272,"sat_render":0.256,"hue_ref":30.401784896850586,"hue_render":17.780282974243164,"hue_delta":12.6},"floor_mid":{"rect":[330,300,720,430],"lum_ref":0.1568,"lum_render":0.176,"lum_delta":0.0192,"stops":0.17,"sat_ref":0.25,"sat_render":0.345,"hue_ref":14.483597755432129,"hue_render":18.377092361450195,"hue_delta":3.9},"chair_fg":{"rect":[150,290,400,570],"lum_ref":0.1349,"lum_render":0.1727,"lum_delta":0.0378,"stops":0.36,"sat_ref":0.275,"sat_render":0.336,"hue_ref":8.820976257324219,"hue_render":18.944625854492188,"hue_delta":10.1},"chair_edge":{"rect":[0,280,140,570],"lum_ref":0.1057,"lum_render":0.113,"lum_delta":0.0073,"stops":0.1,"sat_ref":0.314,"sat_render":0.321,"hue_ref":353.0395812988281,"hue_render":12.275567054748535,"hue_delta":19.2},"column":{"rect":[480,0,545,400],"lum_ref":0.2587,"lum_render":0.2657,"lum_delta":0.007,"stops":0.04,"sat_ref":0.232,"sat_render":0.396,"hue_ref":14.775796890258789,"hue_render":19.41188621520996,"hue_delta":4.6},"poster_left":{"rect":[140,25,380,205],"lum_ref":0.4219,"lum_render":0.4179,"lum_delta":-0.004,"stops":-0.01,"sat_ref":0.25,"sat_render":0.24,"hue_ref":31.962886810302734,"hue_render":25.072799682617188,"hue_delta":6.9},"poster_back":{"rect":[385,90,505,190],"lum_ref":0.4089,"lum_render":0.4774,"lum_delta":0.0686,"stops":0.22,"sat_ref":0.205,"sat_render":0.167,"hue_ref":38.68812561035156,"hue_render":28.648380279541016,"hue_delta":10.0},"poster_right":{"rect":[675,90,765,170],"lum_ref":0.5317,"lum_render":0.476,"lum_delta":-0.0557,"stops":-0.16,"sat_ref":0.248,"sat_render":0.208,"hue_ref":29.119348526000977,"hue_render":24.0029239654541,"hue_delta":5.1},"cables_right":{"rect":[810,10,1015,270],"lum_ref":0.4468,"lum_render":0.5216,"lum_delta":0.0748,"stops":0.22,"sat_ref":0.26,"sat_render":0.234,"hue_ref":32.85200119018555,"hue_render":30.620676040649414,"hue_delta":2.2}},"align":[{"id":"crt_L3","asset":"M03","dx":-39,"dy":19,"mag":43.382023926967726,"peak":0.37331852316856384,"area":1704.874931136887,"box":[359,183,412,237],"verdict":"shift is real"},{"id":"crt_L1","asset":"M06","dx":13,"dy":-3,"mag":13.341664064126334,"peak":0.396323025226593,"area":16789.608510302194,"box":[145,156,308,279],"verdict":"shift is real"},{"id":"tower_floorL3","asset":"M09","dx":-37,"dy":19,"mag":41.593268686170845,"peak":0.5942083597183228,"area":1153.1685852430187,"box":[367,246,414,292],"verdict":"shift is real"},{"id":"tower_floorR1","asset":"M07","dx":-37,"dy":17,"mag":40.718546143004666,"peak":0.6613786220550537,"area":1038.0204772842103,"box":[649,270,692,316],"verdict":"shift is real"},{"id":"cab_floorR","asset":"M38","dx":-19,"dy":-16,"mag":24.839484696748443,"peak":0.63665372133255,"area":2708.031321212639,"box":[647,258,706,328],"verdict":"shift is real"},{"id":"crt_L2","asset":"M02","dx":13,"dy":12,"mag":17.69180601295413,"peak":0.47062399983406067,"area":4965.363432588944,"box":[233,186,323,261],"verdict":"shift is real"},{"id":"box_underL","asset":"M08","dx":4,"dy":16,"mag":16.492422502470642,"peak":0.547794759273529,"area":4942.321713276358,"box":[445,316,516,412],"verdict":"shift is real"},{"id":"chair_R","asset":"M13","dx":5,"dy":8,"mag":9.433981132056603,"peak":0.6007002592086792,"area":13747.576304168164,"box":[699,250,810,399],"verdict":"shift is real"},{"id":"crt_mid","asset":"M02","dx":4,"dy":-17,"mag":17.46424919657298,"peak":0.7650895714759827,"area":3594.9613780307113,"box":[455,187,524,262],"verdict":"shift is real"},{"id":"tower_L2","asset":"M10","dx":-33,"dy":15,"mag":36.24913792078372,"peak":0.6337957978248596,"area":809.5248039198616,"box":[360,194,394,244],"verdict":"shift is real"},{"id":"tower_L1","asset":"M09","dx":-9,"dy":20,"mag":21.93171219946131,"peak":0.5705375671386719,"area":1333.6533915384323,"box":[332,182,370,246],"verdict":"shift is real"},{"id":"crt_floorR1","asset":"M06","dx":7,"dy":-2,"mag":7.280109889280518,"peak":0.7254718542098999,"area":3268.041898580208,"box":[686,292,762,355],"verdict":"shift is real"},{"id":"crt_floorR2","asset":"M04","dx":4,"dy":-5,"mag":6.4031242374328485,"peak":0.5501351952552795,"area":4181.5268585535805,"box":[663,275,745,347],"verdict":"shift is real"},{"id":"crt_R2","asset":"M03","dx":3,"dy":4,"mag":5.0,"peak":0.35003867745399475,"area":6100.244381908837,"box":[718,175,823,253],"verdict":"shift is real"},{"id":"crt_floorL","asset":"M04","dx":4,"dy":0,"mag":4.0,"peak":0.5970333814620972,"area":9162.528214787464,"box":[190,303,297,411],"verdict":"shift is real"},{"id":"tower_mid","asset":"M07","dx":-5,"dy":2,"mag":5.385164807134504,"peak":0.6540940999984741,"area":4057.5104839694013,"box":[592,157,647,266],"verdict":"shift is real"},{"id":"table_mid","asset":"M15","dx":1,"dy":2,"mag":2.23606797749979,"peak":0.7115649580955505,"area":17248.71540005201,"box":[453,242,612,371],"verdict":"shift is real"},{"id":"tower_floorL1","asset":"M08","dx":2,"dy":-3,"mag":3.605551275463989,"peak":0.6689795851707458,"area":1457.1789897972956,"box":[298,334,338,397],"verdict":"shift is real"},{"id":"tower_underR","asset":"M10","dx":40,"dy":15,"mag":42.720018726587654,"peak":0.4441804885864258,"area":2696.9935375920527,"box":[523,316,566,414],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"crt_R3","asset":"M04","dx":40,"dy":35,"mag":53.150729063673246,"peak":0.5130012035369873,"area":1321.1343223753934,"box":[655,195,708,239],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_R1","asset":"M07","dx":40,"dy":33,"mag":51.85556864985669,"peak":0.5498464703559875,"area":783.1396712245952,"box":[658,196,697,237],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_floorL2","asset":"M10","dx":-8,"dy":-40,"mag":40.792156108742276,"peak":0.4295574128627777,"area":924.4756403683045,"box":[334,256,369,308],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"folder_floor","asset":"M41","dx":1,"dy":0,"mag":1.0,"peak":0.2545194923877716,"area":5769.844465159636,"box":[508,385,568,516],"verdict":"LOW peak - patches may not depict the same thing"},{"id":"chair_fg","asset":"M13","dx":3,"dy":0,"mag":3.0,"peak":0.5390942096710205,"area":70250.4188562009,"box":[174,299,408,572],"verdict":"already aligned"},{"id":"chair_edge","asset":"M13","dx":0,"dy":-2,"mag":2.0,"peak":0.6081119775772095,"area":69546.62500670018,"box":[0,286,157,560],"verdict":"already aligned"},{"id":"crt_R1","asset":"M01","dx":3,"dy":3,"mag":4.242640687119285,"peak":0.6902666687965393,"area":5206.26209889678,"box":[757,187,856,259],"verdict":"already aligned"},{"id":"mag_floor","asset":"M29","dx":1,"dy":-2,"mag":2.23606797749979,"peak":0.4608578383922577,"area":4636.797412471136,"box":[143,365,222,447],"verdict":"already aligned"},{"id":"kbd_mid","asset":"M16","dx":4,"dy":-34,"mag":34.23448553724738,"peak":0.6578958034515381,"area":269.30810741352485,"box":[458,241,510,260],"verdict":"too small to correlate"},{"id":"can_mid","asset":"M12","dx":-2,"dy":3,"mag":3.605551275463989,"peak":0.6926658749580383,"area":250.8089521265112,"box":[444,233,467,267],"verdict":"too small to correlate"},{"id":"cup_mid","asset":"M11","dx":2,"dy":2,"mag":2.8284271247461903,"peak":0.7885794043540955,"area":313.43114618733284,"box":[565,233,593,265],"verdict":"too small to correlate"},{"id":"mouse_mid","asset":"A06","dx":2,"dy":-1,"mag":2.23606797749979,"peak":0.5849997997283936,"area":61.86705553621467,"box":[534,244,558,261],"verdict":"too small to correlate"},{"id":"paper_floor","asset":"M27","dx":1,"dy":0,"mag":1.0,"peak":0.7048727869987488,"area":273.40660689488095,"box":[530,429,556,462],"verdict":"too small to correlate"}],"bedmul":[{"v":"old","ssim":0.3966,"edge":0.575,"ampR":0.0199,"ampL":0.021},{"v":"0.56","ssim":0.3788,"edge":0.613,"ampR":0.0599,"ampL":0.0435},{"v":"0.68","ssim":0.3814,"edge":0.617,"ampR":0.053,"ampL":0.0428},{"v":"0.78","ssim":0.3834,"edge":0.617,"ampR":0.0477,"ampL":0.0418},{"v":"0.88","ssim":0.3855,"edge":0.616,"ampR":0.0433,"ampL":0.0412}],"tonal":{"p":[0.1,1,5,25,50,75,95,99,99.9],"ref":[0.024,0.031,0.047,0.094,0.192,0.369,0.71,0.867,0.992]},"bedmul_ref":{"ampR":0.0494,"ampL":0.0425}}</script>
+<script>
+(()=>{
+const D=JSON.parse(document.getElementById('D').textContent);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const P='../process/recon/';
+
+/* theme */
+const tk='recon-theme';
+try{const t=localStorage.getItem(tk); if(t)document.documentElement.dataset.theme=t;}catch(e){}
+$('#theme').onclick=()=>{
+  const cur=document.documentElement.dataset.theme
+    || (matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  const nx=cur==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=nx;
+  try{localStorage.setItem(tk,nx);}catch(e){}
+  drawChart(); drawBed();
+};
+
+/* ---------- wipe ---------- */
+$('#wA').src=P+'final.jpg'; $('#wB').src=P+'ref.jpg';
+const wipe=$('#wipe'); let wp=50;
+function setW(p){
+  wp=Math.max(0,Math.min(100,p));
+  $('#wtop').style.width=wp+'%';
+  $('#wbar').style.left=wp+'%'; $('#wknob').style.left=wp+'%';
+  const w=wipe.clientWidth||1;
+  $('#wB').style.width=w+'px';
+}
+function fromEvt(e){
+  const r=wipe.getBoundingClientRect();
+  const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  setW(x/r.width*100);
+}
+let drag=false;
+wipe.addEventListener('pointerdown',e=>{drag=true;wipe.setPointerCapture(e.pointerId);fromEvt(e);});
+wipe.addEventListener('pointermove',e=>{if(drag)fromEvt(e);});
+wipe.addEventListener('pointerup',()=>drag=false);
+wipe.addEventListener('pointercancel',()=>drag=false);
+addEventListener('resize',()=>setW(wp));
+$('#wA').addEventListener('load',()=>setW(wp));
+addEventListener('keydown',e=>{
+  // e.target is window when the event is dispatched programmatically, and
+  // window has no .matches -- guard before calling it or the handler dies silently
+  const t=e.target;
+  if(t&&t.matches&&t.matches('input,textarea,select'))return;
+  if(e.key==='ArrowLeft'){setW(wp-3);e.preventDefault();}
+  if(e.key==='ArrowRight'){setW(wp+3);e.preventDefault();}
+});
+setW(50);
+
+/* ---------- stepper ---------- */
+const M=D.milestones; let cur=0, timer=null;
+const MK=[['ssim','SSIM',3],['edge','边缘 F',3],['prec','精确率',3],
+          ['hist','直方图',3],['exp','曝光',2],['mae','MAE',3]];
+function renderStep(i){
+  cur=(i+M.length)%M.length;
+  const m=M[cur], prev=cur>0?M[cur-1]:null;
+  $('#sImg').src=P+m.img; $('#sImg').alt=m.title;
+  $('#sBadge').textContent='0'+m.n+'  '+m.title;
+  $('#sTitle').textContent=m.n+' · '+m.title;
+  $('#sWhat').textContent=m.what;
+  $('#sGain').textContent=m.gain;
+  $('#stepPos').textContent=`第 ${m.n} / ${M.length} 步`;
+  $('#sMetrics').innerHTML=MK.map(([k,lbl,dg])=>{
+    if(m[k]==null)return '';
+    const v=m[k].toFixed(dg);
+    let d='';
+    if(prev&&prev[k]!=null){
+      const df=m[k]-prev[k];
+      const better=(k==='exp'||k==='mae')?(Math.abs(m[k])<Math.abs(prev[k])):(df>0);
+      if(Math.abs(df)>1e-9)
+        d=`<span class="${better?'win':'loss'}">${df>0?'+':''}${df.toFixed(dg)}</span>`;
+    }
+    return `<div class="mcell"><div class="k">${lbl}</div>
+      <div class="v">${k==='exp'&&m[k]>0?'+':''}${v}</div><div class="d">${d||'&nbsp;'}</div></div>`;
+  }).join('');
+  $$('#dots .dot').forEach((d,j)=>d.classList.toggle('on',j===cur));
+  drawChart();
+}
+$('#dots').innerHTML=M.map((m,i)=>`<button class="dot" data-i="${i}" title="${m.title}">${m.n}</button>`).join('');
+$('#dots').onclick=e=>{const b=e.target.closest('.dot'); if(b){stop();renderStep(+b.dataset.i);}};
+$('#prev').onclick=()=>{stop();renderStep(cur-1);};
+$('#next').onclick=()=>{stop();renderStep(cur+1);};
+function stop(){if(timer){clearInterval(timer);timer=null;$('#play').textContent='▶ 自动播放';$('#play').classList.remove('on');}}
+$('#play').onclick=()=>{
+  if(timer){stop();return;}
+  $('#play').textContent='❚❚ 暂停'; $('#play').classList.add('on');
+  timer=setInterval(()=>renderStep(cur+1),1900);
+};
+
+/* ---------- chart ---------- */
+const SERIES=[['edge','边缘 F','--edge'],['ssim','SSIM','--ssim'],['hist','直方图交集','--hist']];
+const shown=new Set(SERIES.map(s=>s[0]));
+$('#legend').innerHTML=SERIES.map(([k,lbl,v])=>
+  `<button class="lg" data-k="${k}"><span class="sw" style="background:var(${v})"></span>${lbl}</button>`).join('');
+$('#legend').onclick=e=>{const b=e.target.closest('.lg'); if(!b)return;
+  const k=b.dataset.k; shown.has(k)?shown.delete(k):shown.add(k);
+  b.classList.toggle('off',!shown.has(k)); drawChart();};
+function cssv(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function drawChart(){
+  const s=$('#chart'); const W=900,H=340,L=52,R=122,T=18,B=52;
+  const lo=0.22,hi=0.86;
+  const x=i=>L+(W-L-R)*i/(M.length-1);
+  const y=v=>H-B-(H-T-B)*(v-lo)/(hi-lo);
+  let o='';
+  for(let g=0;g<=5;g++){const v=lo+(hi-lo)*g/5, yy=y(v);
+    o+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="${cssv('--rule')}" stroke-width="1"/>`;
+    o+=`<text x="${L-9}" y="${yy+4}" text-anchor="end" font-size="12" fill="${cssv('--faint')}">${v.toFixed(2)}</text>`;}
+  M.forEach((m,i)=>{
+    o+=`<text x="${x(i)}" y="${H-B+20}" text-anchor="middle" font-size="12" fill="${cssv('--faint')}">${m.n}</text>`;
+    if(i===cur)o+=`<line x1="${x(i)}" y1="${T}" x2="${x(i)}" y2="${H-B}" stroke="${cssv('--acc')}" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  });
+  SERIES.forEach(([k,lbl,cv])=>{
+    if(!shown.has(k))return;
+    const c=cssv(cv);
+    const pts=M.map((m,i)=>[x(i),y(m[k])]);
+    o+=`<polyline fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"
+        points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+    pts.forEach((p,i)=>{o+=`<circle cx="${p[0]}" cy="${p[1]}" r="${i===cur?5.5:3.5}" fill="${c}"/>`;});
+    const last=pts[pts.length-1];
+    o+=`<text x="${last[0]+8}" y="${last[1]+4}" font-size="12.5" font-weight="600" fill="${c}">${lbl}</text>`;
+  });
+  M.forEach((m,i)=>{o+=`<rect x="${x(i)-16}" y="${T}" width="32" height="${H-T-B}" fill="transparent"
+      style="cursor:pointer" data-step="${i}"><title>${m.n} ${m.title}
+SSIM ${m.ssim.toFixed(3)}  边缘F ${m.edge.toFixed(3)}  直方图 ${m.hist.toFixed(3)}  曝光 ${m.exp>0?'+':''}${m.exp}</title></rect>`;});
+  s.innerHTML=o;
+  s.querySelectorAll('[data-step]').forEach(r=>r.onclick=()=>{stop();renderStep(+r.dataset.step);
+    $('#iter').scrollIntoView({block:'start'});});
+}
+
+/* ---------- bed_mul experiment ---------- */
+function drawBed(){
+  const s=$('#bedChart'); const W=900,H=260,L=58,R=118,T=16,B=42;
+  const B2=D.bedmul, ref=D.bedmul_ref;
+  const x=i=>L+(W-L-R)*i/(B2.length-1);
+  const ys=v=>H-B-(H-T-B)*(v-0.370)/(0.395-0.370);
+  const ya=v=>H-B-(H-T-B)*(v-0.015)/(0.065-0.015);
+  let o='';
+  o+=`<line x1="${L}" y1="${ya(ref.ampR)}" x2="${W-R}" y2="${ya(ref.ampR)}"
+      stroke="${cssv('--bad')}" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+  o+=`<text x="${W-R+6}" y="${ya(ref.ampR)+4}" font-size="12" fill="${cssv('--bad')}">参考图振幅 ${ref.ampR}</text>`;
+  const sp=B2.map((d,i)=>[x(i),ys(d.ssim)]), ap=B2.map((d,i)=>[x(i),ya(d.ampR)]);
+  o+=`<polyline fill="none" stroke="${cssv('--ssim')}" stroke-width="2.5" points="${sp.map(p=>p.join(',')).join(' ')}"/>`;
+  o+=`<polyline fill="none" stroke="${cssv('--acc')}" stroke-width="2.5" points="${ap.map(p=>p.join(',')).join(' ')}"/>`;
+  const sel=+$('#bedR').value;
+  B2.forEach((d,i)=>{
+    o+=`<circle cx="${sp[i][0]}" cy="${sp[i][1]}" r="${i===sel?6:3.5}" fill="${cssv('--ssim')}"/>`;
+    o+=`<circle cx="${ap[i][0]}" cy="${ap[i][1]}" r="${i===sel?6:3.5}" fill="${cssv('--acc')}"/>`;
+    o+=`<text x="${x(i)}" y="${H-B+20}" text-anchor="middle" font-size="12" fill="${i===sel?cssv('--acc'):cssv('--faint')}">${d.v}</text>`;
+  });
+  o+=`<text x="${sp[sp.length-1][0]+8}" y="${sp[sp.length-1][1]+4}" font-size="12.5" font-weight="600" fill="${cssv('--ssim')}">SSIM ↑</text>`;
+  o+=`<text x="${ap[ap.length-1][0]+8}" y="${ap[ap.length-1][1]+4}" font-size="12.5" font-weight="600" fill="${cssv('--acc')}">砖缝振幅 ↓</text>`;
+  s.innerHTML=o;
+  const d=B2[sel];
+  $('#bedV').textContent='bed_mul '+d.v;
+  const over=((d.ampR-ref.ampR)/ref.ampR*100);
+  $('#bedOut').innerHTML=`<b>bed_mul ${d.v}</b> ：SSIM <b>${d.ssim.toFixed(4)}</b>，
+    边缘 F ${d.edge.toFixed(3)}，右墙砖缝振幅 <b>${d.ampR.toFixed(4)}</b>
+    （参考图 ${ref.ampR}，${over>0?'高':'低'} ${Math.abs(over).toFixed(0)}%）。
+    ${sel>=3?'<span class="loss">再往右 SSIM 还在涨，但墙已经比参考图更平了 —— 这就是它奖励空白墙的地方。</span>'
+            :'<span class="win">这一档振幅偏高，砖缝过重。</span>'}`;
+}
+$('#bedR').oninput=drawBed;
+
+/* ---------- region probe ---------- */
+const RW=1024,RH=572;
+$('#probeImg').src=P+'final.jpg';
+const RN=Object.keys(D.regions);
+function stopsCls(v){return Math.abs(v)<=0.2?'win':(Math.abs(v)<=0.4?'':'loss');}
+$('#probe').insertAdjacentHTML('beforeend',RN.map(n=>{
+  const r=D.regions[n].rect;
+  return `<div class="rbox" data-r="${n}" style="left:${r[0]/RW*100}%;top:${r[1]/RH*100}%;
+    width:${(r[2]-r[0])/RW*100}%;height:${(r[3]-r[1])/RH*100}%"></div>`;}).join(''));
+$('#rlist').innerHTML=RN.map(n=>{
+  const s=D.regions[n].stops;
+  return `<button class="rchip" data-r="${n}">${n} <span class="${stopsCls(s)}">${s>0?'+':''}${s}</span></button>`;
+}).join('');
+function showRegion(n){
+  const r=D.regions[n];
+  $$('#probe .rbox').forEach(b=>b.classList.toggle('on',b.dataset.r===n));
+  $$('#rlist .rchip').forEach(b=>b.classList.toggle('on',b.dataset.r===n));
+  $('#rOut').innerHTML=`<b>${n}</b>　亮度 参考 ${r.lum_ref} → 渲染 ${r.lum_render}
+    （<span class="${stopsCls(r.stops)}">${r.stops>0?'+':''}${r.stops} 档</span>）　·
+    饱和度 ${r.sat_ref} → ${r.sat_render}　·
+    色相 ${r.hue_ref==null?'—':Math.round(r.hue_ref)}° → ${r.hue_render==null?'—':Math.round(r.hue_render)}°
+    ${r.hue_delta!=null?`（差 ${r.hue_delta}°）`:''}`;
+}
+$('#probe').addEventListener('mouseover',e=>{const b=e.target.closest('.rbox'); if(b)showRegion(b.dataset.r);});
+$('#rlist').addEventListener('click',e=>{const b=e.target.closest('.rchip'); if(b)showRegion(b.dataset.r);});
+$('#rlist').addEventListener('mouseover',e=>{const b=e.target.closest('.rchip'); if(b)showRegion(b.dataset.r);});
+
+/* ---------- align table ---------- */
+$('#aImg').src=P+'ref.jpg';
+const VD=[...new Set(D.align.map(a=>a.verdict))];
+const short=v=>v.startsWith('shift')?'偏移可信':v.startsWith('NO MATCH')?'找不到匹配'
+  :v.startsWith('LOW')?'相关过低':v.startsWith('already')?'已对齐':'太小无法相关';
+let af='all';
+$('#afilters').innerHTML=[['all','全部 '+D.align.length]].concat(
+  VD.map(v=>[v,short(v)+' '+D.align.filter(a=>a.verdict===v).length]))
+  .map(([k,l])=>`<button class="btn${k==='all'?' on':''}" data-f="${k}">${l}</button>`).join('');
+function rows(){
+  const list=D.align.filter(a=>af==='all'||a.verdict===af);
+  $('#abody').innerHTML=list.map(a=>`<tr data-id="${a.id}">
+    <td>${a.id}</td><td>${a.asset}</td>
+    <td class="n">${a.dx>0?'+':''}${a.dx}</td><td class="n">${a.dy>0?'+':''}${a.dy}</td>
+    <td class="n">${a.mag.toFixed(1)}</td><td class="n">${a.peak.toFixed(3)}</td>
+    <td class="tiny">${short(a.verdict)}</td></tr>`).join('');
+}
+$('#afilters').onclick=e=>{const b=e.target.closest('[data-f]'); if(!b)return;
+  af=b.dataset.f; $$('#afilters .btn').forEach(x=>x.classList.toggle('on',x===b)); rows();};
+$('#abody').addEventListener('mouseover',e=>{
+  const tr=e.target.closest('tr'); if(!tr)return;
+  $$('#abody tr').forEach(r=>r.classList.toggle('on',r===tr));
+  const a=D.align.find(z=>z.id===tr.dataset.id); if(!a||!a.box)return;
+  $$('#aprobe .rbox').forEach(b=>b.remove());
+  const [x0,y0,x1,y1]=a.box;
+  $('#aprobe').insertAdjacentHTML('beforeend',
+    `<div class="rbox on" style="left:${x0/RW*100}%;top:${y0/RH*100}%;
+      width:${(x1-x0)/RW*100}%;height:${(y1-y0)/RH*100}%"></div>`);
+  const ar=$('#aprobe').getBoundingClientRect();
+  $('#aprobe').insertAdjacentHTML('beforeend',
+    `<div class="rbox on" style="pointer-events:none;border-style:dashed;
+      left:${(x0+a.dx)/RW*100}%;top:${(y0+a.dy)/RH*100}%;
+      width:${(x1-x0)/RW*100}%;height:${(y1-y0)/RH*100}%;background:transparent"></div>`);
+});
+rows();
+
+renderStep(0); drawBed();
+})();
+</script>
 </body>
 </html>
