@@ -1,4 +1,4 @@
-/* Shared interactive kit for the ai-scene-builder documents.
+/* Shared interactive kit for the AI-PCG-Scene documents.
  *
  * Vanilla, no dependencies, no build step. Every widget is driven by data the
  * caller passes in, so a page can only show what it actually measured.

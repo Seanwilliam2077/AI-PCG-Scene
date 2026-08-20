@@ -1,5 +1,5 @@
 ---
-name: ai-scene-builder
+name: ai-pcg-scene
 description: 评审辅助 Skill——把本文件整体丢给任意 coding agent（Claude Code / Cursor / Copilot 等），它就能带你完成本工程包的解压校验、UE 打开、离线复跑整条 AI 场景管线、以及产物核对。人工直接照做也完全可行。
 ---
 
