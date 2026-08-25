@@ -9,6 +9,8 @@ import type { DepthResult, Detection } from './types';
 const $ = (id: string) => document.getElementById(id)!;
 const statusEl = $('status');
 const viewer = new Viewer($('viewport') as HTMLCanvasElement);
+viewer.setOverlayElement($('overlay-img') as HTMLImageElement);
+(window as any).__viewer = viewer; // 调试句柄
 const depthClient = new DepthClient();
 
 let cachedDepth: DepthResult | null = null;
@@ -47,7 +49,9 @@ async function imageToData(src: Blob | string): Promise<ImageData> {
   const ctx = cv.getContext('2d')!;
   ctx.drawImage(bmp, 0, 0, w, h);
   bmp.close();
-  ($('thumb') as HTMLImageElement).src = cv.toDataURL('image/jpeg', 0.85);
+  const url = cv.toDataURL('image/jpeg', 0.85);
+  ($('thumb') as HTMLImageElement).src = url;
+  ($('overlay-img') as HTMLImageElement).src = url;
   $('thumb').hidden = false;
   return ctx.getImageData(0, 0, w, h);
 }
@@ -60,6 +64,8 @@ async function run(src: Blob | string) {
     setStatus('深度推理中…（首次运行需下载约 25MB 模型）');
     const t0 = performance.now();
     cachedDepth = await depthClient.infer(imageData);
+    cachedDepth.origWidth = imageData.width;
+    cachedDepth.origHeight = imageData.height;
     setStatus('识别场景物体…（首次需下载检测模型）');
     cachedDets = await depthClient.detect(imageData);
     if (new URLSearchParams(location.search).has('fakedet')) {
@@ -83,10 +89,11 @@ async function run(src: Blob | string) {
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     const nDet = spec?.instances.filter((i) => i.source === 'detect').length ?? 0;
     setStatus(
-      `完成 ✓ ${dt}s（${cachedDepth.device}）· 自动相机 FOV ${cam.vfovDeg}° 俯仰 ${cam.pitchDeg}° · ` +
-      `${spec?.instances.length ?? 0} 个体块（${nDet} 个语义模板）。拖动旋转 / 滚轮缩放 / 右键平移`,
+      `完成 ✓ ${dt}s（${cachedDepth.device}）· ${spec?.instances.length ?? 0} 个体块` +
+      `（${nDet} 个语义模板）。当前为对位视角：拖滑杆微调 FOV/俯仰让白盒贴合叠加图`,
     );
     $('controls').hidden = false;
+    setMode('match');
   } catch (e: any) {
     console.error(e);
     setStatus(`失败：${e?.message ?? e}`, true);
@@ -137,6 +144,21 @@ bind('fov', 'fov-v', (v) => `${v.toFixed(0)}°`);
 bind('pitch', 'pitch-v', (v) => `${v.toFixed(0)}°`);
 bind('camh', 'camh-v', (v) => `${v.toFixed(2)}m`);
 bind('grain', 'grain-v', (v) => v.toFixed(1));
+
+// ---- 视角模式 ----
+function setMode(m: 'match' | 'orbit') {
+  viewer.setMode(m);
+  $('mode-match').classList.toggle('active', m === 'match');
+  $('mode-orbit').classList.toggle('active', m === 'orbit');
+  ($('overlay-row') as HTMLElement).style.display = m === 'match' ? '' : 'none';
+}
+$('mode-match').addEventListener('click', () => setMode('match'));
+$('mode-orbit').addEventListener('click', () => setMode('orbit'));
+$('overlay').addEventListener('input', (e) => {
+  const v = parseInt((e.target as HTMLInputElement).value, 10);
+  $('overlay-v').textContent = `${v}%`;
+  viewer.setOverlayOpacity(v / 100);
+});
 
 // ---- 导出 ----
 $('export-glb').addEventListener('click', async () => {

@@ -126,6 +126,9 @@ export class Viewer {
   private controls: OrbitControls;
   private group = new THREE.Group();
   private specCamHelper: THREE.CameraHelper | null = null;
+  private mode: 'orbit' | 'match' = 'orbit';
+  private matchCam: THREE.PerspectiveCamera | null = null;
+  private overlayEl: HTMLImageElement | null = null;
   // 材质复用，重建只重建几何
   private clayMat = new THREE.MeshStandardMaterial({ color: CLAY, roughness: 0.95 });
   private shellMat = new THREE.MeshStandardMaterial({
@@ -166,11 +169,65 @@ export class Viewer {
 
     const loop = () => {
       requestAnimationFrame(loop);
-      this.controls.update();
-      this.renderer.render(this.scene, this.camera);
+      this.renderFrame();
     };
     loop();
   }
+
+  /** 渲一帧（对位模式信箱式渲染 + 叠加图定位；抽出便于无 rAF 环境驱动/测试） */
+  renderFrame(): void {
+    const canvas = this.renderer.domElement;
+    const w = canvas.clientWidth || window.innerWidth;
+    const hh = canvas.clientHeight || window.innerHeight;
+    if (w < 2 || hh < 2) return; // 面板隐藏/未布局
+
+    if (this.specCamHelper) this.specCamHelper.visible = this.mode !== 'match';
+    if (this.mode === 'match' && this.matchCam) {
+      // 对位视角：按输入图画幅信箱式渲染，叠加参考图可直接验证对齐
+      const a = this.matchCam.aspect;
+      let vw = w, vh = Math.round(w / a);
+      if (vh > hh) { vh = hh; vw = Math.round(hh * a); }
+      const vx = (w - vw) >> 1, vy = (hh - vh) >> 1;
+      this.renderer.setScissorTest(false);
+      this.renderer.setViewport(0, 0, w, hh);
+      this.renderer.clear();
+      this.renderer.setScissorTest(true);
+      this.renderer.setViewport(vx, vy, vw, vh);
+      this.renderer.setScissor(vx, vy, vw, vh);
+      this.renderer.render(this.scene, this.matchCam);
+      this.renderer.setScissorTest(false);
+      this.placeOverlay(vx, vy, vw, vh, hh);
+    } else {
+      this.renderer.setViewport(0, 0, w, hh);
+      this.controls.update();
+      this.renderer.render(this.scene, this.camera);
+    }
+  }
+
+  /** 对位模式下把参考图叠到渲染区域上（WebGL 视口 y 向上，CSS y 向下） */
+  private placeOverlay(vx: number, vy: number, vw: number, vh: number, canvasH: number) {
+    if (!this.overlayEl) return;
+    const st = this.overlayEl.style;
+    st.display = 'block';
+    st.left = `${vx}px`;
+    st.top = `${canvasH - vy - vh}px`;
+    st.width = `${vw}px`;
+    st.height = `${vh}px`;
+  }
+
+  setOverlayElement(el: HTMLImageElement) { this.overlayEl = el; }
+
+  setOverlayOpacity(o: number) {
+    if (this.overlayEl) this.overlayEl.style.opacity = String(o);
+  }
+
+  setMode(m: 'orbit' | 'match') {
+    this.mode = m;
+    this.controls.enabled = m === 'orbit';
+    if (m === 'orbit' && this.overlayEl) this.overlayEl.style.display = 'none';
+  }
+
+  getMode() { return this.mode; }
 
   build(spec: WhiteboxSpec): void {
     // 释放上一次的几何（滑杆反复重建时防显存泄漏）
@@ -232,6 +289,13 @@ export class Viewer {
     specCam.updateProjectionMatrix();
     this.specCamHelper = new THREE.CameraHelper(specCam);
     this.scene.add(this.specCamHelper);
+
+    // 对位渲染相机：与求解相机同位姿同 FOV，画幅取输入图宽高比
+    this.matchCam = new THREE.PerspectiveCamera(spec.camera.vfovDeg, spec.camera.aspect, 0.05, 300);
+    this.matchCam.position.copy(specCam.position);
+    this.matchCam.quaternion.copy(specCam.quaternion);
+    this.matchCam.updateMatrixWorld();
+    this.matchCam.updateProjectionMatrix();
 
     // 视角复位到房间 3/4
     const target = new THREE.Vector3(cx, h * 0.35, cz);

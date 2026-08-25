@@ -21,6 +21,11 @@
   </div>
 
   <div id="controls" hidden>
+    <span class="seg">
+      <button class="btn small active" id="mode-match">对位视角</button>
+      <button class="btn small" id="mode-orbit">自由环绕</button>
+    </span>
+    <label id="overlay-row">叠加 <input type="range" id="overlay" min="0" max="100" step="1" value="50" /><b id="overlay-v">50%</b></label>
     <label>细度 <input type="range" id="grain" min="0.4" max="2.4" step="0.1" value="1.2" /><b id="grain-v">1.2</b></label>
     <label title="自动估计的初值，可微调">FOV <input type="range" id="fov" min="30" max="100" step="1" value="55" /><b id="fov-v">55°</b></label>
     <label title="自动估计的初值，可微调">俯仰 <input type="range" id="pitch" min="-30" max="30" step="1" value="0" /><b id="pitch-v">0°</b></label>
@@ -28,6 +33,7 @@
     <button class="btn ghost" id="export-glb">导出 GLB</button>
   </div>
 
+  <img id="overlay-img" alt="" />
   <div id="drop-overlay"><span>松开以载入图片</span></div>
 
   <script type="module" src="/src/main.ts"></script>

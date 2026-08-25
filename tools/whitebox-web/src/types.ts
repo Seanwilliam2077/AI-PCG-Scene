@@ -6,6 +6,9 @@ export interface DepthResult {
   data: Float32Array;
   device: 'webgpu' | 'wasm';
   ms: number;
+  /** 原始输入图尺寸（对位渲染的画幅以此为准） */
+  origWidth?: number;
+  origHeight?: number;
 }
 
 export interface CameraSpec {

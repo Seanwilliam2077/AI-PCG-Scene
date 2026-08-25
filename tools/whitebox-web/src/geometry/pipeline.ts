@@ -710,7 +710,7 @@ export function solveGeometry(
       vfovDeg: params.vfovDeg,
       pos: [0, camH, 0],
       basis: [...camRight, ...camDown, ...camFwd],
-      aspect: depth.width / depth.height,
+      aspect: (depth.origWidth ?? depth.width) / (depth.origHeight ?? depth.height),
     },
     room: {
       min: [xmin, 0, zmin],

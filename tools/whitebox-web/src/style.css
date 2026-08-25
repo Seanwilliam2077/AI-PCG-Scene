@@ -48,6 +48,13 @@ body {
 #controls input[type="range"] { width: 90px; accent-color: var(--accent); }
 #controls b { color: var(--ink); font-weight: 500; min-width: 34px; font-variant-numeric: tabular-nums; }
 
+#overlay-img {
+  position: fixed; display: none; pointer-events: none;
+  opacity: .5; z-index: 5; object-fit: fill;
+}
+.seg { display: inline-flex; gap: 4px; }
+.seg .btn.active { border-color: var(--accent); color: var(--accent); }
+
 #drop-overlay {
   position: fixed; inset: 0; z-index: 20; display: none;
   align-items: center; justify-content: center;
