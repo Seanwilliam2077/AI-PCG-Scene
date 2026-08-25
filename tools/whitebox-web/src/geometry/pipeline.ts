@@ -647,6 +647,25 @@ export function solveGeometry(
           else if (prof[x] > prof[peaks[peaks.length - 1]]) peaks[peaks.length - 1] = x;
         }
       }
+      // 几何判据：梁向下凸出 ⇒ 峰列的世界高度比谷列低 ≥7cm；纹理伪周期只有毫米级
+      const colY = (x: number) => {
+        let s3 = 0, c3 = 0;
+        for (let y = 0; y < bandY; y++) {
+          const i = y * gw + x;
+          if (!Number.isNaN(world[i * 3 + 2])) { s3 += world[i * 3 + 1]; c3++; }
+        }
+        return c3 > 2 ? s3 / c3 : NaN;
+      };
+      const drops: number[] = [];
+      for (const px of peaks) {
+        const yp = colY(px);
+        const yv = colY(Math.min(gw - 2, px + (bestP >> 1)));
+        if (Number.isFinite(yp) && Number.isFinite(yv)) drops.push(yv - yp);
+      }
+      drops.sort((a2, b2) => a2 - b2);
+      const dropMed = drops.length ? drops[drops.length >> 1] : 0;
+      if (dropMed < 0.07) peaks.length = 0;
+
       const yRow = Math.max(1, Math.floor(gh * 0.06));
       const ceilPre = ceilY / scaleK; // rig 在预定标单位下工作
       const denom = rig.rv[yRow] * rig.down[1] + rig.fwd[1];
