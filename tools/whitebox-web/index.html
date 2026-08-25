@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>单图白盒 · AI-PCG-Scene</title>
+  <meta name="description" content="输入一张图，浏览器内重建可环绕查看的几何白盒（深度推理 + 几何求解全部本地运行）" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="viewport"></canvas>
+
+  <div id="hud">
+    <div class="brand">🧊 <b>whitebox</b><span>单图 → 几何白盒</span></div>
+    <label class="btn" for="file-input">选择图片</label>
+    <input type="file" id="file-input" accept="image/*" hidden />
+    <button class="btn ghost" id="demo-btn">示例图</button>
+    <div id="status">拖入或选择一张图片开始</div>
+    <img id="thumb" alt="" hidden />
+  </div>
+
+  <div id="controls" hidden>
+    <label>FOV <input type="range" id="fov" min="30" max="100" step="1" value="55" /><b id="fov-v">55°</b></label>
+    <label>俯仰 <input type="range" id="pitch" min="-30" max="30" step="1" value="0" /><b id="pitch-v">0°</b></label>
+    <label>机高 <input type="range" id="camh" min="0.8" max="3.0" step="0.05" value="1.5" /><b id="camh-v">1.5m</b></label>
+    <button class="btn ghost" id="export-glb">导出 GLB</button>
+  </div>
+
+  <div id="drop-overlay"><span>松开以载入图片</span></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

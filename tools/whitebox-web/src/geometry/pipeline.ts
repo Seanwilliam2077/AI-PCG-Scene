@@ -1,0 +1,433 @@
+/**
+ * 几何求解 v2（与 whitebox-pipeline/server/solve.py 同算法的 TS 移植，无 VLM 路径）：
+ *  1. 相机解析化（vFOV/俯仰/机高假设）⇒ 地面平面闭式已知
+ *  2. 地面当标定靶：解析地面深度 vs DA 视差 → 单调分段线性「视差→深度」曲线
+ *     （非参数吸收 DA 的非线性翘曲；带两轮残差修剪防前景家具污染）
+ *  3. 点云（地面用解析深度，其余用曲线）→ yaw 最小包围矩形
+ *  4. 壳 = 已标定地面的范围；墙 = 边界外竖直点堆积；视锥入射面强制开放
+ *  5. 盲聚类 → 盒体；墙形聚类转墙；天花板碎片过滤
+ */
+import type { DepthResult, GeoParams, GeoResult, WhiteboxSpec, BoxInstance } from '../types';
+
+const GRID_W = 288;
+const FAR_CAP = 25.0;
+
+function percentile(arr: number[] | Float64Array, q: number): number {
+  const a = Array.from(arr).sort((x, y) => x - y);
+  if (!a.length) return 0;
+  return a[Math.min(a.length - 1, Math.max(0, Math.round(q * (a.length - 1))))];
+}
+
+class CameraRig {
+  gw: number; gh: number; h: number; f: number;
+  right: [number, number, number];
+  down: [number, number, number];
+  fwd: [number, number, number];
+  ru: Float64Array; rv: Float64Array; // 每列/每行的射线系数
+  constructor(gw: number, gh: number, vfovDeg: number, pitchDeg: number, h: number) {
+    this.gw = gw; this.gh = gh; this.h = h;
+    this.f = gh / 2 / Math.tan((vfovDeg / 2) * Math.PI / 180);
+    const t = (pitchDeg * Math.PI) / 180;
+    const ct = Math.cos(t), st = Math.sin(t);
+    this.right = [1, 0, 0];
+    this.down = [0, -ct, -st];
+    this.fwd = [0, st, -ct];
+    this.ru = new Float64Array(gw);
+    this.rv = new Float64Array(gh);
+    for (let x = 0; x < gw; x++) this.ru[x] = (x + 0.5 - gw / 2) / this.f;
+    for (let y = 0; y < gh; y++) this.rv[y] = (y + 0.5 - gh / 2) / this.f;
+  }
+  /** 像素射线与地面 y=0 交点的相机系深度 t；不相交为 NaN */
+  floorT(x: number, y: number): number {
+    const Dy = this.rv[y] * this.down[1] + this.fwd[1];
+    if (Dy >= -1e-6) return NaN;
+    const t = -this.h / Dy;
+    return t > 0.2 && t < 120 ? t : NaN;
+  }
+  /** (u,v)@相机系深度 z → 世界点 */
+  pointAt(x: number, y: number, z: number): [number, number, number] {
+    const xc = this.ru[x] * z, yc = this.rv[y] * z;
+    return [
+      xc * this.right[0] + yc * this.down[0] + z * this.fwd[0],
+      this.h + xc * this.right[1] + yc * this.down[1] + z * this.fwd[1],
+      xc * this.right[2] + yc * this.down[2] + z * this.fwd[2],
+    ];
+  }
+}
+
+class DepthCurve {
+  kd: number[] = []; kz: number[] = [];
+  constructor(d: number[], z: number[], bins = 24) {
+    const idx = d.map((_, i) => i).sort((a, b) => d[a] - d[b]);
+    const kd: number[] = [], kz: number[] = [];
+    for (let i = 0; i < bins; i++) {
+      const s = Math.floor((i * idx.length) / bins);
+      const e = Math.min(idx.length, Math.floor(((i + 1) * idx.length) / bins) + 1);
+      if (e - s < 3) continue;
+      const seg = idx.slice(s, e);
+      kd.push(percentile(seg.map((j) => d[j]), 0.5));
+      kz.push(percentile(seg.map((j) => z[j]), 0.5));
+    }
+    // 强制随 d 递减（从远端回扫取累积最大）
+    for (let i = kz.length - 2; i >= 0; i--) kz[i] = Math.max(kz[i], kz[i + 1]);
+    // 去重 d
+    for (let i = 0; i < kd.length; i++) {
+      if (i === 0 || kd[i] - this.kd[this.kd.length - 1] > 1e-9) {
+        this.kd.push(kd[i]); this.kz.push(kz[i]);
+      }
+    }
+  }
+  at(d: number): number {
+    const kd = this.kd, kz = this.kz;
+    if (!kd.length) return 5;
+    let z: number;
+    if (d <= kd[0]) {
+      const slope = kd.length >= 2 ? Math.min((kz[1] - kz[0]) / (kd[1] - kd[0]), -1e-3) : -1e-3;
+      z = kz[0] + (d - kd[0]) * slope;
+    } else if (d >= kd[kd.length - 1]) {
+      z = kz[kz.length - 1];
+    } else {
+      let lo = 0, hi = kd.length - 1;
+      while (hi - lo > 1) {
+        const m = (lo + hi) >> 1;
+        if (kd[m] <= d) lo = m; else hi = m;
+      }
+      const t = (d - kd[lo]) / (kd[hi] - kd[lo]);
+      z = kz[lo] + t * (kz[hi] - kz[lo]);
+    }
+    return Math.min(120, Math.max(0.15, z));
+  }
+}
+
+function resample(depth: DepthResult): { d: Float64Array; gw: number; gh: number } {
+  const w0 = depth.width, h0 = depth.height;
+  let gw = GRID_W;
+  let gh = Math.round((gw * h0) / w0);
+  if (gh < 64) { gh = 64; gw = Math.min(512, Math.round((gh * w0) / h0)); }
+  const d = new Float64Array(gw * gh);
+  for (let y = 0; y < gh; y++) {
+    for (let x = 0; x < gw; x++) {
+      const mx = Math.min(w0 - 1.001, Math.max(0, ((x + 0.5) * w0) / gw - 0.5));
+      const my = Math.min(h0 - 1.001, Math.max(0, ((y + 0.5) * h0) / gh - 0.5));
+      const x0 = Math.floor(mx), y0 = Math.floor(my);
+      const fx = mx - x0, fy = my - y0;
+      const i00 = y0 * w0 + x0;
+      d[y * gw + x] =
+        depth.data[i00] * (1 - fx) * (1 - fy) +
+        depth.data[i00 + 1] * fx * (1 - fy) +
+        depth.data[i00 + w0] * (1 - fx) * fy +
+        depth.data[i00 + w0 + 1] * fx * fy;
+    }
+  }
+  return { d, gw, gh };
+}
+
+export function solveGeometry(depth: DepthResult, params: GeoParams): GeoResult {
+  const t0 = performance.now();
+  const { d, gw, gh } = resample(depth);
+  const rig = new CameraRig(gw, gh, params.vfovDeg, params.pitchDeg, params.camHeightM);
+
+  // ---- 1) 地面自标定曲线 ----
+  const bootD: number[] = [], bootT: number[] = [];
+  for (let y = Math.floor(gh * 0.72); y < gh; y++) {
+    const t = rig.floorT(0, y);
+    if (Number.isNaN(t)) continue;
+    for (let x = Math.floor(gw * 0.25); x < Math.floor(gw * 0.75); x++) {
+      const tf = rig.floorT(x, y);
+      if (!Number.isNaN(tf)) { bootD.push(d[y * gw + x]); bootT.push(tf); }
+    }
+  }
+  if (bootD.length < 80) throw new Error('画面底部没有可用的地面射线，请调整俯仰角');
+  let bd = bootD, bt = bootT;
+  let curve = new DepthCurve(bd, bt);
+  for (let round = 0; round < 2; round++) {
+    const res = bd.map((dv, i) => Math.abs(curve.at(dv) - bt[i]) / Math.max(bt[i], 0.5));
+    const thr = Math.max(0.12, percentile(res, 0.5) * 2);
+    const keepIdx = res.map((r, i) => i).filter((i) => res[i] < thr);
+    if (keepIdx.length < 60 || keepIdx.length === bd.length) break;
+    bd = keepIdx.map((i) => bd[i]);
+    bt = keepIdx.map((i) => bt[i]);
+    curve = new DepthCurve(bd, bt);
+  }
+  // 一致性检验扩大地面集合并重拟合一次
+  const relErr = (x: number, y: number) => {
+    const tf = rig.floorT(x, y);
+    if (Number.isNaN(tf)) return Infinity;
+    return Math.abs(curve.at(d[y * gw + x]) - tf) / Math.max(tf, 0.5);
+  };
+  const collectFloor = () => {
+    const fd: number[] = [], ft: number[] = [];
+    const mask = new Uint8Array(gw * gh);
+    for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
+      if (relErr(x, y) < 0.10) {
+        mask[y * gw + x] = 1;
+        fd.push(d[y * gw + x]); ft.push(rig.floorT(x, y));
+      }
+    }
+    return { fd, ft, mask };
+  };
+  let fl = collectFloor();
+  if (fl.fd.length > bootD.length * 1.2) {
+    curve = new DepthCurve(fl.fd, fl.ft);
+    fl = collectFloor();
+  }
+  const floorMask = fl.mask;
+
+  // ---- 2) 点云 ----
+  const world = new Float64Array(gw * gh * 3).fill(NaN);
+  for (let y = 0; y < gh; y++) {
+    for (let x = 0; x < gw; x++) {
+      const i = y * gw + x;
+      const isFloor = floorMask[i] === 1;
+      const z = isFloor ? rig.floorT(x, y) : curve.at(d[i]);
+      if (Number.isNaN(z)) continue;
+      const p = rig.pointAt(x, y, z);
+      if (isFloor) p[1] = 0;
+      if (Math.abs(p[0]) > FAR_CAP || Math.abs(p[2]) > FAR_CAP || p[1] < -1.0 || p[1] > 30) continue;
+      world[i * 3] = p[0]; world[i * 3 + 1] = p[1]; world[i * 3 + 2] = p[2];
+    }
+  }
+  const n = gw * gh;
+  const validIdx: number[] = [];
+  for (let i = 0; i < n; i++) if (!Number.isNaN(world[i * 3 + 2])) validIdx.push(i);
+  if (validIdx.length < 100) throw new Error('有效点太少，可能是深度失效的图');
+
+  // ---- 3) yaw ----
+  const step = Math.max(1, Math.floor(validIdx.length / 4000));
+  const subs = validIdx.filter((_, k) => k % step === 0);
+  let bestYaw = 0, bestArea = Infinity;
+  for (let deg = 0; deg < 90; deg++) {
+    const th = (deg * Math.PI) / 180;
+    const c = Math.cos(th), s = Math.sin(th);
+    const xs: number[] = [], zs: number[] = [];
+    for (const i of subs) {
+      const x = world[i * 3], z = world[i * 3 + 2];
+      xs.push(x * c - z * s);
+      zs.push(x * s + z * c);
+    }
+    const area = (percentile(xs, 0.98) - percentile(xs, 0.02)) *
+                 (percentile(zs, 0.98) - percentile(zs, 0.02));
+    if (area < bestArea) { bestArea = area; bestYaw = deg; }
+  }
+  const th = (bestYaw * Math.PI) / 180;
+  const c = Math.cos(th), s = Math.sin(th);
+  for (const i of validIdx) {
+    const x = world[i * 3], z = world[i * 3 + 2];
+    world[i * 3] = x * c - z * s;
+    world[i * 3 + 2] = x * s + z * c;
+  }
+  const rotV = (v: [number, number, number]): [number, number, number] =>
+    [v[0] * c - v[2] * s, v[1], v[0] * s + v[2] * c];
+  const camRight = rotV(rig.right), camDown = rotV(rig.down), camFwd = rotV(rig.fwd);
+
+  // ---- 4) 壳 ----
+  const fx: number[] = [], fz: number[] = [];
+  const ax: number[] = [], ay: number[] = [], az: number[] = [];
+  for (const i of validIdx) {
+    ax.push(world[i * 3]); ay.push(world[i * 3 + 1]); az.push(world[i * 3 + 2]);
+    if (floorMask[i]) { fx.push(world[i * 3]); fz.push(world[i * 3 + 2]); }
+  }
+  let xmin: number, xmax: number, zmin: number, zmax: number;
+  if (fx.length > 150) {
+    xmin = percentile(fx, 0.02) - 0.1; xmax = percentile(fx, 0.98) + 0.1;
+    zmin = percentile(fz, 0.02) - 0.1; zmax = percentile(fz, 0.98) + 0.1;
+  } else {
+    xmin = percentile(ax, 0.02); xmax = percentile(ax, 0.98);
+    zmin = percentile(az, 0.02); zmax = percentile(az, 0.98);
+  }
+  // 天花板：高处 y 直方图峰
+  const high = ay.filter((y) => y > 1.5);
+  let ceilY = Math.max(2.4, percentile(ay, 0.98));
+  let hasCeiling = false;
+  if (high.length > validIdx.length * 0.02) {
+    const hMax = Math.max(...high);
+    const bins = Math.max(6, Math.floor((hMax - 1.5) / 0.15) + 1);
+    const cnt = new Array(bins).fill(0);
+    for (const y of high) {
+      cnt[Math.min(bins - 1, Math.floor(((y - 1.5) / Math.max(1e-6, hMax - 1.5)) * bins))]++;
+    }
+    let peak = 0;
+    for (let i = 1; i < bins; i++) if (cnt[i] > cnt[peak]) peak = i;
+    if (cnt[peak] > validIdx.length * 0.015) {
+      ceilY = 1.5 + ((peak + 0.5) / bins) * (hMax - 1.5);
+      hasCeiling = true;
+    }
+  }
+  ceilY = Math.max(2.0, ceilY);
+  // 墙：边界带内的中高点堆积
+  const midIdx = validIdx.filter((i) => {
+    const y = world[i * 3 + 1];
+    return y > 0.3 && y < Math.max(ceilY - 0.15, 1.0);
+  });
+  const thrW = Math.max(30, validIdx.length * 0.008);
+  const countBand = (get: (i: number) => number, bound: number, hi: boolean) => {
+    let cnt2 = 0;
+    for (const i of midIdx) {
+      const v = get(i);
+      if (hi ? v > bound - 0.35 && v < bound + 0.8 : v < bound + 0.35 && v > bound - 0.8) cnt2++;
+    }
+    return cnt2 > thrW;
+  };
+  const gx = (i: number) => world[i * 3], gz = (i: number) => world[i * 3 + 2];
+  const walls = {
+    px: countBand(gx, xmax, true),
+    nx: countBand(gx, xmin, false),
+    pz: countBand(gz, zmax, true),
+    nz: countBand(gz, zmin, false),
+  };
+  const openFace = () => {
+    if (0 >= xmax) walls.px = false;
+    if (0 <= xmin) walls.nx = false;
+    if (0 >= zmax) walls.pz = false;
+    if (0 <= zmin) walls.nz = false;
+  };
+  openFace();
+  // 壳外裁剪
+  for (const i of validIdx) {
+    const x = world[i * 3], y = world[i * 3 + 1], z = world[i * 3 + 2];
+    if (x < xmin - 0.25 || x > xmax + 0.25 || z < zmin - 0.25 || z > zmax + 0.25 || y > ceilY + 0.3) {
+      world[i * 3 + 2] = NaN;
+    }
+  }
+
+  // ---- 5) 盲聚类 ----
+  const clusterPts: number[] = [];
+  const margin = 0.45;
+  for (const i of validIdx) {
+    if (Number.isNaN(world[i * 3 + 2]) || floorMask[i]) continue;
+    const x = world[i * 3], y = world[i * 3 + 1], z = world[i * 3 + 2];
+    if (y < 0.05 || y > ceilY - 0.35) continue;
+    if (x < xmin || x > xmax || z < zmin || z > zmax) continue;
+    if (walls.px && xmax - x < margin) continue;
+    if (walls.nx && x - xmin < margin) continue;
+    if (walls.pz && zmax - z < margin) continue;
+    if (walls.nz && z - zmin < margin) continue;
+    clusterPts.push(i);
+  }
+  const instances: BoxInstance[] = [];
+  if (clusterPts.length >= 40) {
+    const cell = 0.08;
+    const cgw = Math.max(1, Math.ceil((xmax - xmin) / cell));
+    const cgh = Math.max(1, Math.ceil((zmax - zmin) / cell));
+    const cells = new Map<number, number[]>();
+    for (const i of clusterPts) {
+      const cx = Math.min(cgw - 1, Math.floor((world[i * 3] - xmin) / cell));
+      const cz = Math.min(cgh - 1, Math.floor((world[i * 3 + 2] - zmin) / cell));
+      const ci = cz * cgw + cx;
+      let arr = cells.get(ci);
+      if (!arr) { arr = []; cells.set(ci, arr); }
+      arr.push(i);
+    }
+    const occupied = new Set<number>();
+    for (const [ci, arr] of cells) if (arr.length >= 3) occupied.add(ci);
+    const visited = new Set<number>();
+    const minPts = Math.max(20, Math.floor(validIdx.length * 0.0008));
+    let seq = 0;
+    for (const start of occupied) {
+      if (visited.has(start)) continue;
+      const comp: number[] = [];
+      const stack = [start];
+      visited.add(start);
+      while (stack.length) {
+        const c0 = stack.pop()!;
+        comp.push(c0);
+        const cx0 = c0 % cgw, cz0 = Math.floor(c0 / cgw);
+        for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+          if (!dx && !dz) continue;
+          const nx2 = cx0 + dx, nz2 = cz0 + dz;
+          if (nx2 < 0 || nx2 >= cgw || nz2 < 0 || nz2 >= cgh) continue;
+          const ni = nz2 * cgw + nx2;
+          if (occupied.has(ni) && !visited.has(ni)) { visited.add(ni); stack.push(ni); }
+        }
+      }
+      const members: number[] = [];
+      for (const ci of comp) {
+        const arr = cells.get(ci);
+        if (arr) members.push(...arr);
+      }
+      if (members.length < minPts) continue;
+      const mx = members.map((i) => world[i * 3]);
+      const my = members.map((i) => world[i * 3 + 1]);
+      const mz = members.map((i) => world[i * 3 + 2]);
+      const x0 = percentile(mx, 0.02), x1 = percentile(mx, 0.98);
+      const z0 = percentile(mz, 0.02), z1 = percentile(mz, 0.98);
+      const top = percentile(my, 0.97);
+      let base = percentile(my, 0.05);
+      if (base < 0.25) base = 0;
+      const w = Math.max(0.06, x1 - x0), dd = Math.max(0.06, z1 - z0);
+      const h = Math.max(0.06, top - base);
+      if (Math.max(w, dd) < params.minObjSizeM && h < params.minObjSizeM) continue;
+      if (h < 0.15 && base > ceilY * 0.55) continue; // 天花板涂抹碎片
+      instances.push({
+        id: `obj_${seq++}`,
+        pos: [(x0 + x1) / 2, base, (z0 + z1) / 2],
+        dims: [w, h, dd],
+        baseY: base,
+        points: members.length,
+      });
+    }
+  }
+  // 墙形聚类 → 墙
+  const kept: BoxInstance[] = [];
+  for (const b of instances) {
+    const [w, h, dd] = b.dims;
+    const [cx, , cz] = b.pos;
+    let side: keyof typeof walls | null = null;
+    if (h >= 1.2) {
+      if (w > 0.55 * (xmax - xmin) && dd < Math.max(0.35 * w, 0.6)) {
+        if (zmax - (cz + dd / 2) < 1.2) side = 'pz';
+        else if (cz - dd / 2 - zmin < 1.2) side = 'nz';
+      }
+      if (!side && dd > 0.55 * (zmax - zmin) && w < Math.max(0.35 * dd, 0.6)) {
+        if (xmax - (cx + w / 2) < 1.2) side = 'px';
+        else if (cx - w / 2 - xmin < 1.2) side = 'nx';
+      }
+    }
+    if (side) walls[side] = true;
+    else kept.push(b);
+  }
+  openFace();
+  kept.sort((a, b) => b.dims[0] * b.dims[1] * b.dims[2] - a.dims[0] * a.dims[1] * a.dims[2]);
+  kept.length = Math.min(kept.length, params.maxBoxes);
+
+  // ---- 调试点云 ----
+  const alive = validIdx.filter((i) => !Number.isNaN(world[i * 3 + 2]));
+  const dstep = Math.max(1, Math.floor(alive.length / 50000));
+  const dbg = new Float32Array(Math.ceil(alive.length / dstep) * 3);
+  let di = 0;
+  for (let k = 0; k < alive.length; k += dstep) {
+    const i = alive[k];
+    dbg[di++] = world[i * 3]; dbg[di++] = world[i * 3 + 1]; dbg[di++] = world[i * 3 + 2];
+  }
+
+  const spec: WhiteboxSpec = {
+    meta: {
+      generator: 'whitebox-web',
+      version: '0.2.0',
+      createdWith: { vfovDeg: params.vfovDeg, camHeightM: params.camHeightM },
+    },
+    camera: {
+      vfovDeg: params.vfovDeg,
+      pos: [0, params.camHeightM, 0],
+      basis: [...camRight, ...camDown, ...camFwd],
+      aspect: depth.width / depth.height,
+    },
+    room: {
+      min: [xmin, 0, zmin],
+      max: [xmax, hasCeiling ? ceilY : Math.max(ceilY, 2.4), zmax],
+      walls,
+      hasCeiling,
+    },
+    instances: kept,
+  };
+  return {
+    spec,
+    debug: {
+      points: dbg.subarray(0, di) as Float32Array,
+      floorInlierRatio: fl.fd.length / Math.max(1, validIdx.length),
+      affine: { a: 0, b: 0, zNear: 0, zFar: 0, score: 0 },
+      yawDeg: bestYaw,
+      ms: performance.now() - t0,
+    },
+  };
+}
