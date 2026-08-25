@@ -37,6 +37,19 @@ export interface BoxInstance {
   /** 底面离地高度；>0 表示悬浮件（层架/吊灯） */
   baseY: number;
   points: number;
+  /** 复合模板类型（检测语义 → 结构化 primitive 组），缺省为普通 box */
+  kind?: 'box' | 'table' | 'chair' | 'sofa' | 'plant' | 'tree' | 'lamp' | 'tv' | 'person' | 'beam';
+  label?: string;
+  source?: 'detect' | 'segment' | 'struct';
+  /** 绕 y 轴的朝向（弧度）；检测实例在预 yaw 系求解，渲染时需回转 */
+  yawYRad?: number;
+}
+
+/** 浏览器内目标检测结果（bbox 为 0..1 归一化） */
+export interface Detection {
+  label: string;
+  score: number;
+  box: [number, number, number, number];
 }
 
 export interface WhiteboxSpec {

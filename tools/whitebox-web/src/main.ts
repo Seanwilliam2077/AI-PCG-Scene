@@ -1,10 +1,10 @@
 import { DepthClient } from './depthClient';
 import { autoCalibrate } from './geometry/pipeline';
 
-console.log('[whitebox-web] v0.3.0');
+console.log('[whitebox-web] v0.4.0');
 import { solveGeometry } from './geometry/pipeline';
 import { Viewer } from './viewer';
-import type { DepthResult } from './types';
+import type { DepthResult, Detection } from './types';
 
 const $ = (id: string) => document.getElementById(id)!;
 const statusEl = $('status');
@@ -12,6 +12,7 @@ const viewer = new Viewer($('viewport') as HTMLCanvasElement);
 const depthClient = new DepthClient();
 
 let cachedDepth: DepthResult | null = null;
+let cachedDets: Detection[] = [];
 let busy = false;
 
 function setStatus(msg: string, err = false) {
@@ -59,6 +60,17 @@ async function run(src: Blob | string) {
     setStatus('深度推理中…（首次运行需下载约 25MB 模型）');
     const t0 = performance.now();
     cachedDepth = await depthClient.infer(imageData);
+    setStatus('识别场景物体…（首次需下载检测模型）');
+    cachedDets = await depthClient.detect(imageData);
+    if (new URLSearchParams(location.search).has('fakedet')) {
+      // 调试：注入假检测验证 模板/尺度锚 链路
+      cachedDets = [
+        { label: 'dining table', score: 0.9, box: [0.55, 0.71, 0.92, 0.99] },
+        { label: 'chair', score: 0.85, box: [0.69, 0.8, 0.86, 0.99] },
+        { label: 'potted plant', score: 0.8, box: [0.0, 0.62, 0.06, 0.99] },
+        { label: 'person', score: 0.8, box: [0.4, 0.35, 0.5, 0.9] },
+      ];
+    }
     setStatus('自动估计相机（FOV/俯仰）…');
     await new Promise((r) => setTimeout(r, 30)); // 让状态渲染出来
     const cam = autoCalibrate(cachedDepth);
@@ -69,14 +81,17 @@ async function run(src: Blob | string) {
     await new Promise((r) => setTimeout(r, 30));
     const spec = resolve();
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
+    const nDet = spec?.instances.filter((i) => i.source === 'detect').length ?? 0;
     setStatus(
       `完成 ✓ ${dt}s（${cachedDepth.device}）· 自动相机 FOV ${cam.vfovDeg}° 俯仰 ${cam.pitchDeg}° · ` +
-      `${spec?.instances.length ?? 0} 个体块。拖动旋转 / 滚轮缩放 / 右键平移`,
+      `${spec?.instances.length ?? 0} 个体块（${nDet} 个语义模板）。拖动旋转 / 滚轮缩放 / 右键平移`,
     );
     $('controls').hidden = false;
   } catch (e: any) {
     console.error(e);
     setStatus(`失败：${e?.message ?? e}`, true);
+    cachedDepth = null; // 缓存与缩略图必须一致，防滑杆重解旧图
+    cachedDets = [];
   } finally {
     busy = false;
   }
@@ -84,7 +99,7 @@ async function run(src: Blob | string) {
 
 function resolve() {
   if (!cachedDepth) return null;
-  const result = solveGeometry(cachedDepth, params());
+  const result = solveGeometry(cachedDepth, params(), cachedDets);
   viewer.build(result.spec);
   (window as any).__spec = result.spec; // 调试可取
   return result.spec;

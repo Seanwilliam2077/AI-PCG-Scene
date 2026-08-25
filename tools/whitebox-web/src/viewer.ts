@@ -3,10 +3,121 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
-import type { WhiteboxSpec } from './types';
+import type { BoxInstance, WhiteboxSpec } from './types';
 
 const CLAY = 0xd3d4d8;
 const EDGE = 0x54575f;
+
+/** 加一个带轮廓线的盒子到组（局部坐标：center 为体心） */
+function addBox(
+  g: THREE.Group, clay: THREE.Material, edgeMat: THREE.LineBasicMaterial,
+  cx: number, cy: number, cz: number, w: number, h: number, d: number,
+) {
+  const geo = new THREE.BoxGeometry(Math.max(0.02, w), Math.max(0.02, h), Math.max(0.02, d));
+  const mesh = new THREE.Mesh(geo, clay);
+  mesh.position.set(cx, cy, cz);
+  g.add(mesh);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat);
+  e.position.copy(mesh.position);
+  g.add(e);
+}
+
+/** 检测语义 → 复合 primitive 模板（设计书 §05 词表的 web 版） */
+function buildInstance(
+  inst: BoxInstance, clay: THREE.Material, edgeMat: THREE.LineBasicMaterial, ceilY: number,
+): THREE.Group {
+  const g = new THREE.Group();
+  g.name = inst.label ?? inst.id;
+  const [w, h, d] = inst.dims;
+  const base = inst.baseY;
+  const kind = inst.kind && inst.kind !== 'box' ? inst.kind : 'box';
+  const legW = Math.min(0.07, w * 0.12, d * 0.12);
+
+  switch (kind) {
+    case 'table': {
+      const topT = Math.min(0.08, h * 0.15);
+      addBox(g, clay, edgeMat, 0, base + h - topT / 2, 0, w, topT, d);
+      const ix = w / 2 - legW, iz = d / 2 - legW;
+      for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        addBox(g, clay, edgeMat, sx * ix, base + (h - topT) / 2, sz * iz, legW, h - topT, legW);
+      }
+      break;
+    }
+    case 'chair': {
+      const seatY = base + Math.min(Math.max(h * 0.5, 0.3), 0.55);
+      const seatT = 0.06;
+      addBox(g, clay, edgeMat, 0, seatY - seatT / 2, 0, w, seatT, d);
+      const ix = w / 2 - legW, iz = d / 2 - legW;
+      for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+        addBox(g, clay, edgeMat, sx * ix, base + (seatY - base - seatT) / 2, sz * iz,
+               legW, seatY - base - seatT, legW);
+      }
+      const backH = base + h - seatY;
+      if (backH > 0.1) addBox(g, clay, edgeMat, 0, seatY + backH / 2, -d / 2 + 0.03, w, backH, 0.06);
+      break;
+    }
+    case 'sofa': {
+      const seatH = h * 0.45;
+      addBox(g, clay, edgeMat, 0, base + seatH / 2, 0, w, seatH, d);
+      addBox(g, clay, edgeMat, 0, base + h / 2, -d / 2 + d * 0.12, w, h, d * 0.24);
+      for (const sx of [-1, 1]) {
+        addBox(g, clay, edgeMat, sx * (w / 2 - w * 0.08), base + h * 0.35, 0, w * 0.16, h * 0.7, d);
+      }
+      break;
+    }
+    case 'plant':
+    case 'tree': {
+      const tall = kind === 'tree' || h > 1.6;
+      const potR = Math.max(0.06, Math.min(w, d) * (tall ? 0.12 : 0.3));
+      const potH = tall ? h * 0.45 : h * 0.25;
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(potR, potR * 0.85, potH, 12), clay);
+      pot.position.set(0, base + potH / 2, 0);
+      g.add(pot);
+      const crownR = Math.max(0.12, Math.min(w, d) * 0.42);
+      const cy0 = base + potH + crownR * 0.7;
+      const offsets: [number, number, number][] = tall
+        ? [[0, crownR * 0.9, 0], [-crownR * 0.8, 0.2, 0.1], [crownR * 0.75, 0.1, -0.15], [0.1, 0.3, crownR * 0.7], [-0.15, 0.25, -crownR * 0.7]]
+        : [[0, 0, 0], [-crownR * 0.6, crownR * 0.5, 0.05], [crownR * 0.55, crownR * 0.45, -0.05]];
+      for (const [ox, oy, oz] of offsets) {
+        const s = new THREE.Mesh(new THREE.IcosahedronGeometry(crownR, 1), clay);
+        s.position.set(ox, cy0 + oy, oz);
+        g.add(s);
+      }
+      break;
+    }
+    case 'lamp': {
+      const shadeR = Math.max(0.08, Math.max(w, d) / 2);
+      const shadeH = Math.min(0.35, Math.max(0.15, h));
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(shadeR, shadeH, 14, 1, true), clay);
+      cone.position.set(0, base + shadeH / 2, 0);
+      g.add(cone);
+      const rodTop = Math.max(ceilY, base + shadeH + 0.1);
+      const rodH = rodTop - (base + shadeH);
+      if (rodH > 0.05) {
+        const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, rodH, 6), clay);
+        rod.position.set(0, base + shadeH + rodH / 2, 0);
+        g.add(rod);
+      }
+      break;
+    }
+    case 'tv': {
+      addBox(g, clay, edgeMat, 0, base + h / 2, 0, w, h, Math.min(0.1, d));
+      break;
+    }
+    case 'person': {
+      const r = Math.min(0.22, Math.max(0.12, w / 2));
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(r, Math.max(0.2, h - 2 * r), 4, 10), clay);
+      body.position.set(0, base + h / 2, 0);
+      g.add(body);
+      break;
+    }
+    default:
+      addBox(g, clay, edgeMat, 0, base + h / 2, 0, w, h, d);
+  }
+  g.position.set(inst.pos[0], 0, inst.pos[2]);
+  g.rotation.y = inst.yawYRad ?? 0; // 检测实例在预 yaw 系求解，绕体心回转
+  return g;
+}
 
 export class Viewer {
   private renderer: THREE.WebGLRenderer;
@@ -15,6 +126,12 @@ export class Viewer {
   private controls: OrbitControls;
   private group = new THREE.Group();
   private specCamHelper: THREE.CameraHelper | null = null;
+  // 材质复用，重建只重建几何
+  private clayMat = new THREE.MeshStandardMaterial({ color: CLAY, roughness: 0.95 });
+  private shellMat = new THREE.MeshStandardMaterial({
+    color: 0xbfc1c6, roughness: 1.0, side: THREE.FrontSide,
+  });
+  private edgeMat = new THREE.LineBasicMaterial({ color: EDGE });
 
   constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -56,13 +173,17 @@ export class Viewer {
   }
 
   build(spec: WhiteboxSpec): void {
+    // 释放上一次的几何（滑杆反复重建时防显存泄漏）
+    this.group.traverse((o: any) => { o.geometry?.dispose?.(); });
     this.group.clear();
-    if (this.specCamHelper) { this.scene.remove(this.specCamHelper); this.specCamHelper = null; }
+    if (this.specCamHelper) {
+      this.scene.remove(this.specCamHelper);
+      this.specCamHelper.dispose();
+      this.specCamHelper = null;
+    }
 
-    const clay = new THREE.MeshStandardMaterial({ color: CLAY, roughness: 0.95 });
-    const shellMat = new THREE.MeshStandardMaterial({
-      color: 0xbfc1c6, roughness: 1.0, side: THREE.FrontSide,
-    });
+    const clay = this.clayMat;
+    const shellMat = this.shellMat;
     const r = spec.room;
     const cx = (r.min[0] + r.max[0]) / 2;
     const cz = (r.min[2] + r.max[2]) / 2;
@@ -93,19 +214,9 @@ export class Viewer {
       this.group.add(ceil);
     }
 
-    // 实例
+    // 实例（按复合模板构建）
     for (const inst of spec.instances) {
-      const [w, hh, dd] = inst.dims;
-      const geo = new THREE.BoxGeometry(w, hh, dd);
-      const mesh = new THREE.Mesh(geo, clay);
-      mesh.position.set(inst.pos[0], inst.baseY + hh / 2, inst.pos[2]);
-      this.group.add(mesh);
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geo),
-        new THREE.LineBasicMaterial({ color: EDGE }),
-      );
-      edges.position.copy(mesh.position);
-      this.group.add(edges);
+      this.group.add(buildInstance(inst, clay, this.edgeMat, h));
     }
 
     // 求解相机视锥

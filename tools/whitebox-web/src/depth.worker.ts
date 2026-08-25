@@ -9,8 +9,10 @@ import { pipeline, env, RawImage } from '@huggingface/transformers';
 env.allowLocalModels = false;
 
 const MODEL = 'onnx-community/depth-anything-v2-small';
+const DET_MODEL = 'Xenova/detr-resnet-50';
 
 let dp: any = null;
+let det: any = null;
 let device: 'webgpu' | 'wasm' = 'wasm';
 
 function post(msg: any, transfer?: Transferable[]) {
@@ -54,8 +56,47 @@ async function ensurePipeline() {
   device = 'wasm';
 }
 
+async function ensureDetector() {
+  if (det) return;
+  post({ type: 'status', msg: '载入检测模型…' });
+  const seen = new Map<string, number>();
+  const progressCb = (x: any) => {
+    if (x.status === 'progress' && typeof x.progress === 'number') {
+      seen.set(x.file ?? '', x.progress);
+      let sum = 0;
+      for (const v of seen.values()) sum += v;
+      post({ type: 'status', msg: `下载检测模型 ${(sum / Math.max(1, seen.size)).toFixed(0)}%` });
+    }
+  };
+  // DETR 在 WebGPU 上兼容性一般，直接走 WASM q8（约 43MB，推理秒级）
+  det = await pipeline('object-detection', DET_MODEL, {
+    device: 'wasm',
+    dtype: 'q8',
+    progress_callback: progressCb,
+  });
+}
+
 self.onmessage = async (ev: MessageEvent) => {
   const { type } = ev.data;
+  if (type === 'detect') {
+    const { data, width, height, reqId } = ev.data;
+    try {
+      await ensureDetector();
+      post({ type: 'status', msg: '识别场景物体…' });
+      const img = new RawImage(new Uint8ClampedArray(data), width, height, 4);
+      const out = await det(img, { threshold: 0.35, percentage: true });
+      const dets = (out as any[]).map((o) => ({
+        label: String(o.label),
+        score: Number(o.score),
+        box: [o.box.xmin, o.box.ymin, o.box.xmax, o.box.ymax] as [number, number, number, number],
+      }));
+      post({ type: 'detections', reqId, dets });
+    } catch (e: any) {
+      console.warn('[detect] 失败（降级为无检测）', e);
+      post({ type: 'detections', reqId, dets: [] });
+    }
+    return;
+  }
   if (type !== 'infer') return;
   const { data, width, height, reqId } = ev.data as {
     data: Uint8ClampedArray; width: number; height: number; reqId: number;
