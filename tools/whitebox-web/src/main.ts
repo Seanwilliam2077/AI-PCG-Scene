@@ -1,6 +1,7 @@
 import { DepthClient } from './depthClient';
+import { autoCalibrate } from './geometry/pipeline';
 
-console.log('[whitebox-web] v0.2.1');
+console.log('[whitebox-web] v0.3.0');
 import { solveGeometry } from './geometry/pipeline';
 import { Viewer } from './viewer';
 import type { DepthResult } from './types';
@@ -24,10 +25,14 @@ function params() {
     vfovDeg: parseFloat(($('fov') as HTMLInputElement).value),
     pitchDeg: parseFloat(($('pitch') as HTMLInputElement).value),
     camHeightM: parseFloat(($('camh') as HTMLInputElement).value),
-    minObjSizeM: 0.15,
-    maxBoxes: 40,
+    minObjSizeM: 0.12,
+    maxBoxes: 64,
+    granularity: parseFloat(($('grain') as HTMLInputElement).value),
   };
 }
+
+/** 滑杆标签刷新函数表（自动相机估计写入滑杆后统一刷新） */
+const labelUpdaters: Array<() => void> = [];
 
 async function imageToData(src: Blob | string): Promise<ImageData> {
   // createImageBitmap 不依赖合成器（img.decode 在后台/隐藏标签页会被节流挂起）
@@ -54,11 +59,20 @@ async function run(src: Blob | string) {
     setStatus('深度推理中…（首次运行需下载约 25MB 模型）');
     const t0 = performance.now();
     cachedDepth = await depthClient.infer(imageData);
-    setStatus('几何求解中…');
+    setStatus('自动估计相机（FOV/俯仰）…');
     await new Promise((r) => setTimeout(r, 30)); // 让状态渲染出来
-    resolve();
+    const cam = autoCalibrate(cachedDepth);
+    ($('fov') as HTMLInputElement).value = String(cam.vfovDeg);
+    ($('pitch') as HTMLInputElement).value = String(cam.pitchDeg);
+    for (const u of labelUpdaters) u();
+    setStatus('几何求解中…');
+    await new Promise((r) => setTimeout(r, 30));
+    const spec = resolve();
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
-    setStatus(`完成 ✓ ${dt}s（${cachedDepth.device}）。拖动旋转 / 滚轮缩放 / 右键平移`);
+    setStatus(
+      `完成 ✓ ${dt}s（${cachedDepth.device}）· 自动相机 FOV ${cam.vfovDeg}° 俯仰 ${cam.pitchDeg}° · ` +
+      `${spec?.instances.length ?? 0} 个体块。拖动旋转 / 滚轮缩放 / 右键平移`,
+    );
     $('controls').hidden = false;
   } catch (e: any) {
     console.error(e);
@@ -69,10 +83,11 @@ async function run(src: Blob | string) {
 }
 
 function resolve() {
-  if (!cachedDepth) return;
+  if (!cachedDepth) return null;
   const result = solveGeometry(cachedDepth, params());
   viewer.build(result.spec);
   (window as any).__spec = result.spec; // 调试可取
+  return result.spec;
 }
 
 // ---- 输入 ----
@@ -99,12 +114,14 @@ window.addEventListener('drop', (e) => {
 const bind = (id: string, vid: string, fmt: (v: number) => string) => {
   const el = $(id) as HTMLInputElement;
   const upd = () => ($(vid).textContent = fmt(parseFloat(el.value)));
+  labelUpdaters.push(upd);
   el.addEventListener('input', () => { upd(); if (cachedDepth && !busy) resolve(); });
   upd();
 };
 bind('fov', 'fov-v', (v) => `${v.toFixed(0)}°`);
 bind('pitch', 'pitch-v', (v) => `${v.toFixed(0)}°`);
 bind('camh', 'camh-v', (v) => `${v.toFixed(2)}m`);
+bind('grain', 'grain-v', (v) => v.toFixed(1));
 
 // ---- 导出 ----
 $('export-glb').addEventListener('click', async () => {

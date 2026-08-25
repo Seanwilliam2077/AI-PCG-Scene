@@ -99,6 +99,85 @@ class DepthCurve {
   }
 }
 
+/**
+ * 自动相机估计：对 (vFOV, 俯仰) 网格搜索，评分 = 地面标定覆盖率 + 墙面竖直度 − 温和先验。
+ * 单图的相机内参在数学上不可唯一确定，但错误相机会让「地面标定曲线覆盖率低」
+ * 且「非地面表面的世界法向偏离竖直」，两个信号联合足以选出稳定解。
+ */
+export function autoCalibrate(depth: DepthResult): { vfovDeg: number; pitchDeg: number } {
+  const { d, gw, gh } = resample(depth);
+  let best = { vfovDeg: 55, pitchDeg: -5, score: -Infinity };
+  const tryCam = (fov: number, pitch: number) => {
+    const s = scoreCamera(d, gw, gh, fov, pitch);
+    if (s > best.score) best = { vfovDeg: fov, pitchDeg: pitch, score: s };
+  };
+  for (const fov of [40, 48, 55, 62, 70, 80, 92]) {
+    for (const pitch of [-22, -16, -10, -5, 0, 6, 12]) tryCam(fov, pitch);
+  }
+  const f0 = best.vfovDeg, p0 = best.pitchDeg;
+  for (const fov of [f0 - 4, f0, f0 + 4]) {
+    for (const pitch of [p0 - 3, p0, p0 + 3]) tryCam(fov, pitch);
+  }
+  return { vfovDeg: best.vfovDeg, pitchDeg: best.pitchDeg };
+}
+
+function scoreCamera(d: Float64Array, gw: number, gh: number, fov: number, pitch: number): number {
+  if (fov < 25 || fov > 110 || pitch < -35 || pitch > 25) return -Infinity;
+  const rig = new CameraRig(gw, gh, fov, pitch, 1.6);
+  // 快速地面标定（粗 bin + 一轮修剪）
+  const bd: number[] = [], bt: number[] = [];
+  for (let y = Math.floor(gh * 0.72); y < gh; y++) {
+    for (let x = Math.floor(gw * 0.25); x < Math.floor(gw * 0.75); x += 3) {
+      const t = rig.floorT(x, y);
+      if (!Number.isNaN(t)) { bd.push(d[y * gw + x]); bt.push(t); }
+    }
+  }
+  if (bd.length < 60) return -Infinity;
+  let curve = new DepthCurve(bd, bt, 16);
+  const res = bd.map((dv, i) => Math.abs(curve.at(dv) - bt[i]) / Math.max(bt[i], 0.5));
+  const thr = Math.max(0.12, percentile(res, 0.5) * 2);
+  const kd: number[] = [], kt: number[] = [];
+  for (let i = 0; i < bd.length; i++) if (res[i] < thr) { kd.push(bd[i]); kt.push(bt[i]); }
+  if (kd.length >= 60) curve = new DepthCurve(kd, kt, 16);
+  const isFloorLike = (x: number, y: number) => {
+    const t = rig.floorT(x, y);
+    if (Number.isNaN(t)) return false;
+    return Math.abs(curve.at(d[y * gw + x]) - t) / Math.max(t, 0.5) < 0.12;
+  };
+  // 覆盖率：地平线以下抽样像素中与地面标定一致的比例
+  let below = 0, cons = 0;
+  for (let y = 0; y < gh; y += 3) {
+    for (let x = 0; x < gw; x += 3) {
+      if (Number.isNaN(rig.floorT(x, y))) continue;
+      below++;
+      if (isFloorLike(x, y)) cons++;
+    }
+  }
+  const coverage = below > 20 ? cons / below : 0;
+  // 竖直度：中带非地面像素的世界法向 |n_y| 均值（墙/立面应≈0）
+  const y0 = Math.floor(gh * 0.12), y1 = Math.floor(gh * 0.68);
+  const st = 2;
+  let vsum = 0, vcnt = 0;
+  for (let y = y0 + st; y < y1 - st; y += st) {
+    for (let x = st; x < gw - st; x += st) {
+      if (isFloorLike(x, y)) continue;
+      const pC = rig.pointAt(x, y, curve.at(d[y * gw + x]));
+      const pR = rig.pointAt(x + st, y, curve.at(d[y * gw + x + st]));
+      const pD = rig.pointAt(x, y + st, curve.at(d[(y + st) * gw + x]));
+      const ux = pR[0] - pC[0], uy = pR[1] - pC[1], uz = pR[2] - pC[2];
+      const vx = pD[0] - pC[0], vy = pD[1] - pC[1], vz = pD[2] - pC[2];
+      const ny = uz * vx - ux * vz;
+      const mag = Math.hypot(uy * vz - uz * vy, ny, ux * vy - uy * vx);
+      if (!(mag > 1e-9) || !Number.isFinite(mag)) continue;
+      vsum += Math.abs(ny) / mag;
+      vcnt++;
+    }
+  }
+  const vert = vcnt > 30 ? vsum / vcnt : 1;
+  const prior = 0.12 * ((fov - 60) / 40) ** 2 + 0.12 * ((pitch + 5) / 20) ** 2;
+  return coverage + 0.8 * (1 - vert) - prior;
+}
+
 function resample(depth: DepthResult): { d: Float64Array; gw: number; gh: number } {
   const w0 = depth.width, h0 = depth.height;
   let gw = GRID_W;
@@ -290,82 +369,68 @@ export function solveGeometry(depth: DepthResult, params: GeoParams): GeoResult 
     }
   }
 
-  // ---- 5) 盲聚类 ----
-  const clusterPts: number[] = [];
-  const margin = 0.45;
-  for (const i of validIdx) {
-    if (Number.isNaN(world[i * 3 + 2]) || floorMask[i]) continue;
-    const x = world[i * 3], y = world[i * 3 + 1], z = world[i * 3 + 2];
-    if (y < 0.05 || y > ceilY - 0.35) continue;
-    if (x < xmin || x > xmax || z < zmin || z > zmax) continue;
-    if (walls.px && xmax - x < margin) continue;
-    if (walls.nx && x - xmin < margin) continue;
-    if (walls.pz && zmax - z < margin) continue;
-    if (walls.nz && z - zmin < margin) continue;
-    clusterPts.push(i);
-  }
-  const instances: BoxInstance[] = [];
-  if (clusterPts.length >= 40) {
-    const cell = 0.08;
-    const cgw = Math.max(1, Math.ceil((xmax - xmin) / cell));
-    const cgh = Math.max(1, Math.ceil((zmax - zmin) / cell));
-    const cells = new Map<number, number[]>();
-    for (const i of clusterPts) {
-      const cx = Math.min(cgw - 1, Math.floor((world[i * 3] - xmin) / cell));
-      const cz = Math.min(cgh - 1, Math.floor((world[i * 3 + 2] - zmin) / cell));
-      const ci = cz * cgw + cx;
-      let arr = cells.get(ci);
-      if (!arr) { arr = []; cells.set(ci, arr); }
-      arr.push(i);
-    }
-    const occupied = new Set<number>();
-    for (const [ci, arr] of cells) if (arr.length >= 3) occupied.add(ci);
-    const visited = new Set<number>();
-    const minPts = Math.max(20, Math.floor(validIdx.length * 0.0008));
-    let seq = 0;
-    for (const start of occupied) {
-      if (visited.has(start)) continue;
-      const comp: number[] = [];
-      const stack = [start];
-      visited.add(start);
-      while (stack.length) {
-        const c0 = stack.pop()!;
-        comp.push(c0);
-        const cx0 = c0 % cgw, cz0 = Math.floor(c0 / cgw);
-        for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
-          if (!dx && !dz) continue;
-          const nx2 = cx0 + dx, nz2 = cz0 + dz;
-          if (nx2 < 0 || nx2 >= cgw || nz2 < 0 || nz2 >= cgh) continue;
-          const ni = nz2 * cgw + nx2;
-          if (occupied.has(ni) && !visited.has(ni)) { visited.add(ni); stack.push(ni); }
+  // ---- 5) 视差分割 → 盒体 ----
+  // 结构在【图像域】决定：视差不连续处切开，与相机参数无关。
+  // 因此微调 FOV/俯仰/机高只会连续地移动/缩放盒体，不会重构切分（稳定性来源）。
+  const flatSample: number[] = [];
+  for (let k = 0; k < 8000; k++) flatSample.push(d[Math.floor((k * n) / 8000)]);
+  const span = percentile(flatSample, 0.95) - percentile(flatSample, 0.05);
+  const tau = (0.012 * Math.max(1e-6, span)) / Math.max(0.3, params.granularity);
+  const label = new Int32Array(n).fill(-1);
+  const segs: number[][] = [];
+  for (let i0 = 0; i0 < n; i0++) {
+    if (label[i0] !== -1) continue;
+    const seg: number[] = [];
+    const stack = [i0];
+    label[i0] = segs.length;
+    while (stack.length) {
+      const cIdx = stack.pop()!;
+      seg.push(cIdx);
+      const cx = cIdx % gw, cy = Math.floor(cIdx / gw);
+      const dc = d[cIdx];
+      if (cx > 0) tryLink(cIdx - 1);
+      if (cx < gw - 1) tryLink(cIdx + 1);
+      if (cy > 0) tryLink(cIdx - gw);
+      if (cy < gh - 1) tryLink(cIdx + gw);
+      function tryLink(nb: number) {
+        if (label[nb] === -1 && Math.abs(d[nb] - dc) <= tau) {
+          label[nb] = segs.length;
+          stack.push(nb);
         }
       }
-      const members: number[] = [];
-      for (const ci of comp) {
-        const arr = cells.get(ci);
-        if (arr) members.push(...arr);
-      }
-      if (members.length < minPts) continue;
-      const mx = members.map((i) => world[i * 3]);
-      const my = members.map((i) => world[i * 3 + 1]);
-      const mz = members.map((i) => world[i * 3 + 2]);
-      const x0 = percentile(mx, 0.02), x1 = percentile(mx, 0.98);
-      const z0 = percentile(mz, 0.02), z1 = percentile(mz, 0.98);
-      const top = percentile(my, 0.97);
-      let base = percentile(my, 0.05);
-      if (base < 0.25) base = 0;
-      const w = Math.max(0.06, x1 - x0), dd = Math.max(0.06, z1 - z0);
-      const h = Math.max(0.06, top - base);
-      if (Math.max(w, dd) < params.minObjSizeM && h < params.minObjSizeM) continue;
-      if (h < 0.15 && base > ceilY * 0.55) continue; // 天花板涂抹碎片
-      instances.push({
-        id: `obj_${seq++}`,
-        pos: [(x0 + x1) / 2, base, (z0 + z1) / 2],
-        dims: [w, h, dd],
-        baseY: base,
-        points: members.length,
-      });
     }
+    segs.push(seg);
+  }
+  const instances: BoxInstance[] = [];
+  let seq = 0;
+  for (const seg of segs) {
+    if (seg.length < 30) continue;
+    let floorCnt = 0;
+    const mx: number[] = [], my: number[] = [], mz: number[] = [];
+    for (const i of seg) {
+      if (floorMask[i]) floorCnt++;
+      if (!Number.isNaN(world[i * 3 + 2])) {
+        mx.push(world[i * 3]); my.push(world[i * 3 + 1]); mz.push(world[i * 3 + 2]);
+      }
+    }
+    if (floorCnt > seg.length * 0.5) continue; // 地面段
+    if (mx.length < 25) continue;              // 壳外/远景段
+    const x0 = percentile(mx, 0.03), x1 = percentile(mx, 0.97);
+    const z0 = percentile(mz, 0.03), z1 = percentile(mz, 0.97);
+    let top = Math.min(percentile(my, 0.96), ceilY);
+    let base = percentile(my, 0.06);
+    if (base < 0.3) base = 0;
+    const w = Math.max(0.05, x1 - x0), dd = Math.max(0.05, z1 - z0);
+    const h = Math.max(0.05, top - base);
+    if (top > ceilY * 0.85 && h < 0.25) continue; // 天花板皮
+    if (Math.max(w, dd, h) < params.minObjSizeM) continue;
+    instances.push({
+      id: `seg_${seq++}`,
+      pos: [(x0 + x1) / 2, base, (z0 + z1) / 2],
+      dims: [w, h, dd],
+      baseY: base,
+      points: mx.length,
+    });
   }
   // 墙形聚类 → 墙
   const kept: BoxInstance[] = [];
@@ -387,8 +452,20 @@ export function solveGeometry(depth: DepthResult, params: GeoParams): GeoResult 
     else kept.push(b);
   }
   openFace();
-  kept.sort((a, b) => b.dims[0] * b.dims[1] * b.dims[2] - a.dims[0] * a.dims[1] * a.dims[2]);
-  kept.length = Math.min(kept.length, params.maxBoxes);
+  // 墙皮碎片过滤（墙标志已定稿）：已检出墙面前 1m 内宽而薄的高片 = 深度曲线的墙涂抹，并入墙
+  const dedupe = kept.filter((b) => {
+    const [w, h, dd] = b.dims;
+    const x0 = b.pos[0] - w / 2, x1 = b.pos[0] + w / 2;
+    const z0 = b.pos[2] - dd / 2, z1 = b.pos[2] + dd / 2;
+    const skin =
+      (walls.nz && dd < 0.3 && h > 0.7 && w > 1.2 && z0 - zmin < 1.0) ||
+      (walls.pz && dd < 0.3 && h > 0.7 && w > 1.2 && zmax - z1 < 1.0) ||
+      (walls.nx && w < 0.3 && h > 0.7 && dd > 1.2 && x0 - xmin < 1.0) ||
+      (walls.px && w < 0.3 && h > 0.7 && dd > 1.2 && xmax - x1 < 1.0);
+    return !skin;
+  });
+  dedupe.sort((a, b) => b.dims[0] * b.dims[1] * b.dims[2] - a.dims[0] * a.dims[1] * a.dims[2]);
+  dedupe.length = Math.min(dedupe.length, params.maxBoxes);
 
   // ---- 调试点云 ----
   const alive = validIdx.filter((i) => !Number.isNaN(world[i * 3 + 2]));
@@ -418,7 +495,7 @@ export function solveGeometry(depth: DepthResult, params: GeoParams): GeoResult 
       walls,
       hasCeiling,
     },
-    instances: kept,
+    instances: dedupe,
   };
   return {
     spec,

@@ -65,6 +65,8 @@ export interface GeoParams {
   camHeightM: number;
   minObjSizeM: number;
   maxBoxes: number;
+  /** 视差分割细度：越大切得越细 */
+  granularity: number;
 }
 
 export interface GeoResult {

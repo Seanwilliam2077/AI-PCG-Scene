@@ -6,7 +6,7 @@
   <title>单图白盒 · AI-PCG-Scene</title>
   <meta name="description" content="输入一张图，浏览器内重建可环绕查看的几何白盒（深度推理 + 几何求解全部本地运行）" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
-  <script type="module" crossorigin src="./assets/index-CSh7_hsP.js"></script>
+  <script type="module" crossorigin src="./assets/index-Bv8VD0UW.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-zt0RyJwo.css">
 </head>
 <body>
@@ -22,8 +22,9 @@
   </div>
 
   <div id="controls" hidden>
-    <label>FOV <input type="range" id="fov" min="30" max="100" step="1" value="55" /><b id="fov-v">55°</b></label>
-    <label>俯仰 <input type="range" id="pitch" min="-30" max="30" step="1" value="0" /><b id="pitch-v">0°</b></label>
+    <label>细度 <input type="range" id="grain" min="0.4" max="2.4" step="0.1" value="1.2" /><b id="grain-v">1.2</b></label>
+    <label title="自动估计的初值，可微调">FOV <input type="range" id="fov" min="30" max="100" step="1" value="55" /><b id="fov-v">55°</b></label>
+    <label title="自动估计的初值，可微调">俯仰 <input type="range" id="pitch" min="-30" max="30" step="1" value="0" /><b id="pitch-v">0°</b></label>
     <label>机高 <input type="range" id="camh" min="0.8" max="3.0" step="0.05" value="1.5" /><b id="camh-v">1.5m</b></label>
     <button class="btn ghost" id="export-glb">导出 GLB</button>
   </div>
