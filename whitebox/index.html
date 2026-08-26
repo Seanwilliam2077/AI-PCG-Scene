@@ -6,8 +6,8 @@
   <title>单图白盒 · AI-PCG-Scene</title>
   <meta name="description" content="输入一张图，浏览器内重建可环绕查看的几何白盒（深度推理 + 几何求解全部本地运行）" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
-  <script type="module" crossorigin src="./assets/index-cemDUGgd.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DK-5HXul.css">
+  <script type="module" crossorigin src="./assets/index-Bpi8av9X.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CttOoPHn.css">
 </head>
 <body>
   <canvas id="viewport"></canvas>
@@ -17,6 +17,17 @@
     <label class="btn" for="file-input">选择图片</label>
     <input type="file" id="file-input" accept="image/*" hidden />
     <button class="btn ghost" id="demo-btn">示例图</button>
+    <button class="btn ghost" id="vlm-btn">⚙ Venus VLM <span id="vlm-state" class="badge off">未配置</span></button>
+    <div id="vlm-panel" hidden>
+      <input type="text" id="vlm-url" placeholder="网关 URL（或本地代理 http://localhost:8788/api/vlm）" />
+      <input type="password" id="vlm-key" placeholder="API Key（仅存本机浏览器；代理模式留空）" />
+      <input type="text" id="vlm-model" placeholder="模型名，如 gpt-4o / qwen2.5-vl-72b" />
+      <div class="row">
+        <button id="vlm-save" class="btn small">保存</button>
+        <button id="vlm-clear" class="btn small ghost">清除</button>
+      </div>
+      <div class="hint">配置后实例解析走 VLM（类别/支撑关系/高度先验），失败自动回退 DETR。直连需网关允许浏览器跨域；内网建议本地管线代理，Key 不出本机。</div>
+    </div>
     <div id="status">拖入或选择一张图片开始</div>
     <img id="thumb" alt="" hidden />
   </div>
@@ -26,7 +37,7 @@
       <button class="btn small active" id="mode-match">对位视角</button>
       <button class="btn small" id="mode-orbit">自由环绕</button>
     </span>
-    <label id="overlay-row">叠加 <input type="range" id="overlay" min="0" max="100" step="1" value="50" /><b id="overlay-v">50%</b></label>
+    <label id="overlay-row" title="默认纯白盒；需要对照原图时拉高">叠加 <input type="range" id="overlay" min="0" max="100" step="1" value="0" /><b id="overlay-v">0%</b></label>
     <label>细度 <input type="range" id="grain" min="0.4" max="2.4" step="0.1" value="1.2" /><b id="grain-v">1.2</b></label>
     <span id="cam-info" title="消失点/评分自动解算，无手动变换">相机：—</span>
     <button class="btn ghost" id="export-glb">导出 GLB</button>

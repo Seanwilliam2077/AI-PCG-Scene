@@ -50,11 +50,22 @@ body {
 
 #overlay-img {
   position: fixed; display: none; pointer-events: none;
-  opacity: .5; z-index: 5; object-fit: fill;
+  opacity: 0; z-index: 5; object-fit: fill;
 }
 .seg { display: inline-flex; gap: 4px; }
 .seg .btn.active { border-color: var(--accent); color: var(--accent); }
 #cam-info { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.badge { font-size: 10px; padding: 1px 6px; border-radius: 99px; border: 1px solid var(--line); margin-left: 4px; }
+.badge.on { color: #5bae7f; border-color: #5bae7f; }
+.badge.off { color: var(--muted); }
+#vlm-panel { display: flex; flex-direction: column; gap: 6px; }
+#vlm-panel[hidden] { display: none; }
+#vlm-panel input {
+  background: rgba(20,22,26,.9); border: 1px solid var(--line); color: var(--ink);
+  border-radius: 6px; padding: 6px 8px; font-size: 12px; width: 100%;
+}
+#vlm-panel .row { display: flex; gap: 6px; }
+.hint { font-size: 11px; color: var(--muted); line-height: 1.55; }
 
 #drop-overlay {
   position: fixed; inset: 0; z-index: 20; display: none;

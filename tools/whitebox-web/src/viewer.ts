@@ -222,10 +222,13 @@ export class Viewer {
     }
   }
 
+  private overlayOpacity = 0; // 默认纯白盒相机画面，不叠原图
+
   /** 对位模式下把参考图叠到渲染区域上（WebGL 视口 y 向上，CSS y 向下） */
   private placeOverlay(vx: number, vy: number, vw: number, vh: number, canvasH: number) {
     if (!this.overlayEl) return;
     const st = this.overlayEl.style;
+    if (this.overlayOpacity <= 0) { st.display = 'none'; return; }
     st.display = 'block';
     st.left = `${vx}px`;
     st.top = `${canvasH - vy - vh}px`;
@@ -236,6 +239,7 @@ export class Viewer {
   setOverlayElement(el: HTMLImageElement) { this.overlayEl = el; }
 
   setOverlayOpacity(o: number) {
+    this.overlayOpacity = o;
     if (this.overlayEl) this.overlayEl.style.opacity = String(o);
   }
 

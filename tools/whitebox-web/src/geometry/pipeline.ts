@@ -105,6 +105,8 @@ export interface AutoCam {
   pitchDeg: number;
   /** vp2=双正交消失点闭式解焦距；vp1=消失点定俯仰+焦距一维搜索；search=评分搜索兜底 */
   method: 'vp2' | 'vp1' | 'search';
+  /** 调试：消失点标定原始信息 */
+  dbg?: import('./calib').VpCalib | null;
 }
 
 /**
@@ -124,7 +126,7 @@ export function autoCalibrate(depth: DepthResult, image?: ImageData): AutoCam {
       if (vp.method === 'vp2' && vp.vfovDeg != null) {
         const pitch = pitchFromVp(vp.vpY, vp.detH, vp.vfovDeg);
         if (pitch > -35 && pitch < 25) {
-          return { vfovDeg: Math.round(vp.vfovDeg), pitchDeg: Math.round(pitch), method: 'vp2' };
+          return { vfovDeg: Math.round(vp.vfovDeg), pitchDeg: Math.round(pitch), method: 'vp2', dbg: vp };
         }
       }
       // vp1：俯仰随焦距变化，但两者被 VP 行绑定成一维族 → 只搜焦距
@@ -136,7 +138,7 @@ export function autoCalibrate(depth: DepthResult, image?: ImageData): AutoCam {
         if (s > best.score) best = { vfovDeg: fov, pitchDeg: pitch, score: s };
       }
       if (best.score > -Infinity) {
-        return { vfovDeg: best.vfovDeg, pitchDeg: Math.round(best.pitchDeg), method: 'vp1' };
+        return { vfovDeg: best.vfovDeg, pitchDeg: Math.round(best.pitchDeg), method: 'vp1', dbg: vp };
       }
     }
   }
@@ -288,6 +290,34 @@ export function solveGeometry(
     curve = new DepthCurve(fl.fd, fl.ft);
     fl = collectFloor();
   }
+  // 墙基交线锚定（设计书"墙线由地面反投影定"的逐列版）：
+  // 每列底部连续地面的尽头 = 墙基/物体落脚行，其解析地面深度即该处占据物的真实深度。
+  // 用「交线上方像素的视差 ↔ 交线行地面深度」配对锚死曲线远端，替代不可靠的外推。
+  {
+    const jd: number[] = [], jt: number[] = [];
+    for (let x = 0; x < gw; x++) {
+      let yj = -1, run = 0;
+      for (let y = gh - 1; y >= 0; y--) {
+        if (fl.mask[y * gw + x]) { yj = y; run++; }
+        else if (run > 3) break;   // 底部已有一段地面，遇非地面即到交线
+        else run = 0;
+      }
+      if (yj < 2) continue;
+      const t = rig.floorT(x, yj);
+      if (!Number.isFinite(t)) continue;
+      const dj = d[yj * gw + x];
+      for (let y = Math.max(0, yj - 6); y < yj; y++) {
+        const i = y * gw + x;
+        // 占据物至少与其接地处一样近（排除薄边上方漏进来的更远背景）
+        if (!fl.mask[i] && d[i] >= dj * 0.95) { jd.push(d[i]); jt.push(t); }
+      }
+    }
+    if (jd.length > 150) {
+      // 交线对双倍权重并入重拟合，然后重算地面一致性
+      curve = new DepthCurve([...fl.fd, ...jd, ...jd], [...fl.ft, ...jt, ...jt]);
+      fl = collectFloor();
+    }
+  }
   const floorMask = fl.mask;
 
   // ---- 2) 点云 ----
@@ -346,6 +376,7 @@ export function solveGeometry(
   if (detections && detections.length) {
     type Cat = { kind: NonNullable<BoxInstance['kind']>; grounded: boolean; canonH?: number; minH: number; maxH: number };
     const CAT: Record<string, Cat> = {
+      // COCO（DETR）类别
       'dining table': { kind: 'table', grounded: true, canonH: 0.75, minH: 0.5, maxH: 1.2 },
       bench: { kind: 'table', grounded: true, minH: 0.35, maxH: 1.0 },
       chair: { kind: 'chair', grounded: true, canonH: 0.85, minH: 0.55, maxH: 1.3 },
@@ -356,14 +387,37 @@ export function solveGeometry(
       refrigerator: { kind: 'box', grounded: true, minH: 1.2, maxH: 2.2 },
       vase: { kind: 'plant', grounded: true, minH: 0.15, maxH: 1.2 },
       bed: { kind: 'box', grounded: true, minH: 0.3, maxH: 1.0 },
+      // Venus VLM 词表（server/vlm_venus.py 同源）
+      door: { kind: 'box', grounded: true, canonH: 2.03, minH: 1.7, maxH: 2.6 },
+      table: { kind: 'table', grounded: true, canonH: 0.75, minH: 0.5, maxH: 1.2 },
+      desk: { kind: 'table', grounded: true, canonH: 0.74, minH: 0.5, maxH: 1.2 },
+      counter: { kind: 'box', grounded: true, canonH: 1.1, minH: 0.7, maxH: 1.5 },
+      bar_counter: { kind: 'box', grounded: true, canonH: 1.1, minH: 0.7, maxH: 1.5 },
+      bar_stool: { kind: 'chair', grounded: true, canonH: 0.95, minH: 0.5, maxH: 1.3 },
+      sofa: { kind: 'sofa', grounded: true, canonH: 0.8, minH: 0.5, maxH: 1.2 },
+      shelf: { kind: 'box', grounded: true, minH: 0.5, maxH: 3.0 },
+      cabinet: { kind: 'box', grounded: true, minH: 0.5, maxH: 2.5 },
+      plant: { kind: 'plant', grounded: true, minH: 0.15, maxH: 3.5 },
+      tree: { kind: 'tree', grounded: true, minH: 1.2, maxH: 8.0 },
+      lamp: { kind: 'lamp', grounded: false, minH: 0.15, maxH: 1.5 },
+      pendant_lamp: { kind: 'lamp', grounded: false, minH: 0.15, maxH: 1.5 },
+      window: { kind: 'tv', grounded: false, minH: 0.4, maxH: 2.5 },
+      painting: { kind: 'tv', grounded: false, minH: 0.2, maxH: 2.5 },
+      box: { kind: 'box', grounded: true, minH: 0.1, maxH: 2.5 },
     };
     const sorted = detections
       .filter((o) => CAT[o.label] && o.score >= 0.4)
       .sort((a, b) => b.score - a.score)
-      .slice(0, 24);
+      .slice(0, 28);
     let dseq = 0;
     for (const o of sorted) {
-      const cat = CAT[o.label];
+      const base0 = CAT[o.label];
+      // VLM 的支撑关系与高度先验优先于类别默认（悬挂的植物≠落地盆栽）
+      const cat: Cat = {
+        ...base0,
+        grounded: o.support ? o.support === 'floor' : base0.grounded,
+        canonH: o.heightM ?? base0.canonH,
+      };
       const bx0 = Math.max(0, Math.floor(o.box[0] * gw));
       const bx1 = Math.min(gw - 1, Math.max(bx0 + 2, Math.ceil(o.box[2] * gw)));
       const by0 = Math.max(0, Math.floor(o.box[1] * gh));

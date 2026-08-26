@@ -48,11 +48,16 @@ export interface BoxInstance {
   yawYRad?: number;
 }
 
-/** 浏览器内目标检测结果（bbox 为 0..1 归一化） */
+/** 实例检测结果（bbox 为 0..1 归一化）；DETR 只有前三个字段，VLM 提供全部 */
 export interface Detection {
   label: string;
   score: number;
   box: [number, number, number, number];
+  /** VLM 提供的支撑关系 */
+  support?: 'floor' | 'surface' | 'wall' | 'hanging';
+  shape?: 'box' | 'cylinder';
+  /** VLM 对该物体真实高度的估计（米），用作尺度锚 */
+  heightM?: number;
 }
 
 export interface WhiteboxSpec {

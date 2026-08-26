@@ -168,8 +168,10 @@ function mulberry32(seed: number) {
 /** RANSAC 求前两个消失点（线段长度加权，确定性） */
 export function findVPs(segs: Seg[], w: number, h: number): VP[] {
   const rand = mulberry32(0x5eed);
-  // 排除近竖直线段（属竖直族，不参与水平/纵深 VP）
-  const cand = segs.filter((s) => Math.abs(s.uy) < 0.94);
+  // 族预筛（还原度文档只用"纵深族"的教训）：
+  // 近竖直属竖直族；近水平属横向族——横向 3D 线在图中互相平行，噪声会造出
+  // 高票的退化伪 VP（所有水平线都给它投票），必须排除
+  const cand = segs.filter((s) => Math.abs(s.uy) < 0.94 && Math.abs(s.uy) > 0.045);
   const vps: VP[] = [];
   let pool = cand;
   for (let round = 0; round < 2; round++) {
@@ -205,6 +207,22 @@ export function findVPs(segs: Seg[], w: number, h: number): VP[] {
       }
     }
     if (!best || best.inliers < 8) break;
+    // 真 VP 的内点从不同斜率汇聚；同向线族的退化伪 VP 方向高度集中 → 拒绝
+    {
+      let c2s = 0, s2s = 0;
+      for (const s of bestInl) {
+        const a2 = Math.atan2(s.uy, s.ux);
+        c2s += Math.cos(2 * a2);
+        s2s += Math.sin(2 * a2);
+      }
+      const conc = Math.hypot(c2s, s2s) / Math.max(1, bestInl.length);
+      if (conc > 0.99) {
+        const inlSet0 = new Set(bestInl);
+        pool = pool.filter((s) => !inlSet0.has(s));
+        round--; // 本轮无效，剔除退化族后重试
+        continue;
+      }
+    }
     // 用内点重估（最小二乘：所有内点直线的加权最近点）
     let a11 = 0, a12 = 0, a22 = 0, b1 = 0, b2 = 0;
     for (const s of bestInl) {
@@ -229,10 +247,12 @@ export interface VpCalib {
   /** 纵深消失点 y（检测坐标系），用于俯仰 */
   vpY: number;
   detH: number;
+  detW: number;
   /** vp2 时的垂直 FOV（度），vp1 时为 null */
   vfovDeg: number | null;
   segCount: number;
   inliers: number;
+  vps: VP[];
 }
 
 /** 从图像解消失点标定；线段/内点不足返回 null（调用方回退评分搜索） */
@@ -260,9 +280,11 @@ export function vpCalibrate(img: ImageData): VpCalib | null {
     method: vfovDeg != null ? 'vp2' : 'vp1',
     vpY: depthVP.y,
     detH: h,
+    detW: w,
     vfovDeg,
     segCount: segs.length,
     inliers: depthVP.inliers,
+    vps,
   };
 }
 

@@ -1,5 +1,6 @@
 import { DepthClient } from './depthClient';
 import { autoCalibrate, type AutoCam } from './geometry/pipeline';
+import { getVlmConfig, setVlmConfig, vlmDetect } from './vlm';
 
 console.log('[whitebox-web] v0.4.0');
 import { solveGeometry } from './geometry/pipeline';
@@ -64,8 +65,21 @@ async function run(src: Blob | string) {
     cachedDepth = await depthClient.infer(imageData);
     cachedDepth.origWidth = imageData.width;
     cachedDepth.origHeight = imageData.height;
-    setStatus('识别场景物体…（首次需下载检测模型）');
-    cachedDets = await depthClient.detect(imageData);
+    // 实例解析：Venus VLM 优先（类别/支撑关系/高度先验），失败回退浏览器内 DETR
+    let detSource = '无';
+    cachedDets = [];
+    if (getVlmConfig()) {
+      setStatus('VLM(Venus) 实例解析…');
+      const dets = await vlmDetect(($('thumb') as HTMLImageElement).src, (m) => console.log(m));
+      if (dets) { cachedDets = dets; detSource = 'Venus VLM'; }
+      else setStatus('VLM 失败，回退 DETR…');
+    }
+    if (!cachedDets.length) {
+      setStatus('识别场景物体…（DETR，首次需下载检测模型）');
+      cachedDets = await depthClient.detect(imageData);
+      if (cachedDets.length) detSource = 'DETR';
+    }
+    (window as any).__detSource = detSource;
     if (new URLSearchParams(location.search).has('fakedet')) {
       // 调试：注入假检测验证 模板/尺度锚 链路
       cachedDets = [
@@ -78,6 +92,7 @@ async function run(src: Blob | string) {
     setStatus('解算相机（消失点）…');
     await new Promise((r) => setTimeout(r, 30)); // 让状态渲染出来
     autoCam = autoCalibrate(cachedDepth, imageData);
+    (window as any).__autoCam = autoCam;
     const METHOD_LABEL = { vp2: '双消失点', vp1: '消失点+搜索', search: '评分搜索' } as const;
     $('cam-info').textContent =
       `相机：FOV ${autoCam.vfovDeg}° 俯仰 ${autoCam.pitchDeg}°（${METHOD_LABEL[autoCam.method]}）`;
@@ -88,7 +103,7 @@ async function run(src: Blob | string) {
     const nDet = spec?.instances.filter((i) => i.source === 'detect').length ?? 0;
     setStatus(
       `完成 ✓ ${dt}s（${cachedDepth.device}）· ${spec?.instances.length ?? 0} 个体块` +
-      `（${nDet} 个语义模板）。对位视角：拖「叠加」滑杆检查贴合；切自由环绕看三维`,
+      `（${nDet} 个语义模板 · ${detSource}）。对位视角；切自由环绕看三维`,
     );
     $('controls').hidden = false;
     setMode('match');
@@ -154,6 +169,40 @@ $('overlay').addEventListener('input', (e) => {
   $('overlay-v').textContent = `${v}%`;
   viewer.setOverlayOpacity(v / 100);
 });
+
+// ---- Venus VLM 设置 ----
+function refreshVlmBadge() {
+  const b = $('vlm-state');
+  const cfg = getVlmConfig();
+  b.textContent = cfg ? (cfg.url.includes('/api/vlm') ? '代理' : '直连') : '未配置';
+  b.className = 'badge ' + (cfg ? 'on' : 'off');
+}
+$('vlm-btn').addEventListener('click', () => {
+  const p = $('vlm-panel') as HTMLElement;
+  p.hidden = !p.hidden;
+  const cfg = getVlmConfig();
+  if (!p.hidden && cfg) {
+    ($('vlm-url') as HTMLInputElement).value = cfg.url;
+    ($('vlm-key') as HTMLInputElement).value = cfg.key;
+    ($('vlm-model') as HTMLInputElement).value = cfg.model;
+  }
+});
+$('vlm-save').addEventListener('click', () => {
+  const url = ($('vlm-url') as HTMLInputElement).value.trim();
+  setVlmConfig(url ? {
+    url,
+    key: ($('vlm-key') as HTMLInputElement).value.trim(),
+    model: ($('vlm-model') as HTMLInputElement).value.trim() || 'gpt-4o',
+  } : null);
+  refreshVlmBadge();
+  ($('vlm-panel') as HTMLElement).hidden = true;
+});
+$('vlm-clear').addEventListener('click', () => {
+  setVlmConfig(null);
+  refreshVlmBadge();
+  ($('vlm-panel') as HTMLElement).hidden = true;
+});
+refreshVlmBadge();
 
 // ---- 导出 ----
 $('export-glb').addEventListener('click', async () => {
