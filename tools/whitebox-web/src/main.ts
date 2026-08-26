@@ -1,5 +1,5 @@
 import { DepthClient } from './depthClient';
-import { autoCalibrate } from './geometry/pipeline';
+import { autoCalibrate, type AutoCam } from './geometry/pipeline';
 
 console.log('[whitebox-web] v0.4.0');
 import { solveGeometry } from './geometry/pipeline';
@@ -15,6 +15,7 @@ const depthClient = new DepthClient();
 
 let cachedDepth: DepthResult | null = null;
 let cachedDets: Detection[] = [];
+let autoCam: AutoCam | null = null;
 let busy = false;
 
 function setStatus(msg: string, err = false) {
@@ -25,17 +26,14 @@ depthClient.onStatus = (msg) => setStatus(msg);
 
 function params() {
   return {
-    vfovDeg: parseFloat(($('fov') as HTMLInputElement).value),
-    pitchDeg: parseFloat(($('pitch') as HTMLInputElement).value),
-    camHeightM: parseFloat(($('camh') as HTMLInputElement).value),
+    vfovDeg: autoCam?.vfovDeg ?? 55,
+    pitchDeg: autoCam?.pitchDeg ?? 0,
+    camHeightM: 1.6, // 初值；实际尺度由检测尺度锚（人/椅/桌）解出
     minObjSizeM: 0.12,
     maxBoxes: 64,
     granularity: parseFloat(($('grain') as HTMLInputElement).value),
   };
 }
-
-/** 滑杆标签刷新函数表（自动相机估计写入滑杆后统一刷新） */
-const labelUpdaters: Array<() => void> = [];
 
 async function imageToData(src: Blob | string): Promise<ImageData> {
   // createImageBitmap 不依赖合成器（img.decode 在后台/隐藏标签页会被节流挂起）
@@ -77,12 +75,12 @@ async function run(src: Blob | string) {
         { label: 'person', score: 0.8, box: [0.4, 0.35, 0.5, 0.9] },
       ];
     }
-    setStatus('自动估计相机（FOV/俯仰）…');
+    setStatus('解算相机（消失点）…');
     await new Promise((r) => setTimeout(r, 30)); // 让状态渲染出来
-    const cam = autoCalibrate(cachedDepth);
-    ($('fov') as HTMLInputElement).value = String(cam.vfovDeg);
-    ($('pitch') as HTMLInputElement).value = String(cam.pitchDeg);
-    for (const u of labelUpdaters) u();
+    autoCam = autoCalibrate(cachedDepth, imageData);
+    const METHOD_LABEL = { vp2: '双消失点', vp1: '消失点+搜索', search: '评分搜索' } as const;
+    $('cam-info').textContent =
+      `相机：FOV ${autoCam.vfovDeg}° 俯仰 ${autoCam.pitchDeg}°（${METHOD_LABEL[autoCam.method]}）`;
     setStatus('几何求解中…');
     await new Promise((r) => setTimeout(r, 30));
     const spec = resolve();
@@ -90,15 +88,16 @@ async function run(src: Blob | string) {
     const nDet = spec?.instances.filter((i) => i.source === 'detect').length ?? 0;
     setStatus(
       `完成 ✓ ${dt}s（${cachedDepth.device}）· ${spec?.instances.length ?? 0} 个体块` +
-      `（${nDet} 个语义模板）。当前为对位视角：拖滑杆微调 FOV/俯仰让白盒贴合叠加图`,
+      `（${nDet} 个语义模板）。对位视角：拖「叠加」滑杆检查贴合；切自由环绕看三维`,
     );
     $('controls').hidden = false;
     setMode('match');
   } catch (e: any) {
     console.error(e);
     setStatus(`失败：${e?.message ?? e}`, true);
-    cachedDepth = null; // 缓存与缩略图必须一致，防滑杆重解旧图
+    cachedDepth = null; // 缓存与缩略图必须一致，防重解旧图
     cachedDets = [];
+    autoCam = null;
   } finally {
     busy = false;
   }
@@ -136,13 +135,9 @@ window.addEventListener('drop', (e) => {
 const bind = (id: string, vid: string, fmt: (v: number) => string) => {
   const el = $(id) as HTMLInputElement;
   const upd = () => ($(vid).textContent = fmt(parseFloat(el.value)));
-  labelUpdaters.push(upd);
   el.addEventListener('input', () => { upd(); if (cachedDepth && !busy) resolve(); });
   upd();
 };
-bind('fov', 'fov-v', (v) => `${v.toFixed(0)}°`);
-bind('pitch', 'pitch-v', (v) => `${v.toFixed(0)}°`);
-bind('camh', 'camh-v', (v) => `${v.toFixed(2)}m`);
 bind('grain', 'grain-v', (v) => v.toFixed(1));
 
 // ---- 视角模式 ----

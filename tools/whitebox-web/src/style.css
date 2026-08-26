@@ -54,6 +54,7 @@ body {
 }
 .seg { display: inline-flex; gap: 4px; }
 .seg .btn.active { border-color: var(--accent); color: var(--accent); }
+#cam-info { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 #drop-overlay {
   position: fixed; inset: 0; z-index: 20; display: none;

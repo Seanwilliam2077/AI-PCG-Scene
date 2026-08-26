@@ -8,6 +8,7 @@
  *  5. 盲聚类 → 盒体；墙形聚类转墙；天花板碎片过滤
  */
 import type { DepthResult, Detection, GeoParams, GeoResult, WhiteboxSpec, BoxInstance } from '../types';
+import { vpCalibrate, pitchFromVp } from './calib';
 
 const GRID_W = 288;
 const FAR_CAP = 25.0;
@@ -99,13 +100,46 @@ class DepthCurve {
   }
 }
 
+export interface AutoCam {
+  vfovDeg: number;
+  pitchDeg: number;
+  /** vp2=双正交消失点闭式解焦距；vp1=消失点定俯仰+焦距一维搜索；search=评分搜索兜底 */
+  method: 'vp2' | 'vp1' | 'search';
+}
+
 /**
- * 自动相机估计：对 (vFOV, 俯仰) 网格搜索，评分 = 地面标定覆盖率 + 墙面竖直度 − 温和先验。
- * 单图的相机内参在数学上不可唯一确定，但错误相机会让「地面标定曲线覆盖率低」
- * 且「非地面表面的世界法向偏离竖直」，两个信号联合足以选出稳定解。
+ * 自动相机估计（还原度闭环文档方案的浏览器版，按证据强度分层）：
+ *  1. vp2：LSD-lite 线段 → RANSAC 双正交消失点 → 焦距闭式解 f²=-(v1-c)·(v2-c)，
+ *     俯仰由纵深 VP 的行位置解出（地平线行 v_h = cy + f·tan(pitch)）
+ *  2. vp1：一点透视（焦距不可观测）→ 俯仰与焦距绑定（同一 VP 行），
+ *     焦距用「地面标定覆盖率 + 墙面竖直度」评分做一维搜索
+ *  3. search：无可靠线段（涂抹画风）→ 原 (fov,pitch) 二维评分搜索
+ * 机高不在此解：与焦距解耦，由检测尺度锚承担（对应文档的地平线比例法）。
  */
-export function autoCalibrate(depth: DepthResult): { vfovDeg: number; pitchDeg: number } {
+export function autoCalibrate(depth: DepthResult, image?: ImageData): AutoCam {
   const { d, gw, gh } = resample(depth);
+  if (image) {
+    const vp = vpCalibrate(image);
+    if (vp) {
+      if (vp.method === 'vp2' && vp.vfovDeg != null) {
+        const pitch = pitchFromVp(vp.vpY, vp.detH, vp.vfovDeg);
+        if (pitch > -35 && pitch < 25) {
+          return { vfovDeg: Math.round(vp.vfovDeg), pitchDeg: Math.round(pitch), method: 'vp2' };
+        }
+      }
+      // vp1：俯仰随焦距变化，但两者被 VP 行绑定成一维族 → 只搜焦距
+      let best = { vfovDeg: 55, pitchDeg: 0, score: -Infinity };
+      for (const fov of [36, 42, 48, 55, 62, 70, 78, 88, 98]) {
+        const pitch = pitchFromVp(vp.vpY, vp.detH, fov);
+        if (pitch < -35 || pitch > 25) continue;
+        const s = scoreCamera(d, gw, gh, fov, pitch);
+        if (s > best.score) best = { vfovDeg: fov, pitchDeg: pitch, score: s };
+      }
+      if (best.score > -Infinity) {
+        return { vfovDeg: best.vfovDeg, pitchDeg: Math.round(best.pitchDeg), method: 'vp1' };
+      }
+    }
+  }
   let best = { vfovDeg: 55, pitchDeg: -5, score: -Infinity };
   const tryCam = (fov: number, pitch: number) => {
     const s = scoreCamera(d, gw, gh, fov, pitch);
@@ -118,7 +152,7 @@ export function autoCalibrate(depth: DepthResult): { vfovDeg: number; pitchDeg: 
   for (const fov of [f0 - 4, f0, f0 + 4]) {
     for (const pitch of [p0 - 3, p0, p0 + 3]) tryCam(fov, pitch);
   }
-  return { vfovDeg: best.vfovDeg, pitchDeg: best.pitchDeg };
+  return { vfovDeg: best.vfovDeg, pitchDeg: best.pitchDeg, method: 'search' };
 }
 
 function scoreCamera(d: Float64Array, gw: number, gh: number, fov: number, pitch: number): number {

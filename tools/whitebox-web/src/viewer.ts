@@ -201,6 +201,24 @@ export class Viewer {
       this.renderer.setViewport(0, 0, w, hh);
       this.controls.update();
       this.renderer.render(this.scene, this.camera);
+      // 相机画面 PIP（左下角）：环绕时也随时能看到求解相机看到什么
+      if (this.matchCam) {
+        const pw = Math.min(Math.round(w * 0.28), 380);
+        const ph = Math.max(2, Math.round(pw / this.matchCam.aspect));
+        const px = 14, py = 14; // GL 视口坐标（左下原点）
+        if (this.specCamHelper) this.specCamHelper.visible = false;
+        this.renderer.setScissorTest(true);
+        this.renderer.setScissor(px - 2, py - 2, pw + 4, ph + 4);
+        this.renderer.setViewport(px - 2, py - 2, pw + 4, ph + 4);
+        this.renderer.setClearColor(0xf09242);
+        this.renderer.clear();
+        this.renderer.setClearColor(0x17181b);
+        this.renderer.setScissor(px, py, pw, ph);
+        this.renderer.setViewport(px, py, pw, ph);
+        this.renderer.render(this.scene, this.matchCam);
+        this.renderer.setScissorTest(false);
+        if (this.specCamHelper) this.specCamHelper.visible = true;
+      }
     }
   }
 
