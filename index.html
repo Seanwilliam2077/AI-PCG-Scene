@@ -91,15 +91,16 @@ a.wide{grid-column:1/-1;border-left:3px solid var(--acc)}
     <div class="k">边缘 F 0.260 → 0.650　·　分区误差和 5.62 → 2.44 档</div>
   </a>
 
-  <a class="card" href="whitebox/">
-    <div class="n">Live · 白盒重建</div>
-    <h2>传一张图，当场出白盒</h2>
-    <p>线 3 方法论的<b>浏览器内实时版</b>：深度推理（Depth Anything V2，WebGPU/WASM）
-    与几何求解全部在你的浏览器本地跑，不上传任何图片。地面解析单应作标定靶、
-    落地物盲聚类、房间壳自动判墙，出一个可环绕查看的几何白盒。</p>
-    <div class="do">拖图即跑 · 3D 视窗可旋转缩放平移 · FOV/俯仰/机高滑杆当场重解 ·
+  <a class="card wide" href="whitebox/">
+    <div class="n">Live · 单图白盒重建</div>
+    <h2>传一张图，当场出可环绕的几何白盒</h2>
+    <p>三条线方法论的<b>浏览器内实时合体</b>：消失点标定（LSD 线段 + RANSAC，线 3 的方案）
+    定相机，深度推理（Depth Anything V2，WebGPU/WASM）+ 地面解析单应作标定靶解几何，
+    检测/VLM 语义类别实例化成复合模板（桌=板+腿、椅=座+背、吊灯=锥罩+吊杆）。
+    默认<b>对位视角</b>——与输入图同相机位姿渲染；全部推理在你的浏览器本地跑，图片不上传。</p>
+    <div class="do">拖图即跑 · 对位视角 / 自由环绕（带相机 PIP）· 可接 Venus VLM（直连或本地代理）·
     可导出 GLB 进 DCC/引擎</div>
-    <div class="k">全程本地推理 · 首次载入约 25MB 模型</div>
+    <div class="k">全程本地推理 · 首次载入约 25MB 深度模型（+43MB 检测模型按需）</div>
   </a>
 
   <a class="card wide" href="docs/三线对照-单图到三维场景.html">
