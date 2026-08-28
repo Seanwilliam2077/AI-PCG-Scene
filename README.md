@@ -1,13 +1,13 @@
 # AI Scene Builder — 一张参考图 → 三维场景的三条路
 
 同一个命题：**给一张参考图，能不能自动生成一个三维场景。**
-仓库里有三条互相独立的实现，各自回答这个命题的不同侧面，外加一份把三条摆在一起走查的对照文档，
-以及一个打开就能用的浏览器版白盒工具。
+仓库里有三条互相独立的实现，各自回答这个命题的不同侧面，外加一份把三条摆在一起走查的对照文档、
+一个打开就能用的浏览器版白盒工具，以及一份把三条撞出来的经验抽成通用做法的**方法论**。
 
 > ### 📖 在线阅读（推荐）
 > **[https://seanwilliam2077.github.io/AI-PCG-Scene/](https://seanwilliam2077.github.io/AI-PCG-Scene/)**
 >
-> 四份主文档都是**可动手的交互页**（拖动对比、逐步播放、图上探针、可筛选表格、参数滑块）。
+> 五份主文档都是**可动手的交互页**（拖动对比、逐步播放、图上探针、可筛选表格、参数滑块）。
 > GitHub 的文件视图对 `.html` 一律显示源码，点开看到的是代码不是网页——要动手请走站点：
 >
 > | | 在线网页 | 仓库源码 |
@@ -16,6 +16,7 @@
 > | 线 2 · three.js 程序化生成 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E5%AF%B9%E7%85%A7%E5%AE%9E%E9%AA%8C-%E7%A8%8B%E5%BA%8F%E5%8C%96%E5%9C%BA%E6%99%AF%E9%87%8D%E5%BB%BA.html)** | [源码](docs/对照实验-程序化场景重建.html) |
 > | 线 3 · Blender 度量闭环 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E8%BF%98%E5%8E%9F%E5%BA%A6%E9%97%AD%E7%8E%AF%E8%BF%AD%E4%BB%A3.html)** | [源码](docs/还原度闭环迭代.html) |
 > | 三线对照 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E4%B8%89%E7%BA%BF%E5%AF%B9%E7%85%A7-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E5%9C%BA%E6%99%AF.html)** | [源码](docs/三线对照-单图到三维场景.html) |
+> | **方法论 · AI + PCG 生成美术场景** | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E6%96%B9%E6%B3%95%E8%AE%BA-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E7%BE%8E%E6%9C%AF%E5%9C%BA%E6%99%AF.html)** | [源码](docs/方法论-单图到三维美术场景.html) |
 > | 白盒 Live · 传一张图当场出白盒 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/whitebox/)** | [源码](tools/whitebox-web/) |
 
 <p align="center">
@@ -123,17 +124,46 @@ LSD 线段检测 + RANSAC 消失点解相机（线 3 的标定方案），Depth 
 
 ---
 
+## 方法论 · AI + PCG 生成美术场景 — 把三条线的经验抽成能照做的做法
+
+<p align="center">
+  <img src="process/figures/method/scatter.png" width="900" alt="39 个资产模块的估计尺寸与实测尺寸">
+  <br><em>横轴是模型估计的最长边（对数轴，跨 10–200 cm），纵轴是实测。
+  39 个模块<b>全部</b>挤在 75–118 cm 一条带里，与虚线 y = x（米制输出该落的位置）毫无关系</em>
+</p>
+
+上面几份是**记叙**——各讲一条线怎么做、遇到什么、量到什么；这一份是**规定**：把同一个命题撞三遍
+换来的经验，写成不绑定本仓库代码、换个项目也照做得出来的做法。分三部分：**图像的识别与分割**、
+**对应资产的生成**、**DCC 里的相机还原与位姿估计**。贯穿全篇一条判据——模型擅长说「这是什么」，
+不擅长说「这有多大、在哪里」，所以语义走模型、几何走算法，模型的几何输出只当提示、不进关键路径。
+
+这份文档刻意把**适用边界**写在正文里而不是藏进脚注，包括本仓库自己踩塌的那几条。最要紧的一条是上图：
+「放大钳到 1.7×」的前提是库网格已按真实尺寸建模，而图生 3D 的输出是**归一化**的——39 个模块无论
+是鼠标还是长桌，实测最长边一律落在 75–118 cm。此时 `size_cm / mesh_bbox_cm` 算出来的根本不是
+「该放大多少」，四档保护全部错位：实测两张折叠桌被钳到 1.7×，比正确的 2.0 短了 15%，**而这 15%
+是钳制自己造成的**。同类修正还有：受理窗口其实是三个（拒收 `[30,120]` / 降权 `(35,110)` / 人工
+`[20,120]`）而不是一个，上界的真实理由是**针孔模型失效**而非镜头不合理，超广角应当先去畸变；
+「尺寸归先验、位置归测量」有四种反转情形，其中一种就在本仓库里（3 m 长桌被类别先验重建成
+140×70×75）；换 DCC 要搬的是**六件事**——手性、单位、上轴、枢轴、欧拉序与旋转正方向、FOV 沿哪根轴。
+
+`三条补召回贡献 49/70 检出 · 39 模块实测最长边 75.0–117.8 cm（估计值跨 10–200 cm）·
+五组交互全部由实测数据或通用公式驱动，数据经 tools/export_method_data.py 可复跑导出 ·
+第三部分只讲方法，不引用本项目的重建实验数值`
+
+---
+
 ## 仓库导览
 
 | 路径 | 内容 |
 |---|---|
-| `docs/*.html` | 四份交互文档（线 1 / 线 2 / 线 3 / 三线对照）+ 线 1 差距分析；共用 `docs/assets/kit.css`、`kit.js`，零依赖零构建 |
+| `docs/*.html` | 五份交互文档（线 1 / 线 2 / 线 3 / 三线对照 / 方法论）+ 线 1 差距分析；共用 `docs/assets/kit.css`、`kit.js`，零依赖零构建 |
 | `docs/PIPELINE_V2_DESIGN.md` · `PIPELINE_REVIEW.md` · `QUICKSTART.md` · `SKILL.md` | 线 1 的架构设计、代码审查、上手指引（`SKILL.md` 可直接丢给 coding agent 跑通全流程） |
 | `pipeline/` · `plugin/` | 线 1 源码：五阶段 / 求解与匹配 / 引擎侧；UE 插件 C++ 与 `.uplugin` |
 | `process/run_fd6e434f/` | 线 1 过程留档：一次完整运行的全部回执、日志、AI 调用留痕 |
 | `process/threejs_fob/` | 线 2 完整可运行源码（3 163 行，唯一依赖 three.js） |
 | `process/recon/` · `process/figures/` | 线 3 与线 1/2 的过程图、指标轨迹、标定叠图 |
 | `tools/whitebox-web/` | 白盒 Live 源码（Vite + TS）；构建产物在 `whitebox/` 由 Pages 托管 |
+| `tools/export_method_data.py` | 从运行留痕与资产注册表导出方法论页的驱动数据（`process/figures/method/method_data.json`），可复跑 |
 | `tools/verify_page.js` | 文档校验器：无头加载，查控制台报错/坏图、控件是否真的响应、两种主题与 390 px 宽下无横向溢出 |
 | `media/演示视频.mp4` | 42 秒演示视频 |
 
@@ -143,7 +173,7 @@ LSD 线段检测 + RANSAC 消失点解相机（线 3 的标定方案），Depth 
 - **线 2**　three.js r180 / WebGL2，无构建步骤，几何与贴图全部运行时生成
 - **线 3**　Blender 4.2.3 LTS / Cycles（OptiX）· NumPy · OpenCV，全程无云端调用
 - **白盒 Live**　transformers.js（WebGPU/WASM）· Three.js · Vite + TypeScript，纯静态托管
-- **四份文档**　纯手写 HTML + 自有 kit，零依赖、零构建、零外部请求，`file://` 直接打开也能跑
+- **五份文档**　纯手写 HTML + 自有 kit，零依赖、零构建、零外部请求，`file://` 直接打开也能跑
 
 ## 说明
 
