@@ -13,7 +13,7 @@
 > | 线 2 · three.js 程序化生成 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E5%AF%B9%E7%85%A7%E5%AE%9E%E9%AA%8C-%E7%A8%8B%E5%BA%8F%E5%8C%96%E5%9C%BA%E6%99%AF%E9%87%8D%E5%BB%BA.html)** | [源码](docs/对照实验-程序化场景重建.html) |
 > | 线 3 · Blender 度量闭环 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E8%BF%98%E5%8E%9F%E5%BA%A6%E9%97%AD%E7%8E%AF%E8%BF%AD%E4%BB%A3.html)** | [源码](docs/还原度闭环迭代.html) |
 > | 三线对照 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E4%B8%89%E7%BA%BF%E5%AF%B9%E7%85%A7-%E5%8D%95%E5%9B%BE%E5%88%B0%E4%B8%89%E7%BB%B4%E5%9C%BA%E6%99%AF.html)** | [源码](docs/三线对照-单图到三维场景.html) |
-> | 线 1 复现差距分析 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/docs/%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E-%E5%A4%8D%E7%8E%B0%E5%B7%AE%E8%B7%9D%E5%88%86%E6%9E%90.html)** | [源码](docs/补充说明-复现差距分析.html) |
+> | 白盒 Live · 传一张图当场出白盒 | **[打开](https://seanwilliam2077.github.io/AI-PCG-Scene/whitebox/)** | [源码](tools/whitebox-web/) |
 
 同一个命题：**给一张参考图，能不能自动生成一个三维场景。**
 这个仓库里有三条互相独立的实现，各自回答这个命题的不同侧面，
