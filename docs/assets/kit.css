@@ -26,6 +26,8 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .wrap{max-width:1120px;margin:0 auto;padding:0 22px 90px}
 h1{font-size:clamp(25px,4vw,38px);line-height:1.18;margin:0 0 12px}
 h2{font-size:clamp(19px,2.5vw,25px);margin:0 0 6px;scroll-margin-top:70px}
+/* 锚点也可能挂在 .sec 上（如 #p1/#map），同样要避开 sticky nav */
+.sec{scroll-margin-top:70px}
 h3{font-size:17px;margin:22px 0 6px;color:var(--acc2)}
 p{margin:9px 0}
 a{color:var(--acc2)}

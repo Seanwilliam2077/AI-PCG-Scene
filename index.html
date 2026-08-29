@@ -34,6 +34,21 @@ header .sub{color:var(--dim);font-size:16.5px;margin:0}
 .two>*>.go{margin-top:auto}
 .two video{display:block;width:100%;height:auto;border:1px solid var(--rule);background:#000}
 .go{margin:14px 0 0;font-size:14.5px}
+/* 三泳道极简条。用 CSS 行而不是 SVG：字是真文本（可选可搜），窄屏自动折行，
+   不必为 390px 与桌面各维护一版 viewBox。配色只取既有令牌。 */
+.mstrip{margin:16px 0 6px}
+.mstrip .mrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;
+  background:var(--panel);border:1px solid var(--rule);border-left-width:3px;
+  padding:9px 12px;margin:0 0 6px}
+.mstrip .mrow b{font-size:13.5px;flex:0 0 auto}
+.mstrip .mrow span{flex:1 1 16em;min-width:0;font-size:13px;color:var(--dim);line-height:1.55}
+.mstrip .r1{border-left-color:var(--c1);border-left-style:dashed}
+.mstrip .r1 b{color:var(--c1)}
+.mstrip .r2{border-left-color:var(--c3)}
+.mstrip .r2 b{color:var(--c3)}
+.mstrip .r3{border-left-color:var(--acc)}
+.mstrip .r3 b{color:var(--acc)}
+.mstrip .mback{margin:8px 0 0;font-size:12.5px;color:var(--acc);line-height:1.6}
 .foot .fine{margin-top:10px;padding-left:12px;border-left:2px solid var(--rule);line-height:1.7}
 </style>
 </head>
@@ -142,8 +157,13 @@ header .sub{color:var(--dim);font-size:16.5px;margin:0}
     alt="39 个模块的估计尺寸与实测尺寸散点，全部挤在一条水平带里">
     <figcaption>39 个模块：模型估计的尺寸（横轴）与实测尺寸（纵轴）挤在一条带里，与 y=x 毫无关系。</figcaption>
   </figure>
-  <p>一条判据贯穿三条线：模型擅长说「<b>这是什么</b>」，不擅长说「<b>这有多大、在哪里</b>」。
-  所以语义走模型、几何走算法，模型的几何输出只当提示。</p>
+  <figure class="mstrip">
+    <div class="mrow r1"><b>语义层 · 交给模型</b><span>类别、支撑关系、文字。输出只当提示，不进关键路径。</span></div>
+    <div class="mrow r2"><b>几何层 · 交给确定性算法</b><span>尺度、位置、姿态。这条链上不出现模型。</span></div>
+    <div class="mrow r3"><b>四道闸门</b><span>受理窗口 / 一致性 / 余量 / 重投影 —— 不过就退回上一步重解。</span></div>
+    <p class="mback">线 1 缺的就是第四道：外参给完，没投影回参考图核对过。</p>
+    <figcaption>完整版（三阶段 × 两泳道 × 四闸门 + 三条最容易照抄错的边界）在方法论第一屏。</figcaption>
+  </figure>
   <div class="warn">每条规定都写明它在什么前提下成立，包括本仓库自己踩塌的那条：
   「放大钳到 1.7×」的前提是库网格已按真实尺寸建模，而图生 3D 的输出是<b>归一化</b>的 ——
   此时这一钳反过来制造误差，实测折叠桌被钳到 155 cm，<b>短了 15%，而且这 15% 是钳制自己造的</b>。</div>
@@ -163,7 +183,7 @@ header .sub{color:var(--dim);font-size:16.5px;margin:0}
   <b>2.8 倍</b>是地面面积比：<code>process/figures/tri/vlm_pose_evidence.json</code> 里
   <code>ue_room_cm</code> 1083.8 × 723.3 cm（78.4 m²）比 <code>bl_calib.room_m</code>
   3.95 × 7.00 m（27.7 m²），<b>2.84</b>。</p>
-  <p class="go"><a href="docs/方法论-单图到三维美术场景.html">读这一份：方法论 · 单图到三维美术场景 →</a></p>
+  <p class="go"><a href="docs/方法论-单图到三维美术场景.html#map">读这一份：方法论 · 一张总图 + 四道闸门 →</a></p>
 </div>
 
 <div class="sec" id="live">

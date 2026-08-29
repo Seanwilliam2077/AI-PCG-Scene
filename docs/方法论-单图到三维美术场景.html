@@ -86,6 +86,31 @@ td.bad-cell{color:var(--bad)}
 .mini .n{font-size:11px;letter-spacing:.1em;font-weight:700;color:var(--acc)}
 .mini .t{display:block;font-size:14.5px;font-weight:700;margin:3px 0 5px}
 .mini p{margin:0;font-size:13.5px;color:var(--dim);line-height:1.68}
+/* 方法论总图 · 本文专有。配色一律走 kit.css 令牌 + 本文已有的 --ai/--det 角色色。 */
+.mth{margin:18px 0 6px}
+.mth svg{display:block;width:100%;height:auto}
+.mth text{font-family:"Microsoft YaHei","Noto Sans SC","PingFang SC",system-ui,sans-serif}
+.mth .pan{fill:var(--panel);stroke:var(--rule);stroke-width:1}
+.mth .ttl{fill:var(--ink);font-weight:700}
+.mth .bdy{fill:var(--dim)}
+.mth .hd{fill:var(--acc2);font-weight:700}
+.mth .lb{font-weight:700}
+.mth .ai{stroke:var(--ai,var(--c1))}
+.mth .det{stroke:var(--det,var(--c3))}
+.mth .gate{stroke:var(--acc)}
+.mth .tAi{fill:var(--ai,var(--c1))}
+.mth .tDet{fill:var(--det,var(--c3))}
+.mth .tAcc{fill:var(--acc)}
+.mth .tBad{fill:var(--bad)}
+.mth svg.mth-tall{display:none}
+/* index.html 的主入口深链到 #map；sticky nav 高 55px（窄屏 93px），
+   不留余量就会盖掉总图顶部的主命题。与 kit.css 给 h2 的 70px 同一约定。 */
+.mth{scroll-margin-top:70px}
+@media(max-width:760px){
+  .mth svg.mth-wide{display:none}
+  .mth svg.mth-tall{display:block}
+  .mth{scroll-margin-top:104px}
+}
 </style>
 </head>
 <body>
@@ -93,7 +118,7 @@ td.bad-cell{color:var(--bad)}
 <nav><div class="in">
   <a href="../index.html" class="home">三条路</a>
   <a href="#top">顶部</a><a href="#p1">一 · 识别</a><a href="#p2">二 · 资产</a>
-  <a href="#p3">三 · 相机</a><a href="#ev">实证</a><a href="#list">清单</a>
+  <a href="#p3">三 · 相机</a><a href="#ev">四 · 实证与归因</a><a href="#list">清单</a>
   <span class="sp"></span>
   <button class="btn" id="theme" title="切换主题">◐</button>
 </div></nav>
@@ -103,98 +128,275 @@ td.bad-cell{color:var(--bad)}
 <div class="sec" style="border-top:none">
   <div class="tag">方法 · 可迁移</div>
   <h1>单图到三维美术场景</h1>
-  <p class="lead">规定在前，实证紧随其后 —— 每一条方法后面，都跟着本仓库里验证它、或者把它推翻的那次测量。</p>
+  <p class="lead">每条方法后面，都跟着验证它、或把它推翻的那次测量。</p>
+
+  <figure class="mth" id="map">
+<!-- ===================== 宽版 · >=760px ===================== -->
+<svg class="mth-wide" viewBox="0 0 1120 900" role="img"
+     aria-label="方法论总图：语义走模型、几何走算法，四道闸门与一条回退闭环，附三条最容易照抄错的边界">
+<defs>
+  <marker id="mthArrDet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--det,var(--c3))"/></marker>
+  <marker id="mthArrAcc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--acc)"/></marker>
+  <marker id="mthArrAi" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--ai,var(--c1))"/></marker>
+</defs>
+
+<!-- 主命题 -->
+<rect class="pan" x="40" y="8" width="1056" height="74" rx="4"/>
+<rect x="40" y="8" width="3.5" height="74" fill="var(--acc)"/>
+<text class="ttl" x="60" y="41" font-size="19">模型很会说「这是什么」，很不会说「有多大、在哪里」</text>
+<text class="bdy" x="60" y="67" font-size="13.5">所以：语义交给模型，几何交给确定性算法；模型给出的几何量只当提示 —— 拿不到它，管线也必须照样出结果。</text>
+
+<!-- 阶段栏 -->
+<text class="hd" x="40"  y="108" font-size="14">一 · 图像的识别与分割</text>
+<text class="hd" x="399" y="108" font-size="14">二 · 对应资产的生成</text>
+<text class="hd" x="758" y="108" font-size="14">三 · 相机还原与位姿估计</text>
+<line x1="40"  y1="116" x2="378"  y2="116" stroke="var(--rule)"/>
+<line x1="399" y1="116" x2="737"  y2="116" stroke="var(--rule)"/>
+<line x1="758" y1="116" x2="1096" y2="116" stroke="var(--rule)"/>
+
+<!-- 泳道 A · 语义 -->
+<rect class="ai" x="40" y="128" width="1056" height="30" rx="5" fill="none" stroke-dasharray="6 4"/>
+<text class="lb tAi" x="56" y="148" font-size="13">语义层 · 交给模型</text>
+<text class="bdy" x="186" y="148" font-size="12.5">类别 · 支撑关系 · 文字 · 材质倾向 —— 输出只当提示，不进关键路径</text>
+
+<rect class="pan ai" x="40"  y="166" width="338" height="116" rx="5" stroke-dasharray="6 4"/>
+<text class="ttl" x="56" y="192" font-size="14">单遍欠召回是结构性的</text>
+<text class="bdy" x="56" y="214" font-size="12.5">同一份提示词只换 crop，跑四遍召回：<tspan x="56" dy="18">整图 21 个，另外三遍补 49 个 = 70。</tspan><tspan x="56" dy="18">16 台显示器被并成 13 个框 ——</tspan><tspan x="56" dy="18">这种漏，调提示词补不回来。</tspan></text>
+
+<rect class="pan ai" x="399" y="166" width="338" height="116" rx="5" stroke-dasharray="6 4"/>
+<text class="ttl" x="415" y="192" font-size="14">模型报的尺寸只当交叉校验</text>
+<text class="bdy" x="415" y="214" font-size="12.5">语义字段一旦人核对过就冻结，重跑<tspan x="415" dy="18">打标不覆盖；模型估的尺寸不参与任</tspan><tspan x="415" dy="18">何缩放，偏差 &gt; 2 倍只打标记 ——</tspan><tspan x="415" dy="18">39 个模块里 25 个中招。</tspan></text>
+
+<rect class="pan ai" x="758" y="166" width="338" height="116" rx="5" stroke-dasharray="6 4"/>
+<text class="ttl" x="774" y="192" font-size="14">模型的位姿输出只做旁证</text>
+<text class="bdy" x="774" y="214" font-size="12.5">九自由度三维盒只给偏航一条交叉证<tspan x="774" dy="18">据，后面还有四条兜底照常给朝向。</tspan><tspan x="774" dy="18">让模型写解算器，不要让它看图报数：</tspan><tspan x="774" dy="18">当度量估计器用，误差 ±30–50%。</tspan></text>
+
+<!-- 提示流：虚线细箭头 = 只提供线索，不承重 -->
+<line x1="209" y1="284" x2="209" y2="296" stroke="var(--ai,var(--c1))" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#mthArrAi)"/>
+<line x1="568" y1="284" x2="568" y2="296" stroke="var(--ai,var(--c1))" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#mthArrAi)"/>
+<line x1="927" y1="284" x2="927" y2="296" stroke="var(--ai,var(--c1))" stroke-width="1.2" stroke-dasharray="3 3" marker-end="url(#mthArrAi)"/>
+
+<!-- 泳道 B · 几何 -->
+<rect class="det" x="40" y="300" width="1056" height="30" rx="5" fill="none"/>
+<text class="lb tDet" x="56" y="320" font-size="13">几何层 · 交给确定性算法</text>
+<text class="bdy" x="216" y="320" font-size="12.5">尺度 · 位置 · 姿态 —— 这是主干，这条链上不出现模型；可解的几何量不交给模型估</text>
+
+<rect class="pan det" x="40"  y="338" width="338" height="116" rx="5"/>
+<text class="ttl" x="56" y="364" font-size="14">框的取舍靠坐标判据，不靠模型</text>
+<text class="bdy" x="56" y="386" font-size="12.5">碰人工切缝的框丢弃、碰真实图边的<tspan x="56" dy="18">保留，并打上「被裁断」标记。前提</tspan><tspan x="56" dy="18">是重叠带宽于最大跨缝物体 —— 不够</tspan><tspan x="56" dy="18">宽，这条规则就在无声地删物体。</tspan></text>
+
+<rect class="pan det" x="399" y="338" width="338" height="116" rx="5"/>
+<text class="ttl" x="415" y="364" font-size="14">几何字段永远从实测覆盖</text>
+<text class="bdy" x="415" y="386" font-size="12.5">注册表不可信，实测才是裁判：矮桌<tspan x="415" dy="18">变体实测顶面比模型低 35 cm，桌上</tspan><tspan x="415" dy="18">的东西整批悬空。写进配置的几何量，</tspan><tspan x="415" dy="18">都会在某一步被现实推翻一次。</tspan></text>
+
+<rect class="pan det" x="758" y="338" width="338" height="116" rx="5"/>
+<text class="ttl" x="774" y="364" font-size="14">位姿是「解 + 验」，不是「估」</text>
+<text class="bdy" x="774" y="386" font-size="12.5">像素 → 射线 → 与声明的支撑面求交<tspan x="774" dy="18">→ 米。换 DCC 改的只是搬运层六件</tspan><tspan x="774" dy="18">事：手性、单位、上轴、枢轴、欧拉</tspan><tspan x="774" dy="18">序与旋转正方向、FOV 沿哪根轴。</tspan></text>
+
+<line x1="380" y1="396" x2="397" y2="396" stroke="var(--det,var(--c3))" stroke-width="1.6" marker-end="url(#mthArrDet)"/>
+<line x1="739" y1="396" x2="756" y2="396" stroke="var(--det,var(--c3))" stroke-width="1.6" marker-end="url(#mthArrDet)"/>
+
+<!-- 泳道 C · 闸门 -->
+<rect class="gate" x="40" y="472" width="1056" height="30" rx="5" fill="none"/>
+<text class="lb tAcc" x="56" y="492" font-size="13">闸门 · 不通过就退回</text>
+<text class="bdy" x="186" y="492" font-size="12.5">并把拒收理由记下来 —— 这是这套方法与「一路前馈」的全部区别</text>
+
+<rect class="pan gate" x="40" y="510" width="253.5" height="124" rx="5"/>
+<text class="ttl tAcc" x="54" y="534" font-size="13.5">① 受理窗口</text>
+<text class="bdy" x="54" y="554" font-size="11.8">hfov 出 [30°,120°] 拒收，<tspan x="54" dy="17">出 (35°,110°) 置信 ×0.2，</tspan><tspan x="54" dy="17">人工覆盖走 [20°,120°]。</tspan><tspan x="54" dy="17">同一张参考图上真的解出</tspan><tspan x="54" dy="17">过 15° 和 155°。</tspan></text>
+
+<rect class="pan gate" x="307.5" y="510" width="253.5" height="124" rx="5"/>
+<text class="ttl tAcc" x="321.5" y="534" font-size="13.5">② 一致性检查</text>
+<text class="bdy" x="321.5" y="554" font-size="11.8">几个已知高度的物体各自<tspan x="321.5" dy="17">反解机高，取 MAD/median。</tspan><tspan x="321.5" dy="17">它不说错的是哪一个，只</tspan><tspan x="321.5" dy="17">说至少有一个错了 ——</tspan><tspan x="321.5" dy="17">线 1 记了 0.35，照样交付。</tspan></text>
+
+<rect class="pan gate" x="575" y="510" width="253.5" height="124" rx="5"/>
+<text class="ttl tAcc" x="589" y="534" font-size="13.5">③ 余量门</text>
+<text class="bdy" x="589" y="554" font-size="11.8">dD/dpx = h·f / margin²。<tspan x="589" dy="17">余量 273 px 解 1.4 m、38 px</tspan><tspan x="589" dy="17">解 9.7 m，同一像素误差在</tspan><tspan x="589" dy="17">两端差 50 倍。超 10 cm/px</tspan><tspan x="589" dy="17">照摆，但不当房间的证据。</tspan></text>
+
+<rect class="pan gate" x="842.5" y="510" width="253.5" height="124" rx="5"/>
+<text class="ttl tAcc" x="856.5" y="534" font-size="13.5">④ 重投影核对</text>
+<text class="bdy" x="856.5" y="554" font-size="11.8">把解算结果画回参考图；<tspan x="856.5" dy="17">再拿点阵双向投影，验渲</tspan><tspan x="856.5" dy="17">染器与投影器一致。零成</tspan><tspan x="856.5" dy="17">本，而且是唯一能抓到全</tspan><tspan x="856.5" dy="17">局系统性偏移的手段。</tspan></text>
+
+<!-- 回退闭环 -->
+<path d="M250 634 L250 650 Q250 656 244 656 L28 656 Q22 656 22 650 L22 321 Q22 315 28 315 L32 315"
+      fill="none" stroke="var(--acc)" stroke-width="1.6" stroke-dasharray="7 4" marker-end="url(#mthArrAcc)"/>
+<text class="tAcc" x="264" y="661" font-size="12">任一闸门不过 → 退回上一步重解，而不是带着一个自洽但错误的解继续往下走</text>
+
+<!-- 实证 -->
+<rect class="pan" x="40" y="678" width="1056" height="70" rx="4"/>
+<rect x="40" y="678" width="3.5" height="70" fill="var(--bad)"/>
+<text class="ttl" x="60" y="708" font-size="14">不装第 ④ 道闸门会怎样：同一张图 · 同一批资产 · 同一组内参，唯一的差别是有没有把解投影回参考图核对</text>
+<text class="bdy" x="60" y="732" font-size="12.5">两条线的地平线差 91.0 px → 解出的房间地面 78.4 对 27.7 m²，2.8 倍。三个已经越界的解一路走到交付，运行时一条警告都没有。</text>
+
+<!-- 边界 -->
+<text class="lb tBad" x="40" y="778" font-size="13">三条最容易照抄错的边界</text>
+<rect class="pan" x="40" y="788" width="338" height="104" rx="5"/>
+<rect x="40" y="788" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="56" y="812" font-size="13">1.7× 放大钳会自己制造误差</text>
+<text class="bdy" x="56" y="832" font-size="11.8">四档保护的前提是「库网格已是真实<tspan x="56" dy="17">尺寸」。M15 网格 91.5 cm、折叠桌真</tspan><tspan x="56" dy="17">长 183 cm，正确比值 2.0；钳完只剩</tspan><tspan x="56" dy="17">155 cm —— 短的 15% 是钳制自己造的。</tspan></text>
+
+<rect class="pan" x="399" y="788" width="338" height="104" rx="5"/>
+<rect x="399" y="788" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="415" y="812" font-size="13">「尺寸看先验、位置看测量」两边都会反</text>
+<text class="bdy" x="415" y="832" font-size="11.8">先验只对「同名即同尺寸」的类别成立<tspan x="415" dy="17">（折叠椅、门），对桌、货架无效：3 m</tspan><tspan x="415" dy="17">长桌被按 140×70×75 重建。测量也要</tspan><tspan x="415" dy="17">先过余量门，过不了就把位置交回规则。</tspan></text>
+
+<rect class="pan" x="758" y="788" width="338" height="104" rx="5"/>
+<rect x="758" y="788" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="774" y="812" font-size="13">SSIM 不是这件事的目标函数</text>
+<text class="bdy" x="774" y="832" font-size="11.8">九个里程碑上边缘 F 从 0.260 爬到<tspan x="774" dy="17">0.650，SSIM 只从 0.386 到 0.417。按</tspan><tspan x="774" dy="17">SSIM 调，你看不见自己在进步；判据</tspan><tspan x="774" dy="17">本身也要审：相关器噪底 10.2 px。</tspan></text>
+</svg>
+
+<!-- ===================== 竖版 · <760px ===================== -->
+<svg class="mth-tall" viewBox="0 0 374 1992" role="img"
+     aria-label="方法论总图竖版：语义走模型、几何走算法，四道闸门与一条回退闭环，附三条最容易照抄错的边界">
+<defs>
+  <marker id="mthArrAcc2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--acc)"/></marker>
+</defs>
+
+<rect class="pan" x="24" y="6" width="344" height="112" rx="4"/>
+<rect x="24" y="6" width="3.5" height="112" fill="var(--acc)"/>
+<text class="ttl" x="40" y="31" font-size="15.5">模型很会说「这是什么」，<tspan x="40" dy="21">很不会说「有多大、在哪里」</tspan></text>
+<text class="bdy" x="40" y="74" font-size="12.5">所以：语义交给模型，几何交给确定<tspan x="40" dy="17">性算法；模型给出的几何量只当提示</tspan><tspan x="40" dy="17">—— 拿不到它，管线照样出结果。</tspan></text>
+
+<!-- 泳道 A -->
+<rect class="ai" x="24" y="132" width="344" height="44" rx="5" fill="none" stroke-dasharray="6 4"/>
+<text class="lb tAi" x="38" y="152" font-size="12.5">语义层 · 交给模型</text>
+<text class="bdy" x="38" y="169" font-size="11.5">类别 · 支撑关系 · 文字 —— 输出只当提示，不进关键路径</text>
+
+<rect class="pan ai" x="24" y="184" width="344" height="122" rx="5" stroke-dasharray="6 4"/>
+<text class="hd" x="38" y="203" font-size="10.5">一 · 识别与分割</text>
+<text class="ttl" x="38" y="223" font-size="13.5">单遍欠召回是结构性的</text>
+<text class="bdy" x="38" y="244" font-size="12">同一份提示词只换 crop，跑四遍召回：<tspan x="38" dy="17">整图 21 个，另外三遍补 49 个 = 70。</tspan><tspan x="38" dy="17">16 台显示器被并成 13 个框 —— 这</tspan><tspan x="38" dy="17">种漏，调提示词补不回来。</tspan></text>
+
+<rect class="pan ai" x="24" y="314" width="344" height="122" rx="5" stroke-dasharray="6 4"/>
+<text class="hd" x="38" y="333" font-size="10.5">二 · 资产生成</text>
+<text class="ttl" x="38" y="353" font-size="13.5">模型报的尺寸只当交叉校验</text>
+<text class="bdy" x="38" y="374" font-size="12">语义字段一旦人核对过就冻结，重跑打<tspan x="38" dy="17">标不覆盖；模型估的尺寸不参与任何缩</tspan><tspan x="38" dy="17">放，偏差 &gt; 2 倍只打标记 —— 39 个模</tspan><tspan x="38" dy="17">块里 25 个中招。</tspan></text>
+
+<rect class="pan ai" x="24" y="444" width="344" height="122" rx="5" stroke-dasharray="6 4"/>
+<text class="hd" x="38" y="463" font-size="10.5">三 · 相机与位姿</text>
+<text class="ttl" x="38" y="483" font-size="13.5">模型的位姿输出只做旁证</text>
+<text class="bdy" x="38" y="504" font-size="12">九自由度三维盒只给偏航一条交叉证据，<tspan x="38" dy="17">后面还有四条兜底照常给朝向。让模型</tspan><tspan x="38" dy="17">写解算器，不要让它看图报数：当度量</tspan><tspan x="38" dy="17">估计器用，误差 ±30–50%。</tspan></text>
+
+<!-- 泳道 B -->
+<rect class="det" x="24" y="584" width="344" height="44" rx="5" fill="none"/>
+<text class="lb tDet" x="38" y="604" font-size="12.5">几何层 · 交给确定性算法</text>
+<text class="bdy" x="38" y="621" font-size="11.5">尺度 · 位置 · 姿态 —— 这是主干，链上不出现模型</text>
+
+<rect class="pan det" x="24" y="636" width="344" height="122" rx="5"/>
+<text class="hd" x="38" y="655" font-size="10.5">一 · 识别与分割</text>
+<text class="ttl" x="38" y="675" font-size="13.5">框的取舍靠坐标判据，不靠模型</text>
+<text class="bdy" x="38" y="696" font-size="12">碰人工切缝的框丢弃、碰真实图边的保<tspan x="38" dy="17">留，并打上「被裁断」标记。前提是重</tspan><tspan x="38" dy="17">叠带宽于最大跨缝物体 —— 不够宽，这</tspan><tspan x="38" dy="17">条规则就在无声地删物体。</tspan></text>
+
+<rect class="pan det" x="24" y="766" width="344" height="122" rx="5"/>
+<text class="hd" x="38" y="785" font-size="10.5">二 · 资产生成</text>
+<text class="ttl" x="38" y="805" font-size="13.5">几何字段永远从实测覆盖</text>
+<text class="bdy" x="38" y="826" font-size="12">注册表不可信，实测才是裁判：矮桌变<tspan x="38" dy="17">体实测顶面比模型低 35 cm，桌上的东</tspan><tspan x="38" dy="17">西整批悬空。写进配置的几何量，都会</tspan><tspan x="38" dy="17">在某一步被现实推翻一次。</tspan></text>
+
+<rect class="pan det" x="24" y="896" width="344" height="122" rx="5"/>
+<text class="hd" x="38" y="915" font-size="10.5">三 · 相机与位姿</text>
+<text class="ttl" x="38" y="935" font-size="13.5">位姿是「解 + 验」，不是「估」</text>
+<text class="bdy" x="38" y="956" font-size="12">像素 → 射线 → 与声明的支撑面求交 →<tspan x="38" dy="17">米。换 DCC 改的只是搬运层六件事：手</tspan><tspan x="38" dy="17">性、单位、上轴、枢轴、欧拉序与旋转</tspan><tspan x="38" dy="17">正方向、FOV 沿哪根轴。</tspan></text>
+
+<!-- 泳道 C -->
+<rect class="gate" x="24" y="1046" width="344" height="44" rx="5" fill="none"/>
+<text class="lb tAcc" x="38" y="1066" font-size="12.5">闸门 · 不通过就退回，并记下理由</text>
+<text class="bdy" x="38" y="1083" font-size="11.5">这是这套方法与「一路前馈」的全部区别</text>
+
+<rect class="pan gate" x="24" y="1098" width="344" height="86" rx="5"/>
+<text class="ttl tAcc" x="38" y="1119" font-size="12.5">① 受理窗口</text>
+<text class="bdy" x="38" y="1139" font-size="11.8">hfov 出 [30°,120°] 拒收、出 (35°,110°) 置<tspan x="38" dy="17">信 ×0.2、人工覆盖走 [20°,120°]。同一张</tspan><tspan x="38" dy="17">参考图上真的解出过 15° 和 155°。</tspan></text>
+
+<rect class="pan gate" x="24" y="1192" width="344" height="86" rx="5"/>
+<text class="ttl tAcc" x="38" y="1213" font-size="12.5">② 一致性检查</text>
+<text class="bdy" x="38" y="1233" font-size="11.8">几个已知高度的物体各自反解机高，取<tspan x="38" dy="17">MAD/median。它不说错的是哪一个，只说</tspan><tspan x="38" dy="17">至少有一个错了 —— 线 1 记了 0.35，照样交付。</tspan></text>
+
+<rect class="pan gate" x="24" y="1286" width="344" height="86" rx="5"/>
+<text class="ttl tAcc" x="38" y="1307" font-size="12.5">③ 余量门</text>
+<text class="bdy" x="38" y="1327" font-size="11.8">dD/dpx = h·f / margin²：余量 273 px 解 1.4 m、<tspan x="38" dy="17">38 px 解 9.7 m，同一像素误差在两端差 50</tspan><tspan x="38" dy="17">倍。超 10 cm/px 照摆，但不当房间的证据。</tspan></text>
+
+<rect class="pan gate" x="24" y="1380" width="344" height="86" rx="5"/>
+<text class="ttl tAcc" x="38" y="1401" font-size="12.5">④ 重投影核对</text>
+<text class="bdy" x="38" y="1421" font-size="11.8">把解算结果画回参考图；再拿点阵双向投<tspan x="38" dy="17">影，验渲染器与投影器一致。零成本，而</tspan><tspan x="38" dy="17">且是唯一能抓到全局系统性偏移的手段。</tspan></text>
+
+<path d="M110 1466 L110 1478 Q110 1484 104 1484 L18 1484 Q12 1484 12 1478 L12 612 Q12 606 18 606 L20 606"
+      fill="none" stroke="var(--acc)" stroke-width="1.6" stroke-dasharray="7 4" marker-end="url(#mthArrAcc2)"/>
+<text class="tAcc" x="124" y="1488" font-size="11.5">不过 → 退回重解，不往下走</text>
+
+<rect class="pan" x="24" y="1502" width="344" height="106" rx="4"/>
+<rect x="24" y="1502" width="3.5" height="106" fill="var(--bad)"/>
+<text class="ttl" x="40" y="1526" font-size="12.5">不装第 ④ 道闸门会怎样</text>
+<text class="bdy" x="40" y="1546" font-size="11.8">同一张图 · 同一批资产 · 同一组内参，唯一<tspan x="40" dy="17">的差别是有没有把解投影回参考图核对：地</tspan><tspan x="40" dy="17">平线差 91.0 px → 房间地面 78.4 对 27.7 m²，</tspan><tspan x="40" dy="17">2.8 倍。三个越界解一路走到交付，无警告。</tspan></text>
+
+<text class="lb tBad" x="24" y="1640" font-size="12.5">三条最容易照抄错的边界</text>
+<rect class="pan" x="24" y="1650" width="344" height="104" rx="5"/>
+<rect x="24" y="1650" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="40" y="1674" font-size="12.5">1.7× 放大钳会自己制造误差</text>
+<text class="bdy" x="40" y="1694" font-size="11.8">四档保护的前提是「库网格已是真实尺<tspan x="40" dy="17">寸」。M15 网格 91.5 cm、折叠桌真长</tspan><tspan x="40" dy="17">183 cm，正确比值 2.0；钳完只剩 155</tspan><tspan x="40" dy="17">cm —— 短的 15% 是钳制自己造的。</tspan></text>
+
+<rect class="pan" x="24" y="1764" width="344" height="104" rx="5"/>
+<rect x="24" y="1764" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="40" y="1788" font-size="12.5">「尺寸看先验、位置看测量」两边都会反</text>
+<text class="bdy" x="40" y="1808" font-size="11.8">先验只对「同名即同尺寸」的类别成立<tspan x="40" dy="17">（折叠椅、门），对桌、货架无效：3 m</tspan><tspan x="40" dy="17">长桌被按 140×70×75 重建。测量也要</tspan><tspan x="40" dy="17">先过余量门，过不了就把位置交回规则。</tspan></text>
+
+<rect class="pan" x="24" y="1878" width="344" height="104" rx="5"/>
+<rect x="24" y="1878" width="3" height="104" fill="var(--bad)"/>
+<text class="ttl" x="40" y="1902" font-size="12.5">SSIM 不是这件事的目标函数</text>
+<text class="bdy" x="40" y="1922" font-size="11.8">九个里程碑上边缘 F 从 0.260 爬到 0.650，<tspan x="40" dy="17">SSIM 只从 0.386 到 0.417。按 SSIM 调，</tspan><tspan x="40" dy="17">你看不见自己在进步；判据本身也要审：</tspan><tspan x="40" dy="17">相关器噪声地板 10.2 px。</tspan></text>
+</svg>
+
+<figcaption>方法论总图。虚线框 = 交给模型的语义判断，实线框 = 必须由确定性算法承担的几何判断，
+橙色是四道闸门与它们的回退路径。图上每个数字的出处都在下文对应小节。</figcaption>
+</figure>
+
+
+  <p>分工不是二选一：语义上模型<b>没有替代品</b> —— 开放词表、<code>attached_to</code>、
+  海报上的文字。</p>
 
   <figure>
     <div class="crop b"><img src="../process/figures/tri/overview.jpg"
       alt="三条实现线的参考图与产出，六宫格"></div>
-    <figcaption>三条互相独立的实现。上排是各自的输入参考图，下排是各自的产出。
-    <b>线 2 用的是另一张图</b>（沙漠基地），所以它不参与还原度比较。</figcaption>
+    <figcaption>三条互相独立的实现：上排参考图，下排各自产出。</figcaption>
   </figure>
 
-  <div class="mgrid">
-    <div class="mcell"><div class="k">召回</div><div class="v">70</div><div class="d muted">最终检测框</div></div>
-    <div class="mcell"><div class="k">单遍贡献</div><div class="v">21</div><div class="d muted">整图那一遍</div></div>
-    <div class="mcell"><div class="k">补召回</div><div class="v" style="color:var(--good)">49</div><div class="d muted">另外三遍，占 70%</div></div>
-    <div class="mcell"><div class="k">实测/估计 最长边</div><div class="v" style="color:var(--bad)">0.51–9.85</div><div class="d muted">跨 19 倍</div></div>
-    <div class="mcell"><div class="k">地平线行差</div><div class="v" style="color:var(--bad)">91.0</div><div class="d muted">px，线 1 对线 3</div></div>
-    <div class="mcell"><div class="k">解出房间地面</div><div class="v" style="color:var(--bad)">2.8×</div><div class="d muted">78.4 对 27.7 m²</div></div>
-  </div>
-
-  <div class="key" style="font-size:16.5px">
-    <b>模型很会说「这是什么」，很不会说「有多大、在哪里」。</b><br>
-    所以：<b>语义</b>（类别、支撑关系、文字内容、材质倾向）交给模型；
-    <b>几何</b>（尺度、位置、姿态）交给确定性算法；
-    模型给出的几何量<b>只当提示，永远不进主干</b> —— 拿不到它，管线也必须照样出结果。
-  </div>
-
-  <p>这不是审美选择，是被三次实测逼出来的：39 个资产模块的最长边之比（实测 ÷ 估计）跨
-  <b class="num">19 倍</b>；用「模型给的标签」查高度表、再套在「模型给的框」上反解机位高，
-  两层误差叠加到多个先验物彼此矛盾（<code>MAD/median = 0.35</code>）；
-  模型的九自由度三维盒只做 yaw 的交叉证据，拿不到它时后四条兜底照常给出朝向。
-  反过来，模型在语义上好到没有替代品：开放词表的对象清单、<code>attached_to</code> 支撑关系、
-  海报上的文字 —— 这些用规则写要写到天荒地老。<b>分工，而不是二选一。</b></p>
-
-  <div class="warn"><b>可比性边界。</b>三条线里只有<b>线 2 是本文作者亲手做的</b>；
-  线 1 与线 3 的分析全部基于仓库内的源码、机器留痕与各自文档，不是参与者视角。
-  更要紧的是：<b>线 1 与线 3 用的是同一张室内参考图，线 2 用的是另一张（沙漠基地）</b> ——
-  所以三条线之间<b>不能直接比还原度</b>，能比的只有方法结构。
-  下文所有定量对照都限制在共用同一张图的线 1 与线 3 之间。</div>
+  <div class="warn"><b>可比性边界。</b>线 1 与线 3 同图，线 2 是另一张：三条线之间
+  <b>只能比方法结构，不能比还原度</b>，下文定量对照只在线 1 与线 3 之间。</div>
 </div>
 
 <!-- ==================================================================== -->
 <div class="sec" id="p1">
   <div class="tag">第一部分</div>
-  <h2>一 · 图像的识别与分割</h2>
+  <h2>一 · 识别与分割：模型的活是命名</h2>
 
   <figure>
     <img src="../process/figures/ue/s01_crops.jpg" alt="四条召回实际喂进模型的裁剪画面">
-    <figcaption>四条召回实际喂进模型的画面。<b>同一份提示词，只换 crop</b> —— 变的是画面，不是问题。</figcaption>
+    <figcaption><b>同一份提示词，只换 crop</b> —— 变的是画面，不是问题。</figcaption>
   </figure>
 
-  <p>最贵的假设是「问一次就够了」。强视觉模型在整图上倾向把同类实例合并成一排，
-  实测记录是 <b>16 台显示器只框出 13 个</b>：提示词里已经写死了「一个可见实例一条」，它依然合并 ——
-  因为在降采样后的分辨率上，那一排在模型眼里本来就是一个东西。
-  <b>单遍欠召回是结构性的，调提示词补不回来。</b></p>
+  <p>提示词写死了「一个可见实例一条」，它照样把 <b>16 台显示器并成 13 个框</b>。补法不在提示词里：
+  先问「这张图里有什么」，把返回的名词拼成<b>这张图自己的开放词表</b>。</p>
 
-  <p><b>① 先解析场景，再检测。</b>第一次调用问「这张图里有什么」，从返回里抽出
-  <code>detection_phrase</code> 拼成<b>属于这张图的开放词表</b>再塞进检测提示词。
-  检测器拿到的不是固定类别表 —— 模型的活是命名，不是测量。</p>
-
-  <p><b>② 三条召回复用同一份检测提示词，只换喂进去的画面。</b></p>
   <div class="tbl-scroll"><table>
     <thead><tr><th style="width:16%">召回</th><th style="width:42%">怎么裁</th>
       <th style="width:26%">补的是什么</th><th class="n">贡献</th></tr></thead>
     <tbody>
-      <tr><td>整图</td><td>原图（长边 &lt; 1600 先 ×2 上采样；坐标归一化，不需换算）</td>
-        <td>主干与大件</td><td class="n">21</td></tr>
-      <tr><td>语义热区</td><td>大件家具的框外扩后按<b>原分辨率</b>重检，按面积取前 2 块</td>
-        <td>桌面上的小件</td><td class="n">28</td></tr>
-      <tr><td>四象限</td><td>四块 60%×60%，相邻块<b>重叠 0.2 图宽</b>防切件</td>
-        <td>把「一排」拆回「一台」</td><td class="n">18</td></tr>
-      <tr><td>逐件枚举</td><td>可数类里面积 ≥ 2% 的框外扩后重问「逐个框出每一个」</td>
-        <td>整块家具带里的单件</td><td class="n">3</td></tr>
+      <tr><td>整图</td><td>原图，长边 &lt; 1600 先 ×2</td><td>主干与大件</td><td class="n">21</td></tr>
+      <tr><td>语义热区</td><td>大件家具的框外扩，按<b>原分辨率</b>重检</td><td>桌上小件</td><td class="n">28</td></tr>
+      <tr><td>四象限</td><td>四块 60%×60%，<b>重叠 0.2 图宽</b></td><td>「一排」拆回「一台」</td><td class="n">18</td></tr>
+      <tr><td>逐件枚举</td><td>可数类里面积 ≥ 2% 的框重问</td><td>家具带里的单件</td><td class="n">3</td></tr>
     </tbody>
   </table></div>
-  <p class="tiny">三条补召回合计 49 个，占最终 70 个框的 <b>70%</b>。</p>
+  <p class="tiny">13 次额外调用换 49 个框，单次收益从 21 掉到 <b class="num">3.8</b> —— 掉下来的
+  正是整图那一遍<b>结构性看不见</b>的东西。</p>
 
-  <div class="key">
-    <b>算一下这 49 个框的单价。</b>热区取 2 块、四象限 4 块、逐件枚举 7 块 ——
-    本次运行落盘的裁剪图正好 <b class="num">13</b> 张（<code>run_fd6e434f/crops/</code>），
-    也就是 <b>13 次额外调用换 49 个框</b>，单次收益从整图那一遍的 21 掉到 <b class="num">3.8</b>。
-    <b>但掉下来的那部分，正是整图那一遍结构性看不见的东西</b> ——
-    16 台显示器合成 13 个，不是调提示词能补回来的那种漏。
-    单次收益低不等于该砍：<b>该问的是「砍掉它，少的是一整类物体还是几个零件」</b>。
-  </div>
-
-  <p><b>③ 让分块可用的那一条规则：分清「接缝」和「图边」。</b>
-  碰人工切缝的框<b>丢弃</b>（跨块物体只露半截，过不了 NMS，留下就是幽灵复制品）；
-  碰真实图边的框<b>保留</b>（沿墙桌带、贴画幅左缘的椅子本来就延伸出画面，一刀切会把定义性结构
-  整条删掉，实测踩过）。判定只需要知道这条边是不是原图的边：</p>
-  <pre><code>edge = 0.02
-cut_l = bx[0] &lt; edge and cx0 &gt; 0.001      # 贴到人工切缝 → 丢
-cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
-# cx0 == 0 / cx1 == 1 时两条都不成立 → 贴的是真实图边，保留</code></pre>
+  <p><b>接缝不是图边。</b>贴人工切缝的框只露半截，留着就是幽灵复制品；贴真实图边的必须留 ——
+  沿墙桌带本来就延伸出画面。</p>
+  <pre><code>cut_l = bx[0] &lt; edge and cx0 &gt; 0.001   # 贴人工切缝 → 丢
+# cx0 == 0 时不成立 → 真实图边，保留</code></pre>
 
   <figure>
     <div class="two" style="gap:10px">
@@ -203,92 +405,55 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
       <img src="../process/run_fd6e434f/crops/tile_3.png" width="615" height="344"
         decoding="async" alt="右下象限的裁剪图，重叠带在它的左边缘">
     </div>
-    <figcaption>左下、右下两块象限的<b>实际裁剪图</b>（本次运行落盘的
-    <code>crops/tile_2.png</code> 与 <code>tile_3.png</code>，614×344 与 615×344）。
-    <b>看两张里重复出现的那三样东西</b>：混凝土立柱、带橙色指示灯的主机、地上那本红蓝杂志 ——
-    它们在左图靠右边缘、在右图靠左边缘，<b>两次都是完整的</b>。
-    这就是「碰人工切缝的框直接丢弃」为什么安全：<b>丢掉的那半截，邻块一定还会完整地看到一次</b>。
-    重叠带一旦窄于跨缝的物体，这条规则就变成静默删除。</figcaption>
+    <figcaption>立柱、主机、红蓝杂志在左图靠右缘、右图靠左缘，<b>两次都完整</b> ——
+    丢掉的半截，邻块一定还会看到一次。</figcaption>
   </figure>
 
-  <div class="warn">
-    <b>这条规则成立有三个前提，缺一条就变成净删除。</b>
-    <ol style="margin-bottom:0">
-      <li><b>裁块必须是原图坐标系里的轴对齐矩形，且不带 letterbox 填充。</b>
-        上面那个判据是拿「块的归一化边界」和 0 / 1 比大小；换成旋转框、掩膜引导的不规则 crop、
-        或透视矫正后的四边形，<code>cx0 &gt; 0.001</code> 这个标量根本不存在。
-        一般形式该写成：<b>逐条枚举 crop 的边界，问「这条边是不是原画幅边界的子集」</b>。
-        检测器要求方形输入而做了补边时更要小心 —— 补出来的边既不是切缝也不是图边，
-        贴上去的框是纯粹的伪影，而按上面的写法它会被当成「真实图边」留下来。</li>
-      <li><b>重叠带必须宽于你预期会跨缝的最大物体。</b>
-        丢掉半截框之所以安全，<b>唯一的理由是这件东西在邻块里还会被完整地看到一次</b>。
-        本管线的重叠是 0.2 图宽，比画面里任何一件家具都宽，所以成立。
-        <b>重叠不够时，这条规则就是在无声地删物体，而且没有第二次机会。</b></li>
-      <li><b>「碰真实图边就保留」保的是框，不是框的尺寸。</b>
-        它本来就延伸出画面，所以它的宽高是<b>下界</b>而不是测量值。必须一路带一个
-        「被画幅裁断」的标记下去：本管线里它进置信度（权重 0.25），
-        并把该实例从相机高反解与全局尺度校准里剔除。
-        <b>只保留、不标记，等于把一个残缺框当完整框用。</b></li>
-    </ol>
-  </div>
+  <div class="warn"><b>三个前提，缺一条就变成净删除。</b>
+    <b>①</b> 裁块必须是原图坐标系的轴对齐矩形、<b>无 letterbox 补边</b>（补边的框会被误判成图边留下）；
+    <b>②</b> 重叠带宽于最大跨缝物体，本管线 0.2 图宽；
+    <b>③</b> 碰图边<b>留的是框、不是尺寸</b>：宽高只算下界，必须带「被裁断」标记，并从机高反解与
+    全局尺度校准里剔除。</div>
+  <p class="tiny">另外三条在归一化层一次吸收：枚举子框<b>剩 ≥ 2 个</b>才替换父框；框返回 (y, x)、
+  掩膜返回 (x, y)；缓存键<b>不含端点</b>。</p>
 
-  <div class="minigrid">
-    <div class="mini"><div class="n">④</div><b class="t">枚举只在证据充分时替换父框</b>
-      <p>先剔掉面积 ≥ 父框 80% 的子框（那是模型把父框抄了一遍），
-      <b>过滤后仍 ≥ 2 个</b>才替换，否则原样保留，<b>一件也不发明</b>。</p></div>
-    <div class="mini"><div class="n">⑤</div><b class="t">坐标序陷阱一次吸收干净</b>
-      <p>同一个模型框返回 (y, x) 序、掩膜返回 (x, y) 序，必须在归一化层转成统一标准形，
-      <b>不能让每个消费方各自记得</b>。</p></div>
-    <div class="mini"><div class="n">⑥</div><b class="t">结构可靠性是本地契约，不是接口特性</b>
-      <p>解析 → 括号配平扫描（带转义状态机，否则字符串里的 <code>}</code> 会提前收尾）→ validator
-      → 失败只做<b>一次</b>修复重试 → 写回原缓存槽。缓存键<b>刻意不含端点</b> ——
-      换网关地址不该让缓存失效，留痕落盘也不该把内部地址带出去。</p></div>
-  </div>
-
-  <div class="warn">
-    <b>诚实：这套方法本身的三个已知弱点</b>（都出自本仓库，都还没修）
+  <details>
+    <summary>三个已知未修的弱点</summary>
     <ul style="margin-bottom:0">
-      <li><b>受控词表只注入了资产打标提示词，没注入感知提示词。</b>
-        资产库注册时把 <code>categories</code> 列表格式化进提示词，模型只能从表里选；
-        而感知阶段发的是自由文本，事后才靠 <code>normalize_category</code> 归一。
-        两头对齐会省掉一整层歧义。</li>
-      <li><b>NMS 按小写标签精确相等匹配，而分块会返回带实例后缀的标签。</b>
-        本次运行 70 条里有 <b>6 条</b>形如 <code>beige crt monitor 2</code> ——
-        它们与 <code>beige crt monitor</code> 在 NMS 眼里是两个类，<b>永远不会互相抑制</b>。
-        正确做法是先过类别归一再比较。</li>
-      <li><b>NMS 的优先级实际退化成了插入顺序。</b>
-        检测提示词没要 score，枚举提示词要了 <code>confidence</code> 但归一化层只读
-        <code>score</code>、把它丢了；于是排序面对一堆 1.0 变成稳定排序 = 插入顺序 =
-        整图 → 热区 → 分块 → 枚举。这个顺序<b>碰巧是合理的</b>（先信大图、后信局部），
-        但它是意外，不是设计。</li>
+      <li><b>受控词表只注入打标提示词，没注入感知提示词</b>，感知仍发自由文本。</li>
+      <li><b>NMS 按小写标签精确相等匹配，分块却返回带实例后缀的标签</b>：70 条里 <b>6 条</b>形如
+        <code>beige crt monitor 2</code>，<b>永不与本体互相抑制</b>。</li>
+      <li><b>NMS 优先级退化成插入顺序</b>（归一化层丢了 <code>confidence</code>）——
+        <b>碰巧合理，是意外不是设计</b>。</li>
     </ul>
-  </div>
+  </details>
 
   <h3 id="probe1">交互 · 召回来源探针</h3>
-  <p class="muted">70 个框按发现它的那一遍着色。点按钮筛选，鼠标移到框或表格行上读依附关系。
-  要看的一件事：把「整图」单独筛出来，剩下的画面有多空。</p>
+  <p class="muted">把「整图」单独筛出来，看剩下的画面有多空。</p>
   <div class="rlist" id="srcChips"></div>
   <div class="filters" id="detFilters"></div>
   <div class="probe" id="detProbe"></div>
-  <div class="readout" id="detOut">把鼠标移到任意框上，或移到下表任意一行。</div>
-  <div class="tbl-scroll wide"><table>
-    <thead><tr><th style="width:6%" class="n">#</th><th style="width:34%">标签</th>
-      <th style="width:14%">来源</th><th>依附于</th><th class="n">面积占比</th>
-      <th class="n">掩膜点</th></tr></thead>
-    <tbody id="detBody"></tbody>
-  </table></div>
+  <div class="readout" id="detOut">把鼠标移到任意框，或下表任意一行。</div>
+  <details>
+    <summary>70 个检出逐条：标签 / 来源 / 依附于 / 面积占比 / 掩膜点（按钮同时筛这张表）</summary>
+    <div class="tbl-scroll wide"><table>
+      <thead><tr><th style="width:6%" class="n">#</th><th style="width:34%">标签</th>
+        <th style="width:14%">来源</th><th>依附于</th><th class="n">面积占比</th>
+        <th class="n">掩膜点</th></tr></thead>
+      <tbody id="detBody"></tbody>
+    </table></div>
+  </details>
 
   <h3 id="probe2">交互 · 象限规则演示</h3>
-  <p class="muted">选一块象限，看这条规则在这块上杀掉谁、救下谁。切到「一刀切」就知道少了图边豁免会丢什么。</p>
+  <p class="muted">切到「一刀切」，就知道少了图边豁免会丢什么。</p>
   <div class="filters" id="tileBtns"></div>
   <div class="filters" id="ruleBtns"></div>
   <div class="probe" id="tileProbe"></div>
   <div class="readout" id="tileOut"></div>
   <p class="tiny">
-    <span class="sw2" style="background:var(--bad)"></span>贴人工切缝 → 丢弃
-    <span class="sw2" style="background:var(--good)"></span>贴真实图边 → 保留
-    <span class="sw2" style="background:var(--faint)"></span>块内完整 → 保留
-    橙色虚线是当前象限的边界。
+    <span class="sw2" style="background:var(--bad)"></span>贴切缝 → 丢
+    <span class="sw2" style="background:var(--good)"></span>贴图边 → 留
+    <span class="sw2" style="background:var(--faint)"></span>块内完整 → 留
   </p>
 </div>
 
@@ -300,23 +465,20 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
   <figure>
     <div class="crop sheet"><img src="../process/figures/assetlib_sheet.png"
       alt="39 个资产模块的总览缩略图"><span></span></div>
-    <figcaption>39 模块资产库总览（末格为空位）。整批的实测最长边全部落在 75–118 cm 一条带里 ——
-    与它是鼠标还是长桌无关。本节末尾那张散点图就是它的坐标形式。</figcaption>
+    <figcaption>39 模块资产库总览：整批实测最长边全落在 <b>75–118 cm 一条带</b>里，
+    与它是鼠标还是长桌无关。</figcaption>
   </figure>
 
-  <p>两条路不是替代关系，判据在下表。<b>先看最后一行</b> —— 失败形态的差别比成本差别重要得多。</p>
+  <p><b>先看最后一行</b>：失败形态比成本重要。</p>
   <div class="tbl-scroll"><table>
     <thead><tr><th style="width:16%">维度</th>
       <th style="width:42%">路线 A · 图生 3D + 库匹配</th><th>路线 B · 程序化生成</th></tr></thead>
     <tbody>
-      <tr><td><b>适合</b></td><td>要「这一张图里的那件东西」：形态特异、不可推导</td>
-        <td>要「这一类场景」：规则可写、构件重复、需要大量变体</td></tr>
-      <tr><td><b>尺寸可信度</b></td><td><b>不可信，必须实测</b>。图生 3D 的输出是归一化的，不是米制</td>
-        <td><b>天然可信</b>。尺寸是你写进代码的常数</td></tr>
-      <tr><td><b>多样性来源</b></td><td>库的规模。库里没有的类就没有</td>
-        <td>随机数 + 规则组合。结构规则不变、内容全变</td></tr>
-      <tr><td><b>失败形态</b></td><td>匹配不上 → 降级 proxy 盒。<b>看得见，但可控</b>：尺寸永远对，比例不塌</td>
-        <td>规则没写 → <b>那一类物体根本不存在</b>。画面不会报错，只会「少了点什么」，而且很难说清少了什么</td></tr>
+      <tr><td><b>适合</b></td><td>「这一张图里的那件东西」</td><td>「这一类场景」</td></tr>
+      <tr><td><b>尺寸可信度</b></td><td><b>不可信，必须实测</b></td>
+        <td><b>天然可信</b>：尺寸是代码里的常数</td></tr>
+      <tr><td><b>失败形态</b></td><td>降级 proxy 盒，<b>看得见</b></td>
+        <td>规则没写 → <b>那一类物体根本不存在</b>，画面不报错</td></tr>
     </tbody>
   </table></div>
 
@@ -326,135 +488,67 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
   </div>
 
   <div class="tabpanel">
-    <h3 style="margin-top:4px">1 · 离线预处理是必修课</h3>
-    <p>云端图生 3D 的产物不能直接进引擎，四件事都要做：<b>保 UV 的减面</b>（不保 UV 会把贴图撕碎）、
-    <b>贴图降档</b>、<b>ORM 三图合一</b>、<b>坐标系与枢轴归一</b>，并同时写出一份实测
-    <code>stats.json</code> —— 它是后面所有几何判断的底数。</p>
+    <p>「多大」这个字段换过三个源，每次都被失败逼着换：注册表声明 → 库网格包围盒 × 缩放 →
+    <b>引擎实测 bounds</b>。矮桌悬空出在中间那一档：网格自带的枢轴与包围盒<b>不等于</b>实际占位——实测顶面比模型低 35 cm。</p>
 
-    <h3>2 · 字段所有权切分：注册表不可信，测量才是裁判</h3>
-    <div class="key">
-      <b>语义字段</b>来自模型，但<b>一旦人核对过就冻结</b>，重跑打标不覆盖。<br>
-      <b>几何字段</b>永远从实测重写：<b>人不改，模型不碰。</b>
-    </div>
-    <p>模型的估计尺寸<b>不参与任何缩放</b>，只做交叉校验：偏差 &gt; 2 倍、类别落到 <code>misc</code>、
-    或打标置信度 &lt; 0.5，就打 <code>needs_review</code> —— 39 个模块里 <b>25 个</b>中招。
-    同一个「这东西多大」在本管线里前后换过三个信息源，每一次替换都是被一次失败逼出来的：</p>
-    <div class="tbl-scroll"><table>
-      <thead><tr><th style="width:26%">尺寸来源</th><th>用在哪</th>
-        <th style="width:36%">为什么被下一个取代</th></tr></thead>
-      <tbody>
-        <tr><td>① 布局意图尺寸</td><td>解算器输出的期望外形</td>
-          <td>它是「应该多大」，不是「网格实际多大」</td></tr>
-        <tr><td>② 库网格包围盒 × 缩放</td><td>装配时的模型级吸附与去穿插</td>
-          <td>矮桌变体实测顶面比模型低 <b>35 cm</b>，桌上的东西整批悬空</td></tr>
-        <tr><td>③ 引擎实测 bounds</td><td>终局重力吸附与穿模检测</td><td>—— 它就是裁判</td></tr>
-      </tbody>
-    </table></div>
-    <p class="muted">规律：<b>任何写在配置里的几何量，都会在某一步被现实推翻一次。</b>
-    与其争论哪个源更准，不如把「最后一步用实测重量一遍」写进流程。这也是「注册表不可信」的全部含义。</p>
-
-    <h3>3 · 四级瀑布</h3>
-    <p><b>人工覆盖</b> → <b>精确类别命中</b>（同类变体按形状距离 <code>Σ|log(a_i/b_i)|</code>
-    排序轮换：取对数使它对整体缩放不敏感，只问「形状像不像」，把「多大」留给缩放）→
-    <b>视觉兜底</b> → <b>降级 proxy 盒</b>。本次 30 个对象：类别命中 21、退 proxy 9，<b>0 件款式级</b>。</p>
+    <h3>四级瀑布</h3>
+    <p><b>人工覆盖 → 精确类别 → 视觉兜底 → proxy 盒。</b>同类变体按形状距离
+    <code>Σ|log(a_i/b_i)|</code> 轮换：取对数后对整体缩放不敏感，只问「形状像不像」。</p>
 
     <figure>
       <div class="sheetbox" data-scrolltop="227"><img src="../process/recon/catalog.jpg" width="900" height="2275" decoding="async"
         alt="资产库逐模块的四向视图对照表，每行一个模块，列为 yaw 0/90/180/270"></div>
-      <figcaption>第三级「视觉兜底」读的就是这张表：同一台相机、同一背景，
-      每个模块按 <code>yaw 0/90/180/270</code> 各渲一张，这里是 M06–M16 那一段，<b>纵向可滚动</b>。
-      顶上第二到第五行的 <b>M07 / M08 / M09 / M10</b> 是四个几乎同形的 <code>computer_tower</code>
-      变体（网格最长边 93.1 / 95.3 / 86.6 / 89.5 cm）—— 形状距离
-      <code>Σ|log(a<sub>i</sub>/b<sub>i</sub>)|</code> 要排序轮换的正是这种情况：
-      <b>肉眼分不出先试哪一个，靠比例分。</b>顺带一个可核对的细节：M14 不在表里，
-      注册表里本来就缺这一号。</figcaption>
+      <figcaption>「视觉兜底」读的就是这张表：每模块按 <code>yaw 0/90/180/270</code> 各渲一张。</figcaption>
     </figure>
 
-    <p class="muted">两个类别<b>禁止进库匹配</b>：<code>misc</code>（实测把结构柱配成了大理石杂物盒）
-    与 <code>cable</code>（细长物配上线缆盘，沿墙一摆就是一面蓝色假墙）—— 它们的归宿是细长 proxy 盒，
-    <b>反而更像管线</b>。平面印刷品走贴花，贴花源必须取<b>白底预览渲染</b>而不是基础色贴图：
-    库里的海报是「皱纸」模型，基础色是碎片化的 UV 图集，贴上墙是一块马赛克。</p>
+    <p class="tiny"><b>M07–M10</b> 四个 <code>computer_tower</code> 网格最长边 93.1 / 95.3 / 86.6 /
+    89.5 cm —— 要靠形状距离轮换的正是这种情况。<code>misc</code>（结构柱配成大理石杂物盒）与
+    <code>cable</code>（细长物配线缆盘 = 蓝色假墙）<b>禁止进库匹配</b>，归宿是细长 proxy 盒。</p>
 
-    <h3>4 · 畸形缩放保护：四档，而且刻意不对称</h3>
-    <p>取三轴比的<b>中位数</b>做统一缩放（抗单轴离群又保形，取平均会被一根跑飞的轴带走）；
-    <b>&gt; 10× 或 &lt; 0.1×</b> 判误匹配，推进到下一个候选；<b>放大钳在 1.7×，缩小方向不钳</b>
-    （小物件确实存在，这个方向没有对称的理由）；屏幕类强制 x/y 同比，<b>4:3 不许被拉成宽屏</b>。
-    三轴比极差 &gt; 3 倍打 <code>SHAPE_MISMATCH</code>：那是拿主机塔去配长桌的形态。</p>
+    <h3>畸形缩放保护：四档，刻意不对称</h3>
+    <p>三轴比取<b>中位数</b>统一缩放；<b>&gt; 10× 或 &lt; 0.1×</b> 判误匹配换候选；<b>放大钳 1.7×，
+    缩小不钳</b>；屏幕类强制 x/y 同比。</p>
 
-    <div class="warn">
-      <b>照抄这四个阈值之前，先问一句：你的库是米制的吗？</b>
-      这四个数<b>全都是「库网格已经是真实尺寸」这个前提的产物</b>，
-      而<b>图生 3D 的输出恰恰不满足这个前提</b>。于是 <code>size_cm / mesh_bbox_cm</code>
-      算出来的不是「该放大多少」，而是「这件东西的真实尺寸相对 1 m 是多少」，四档随之全部错位：
-      <ul style="margin-bottom:0">
-        <li><b>1.7× 钳制反过来制造误差。</b>两张折叠桌都被钳到 <code>[1.7,1.7,1.7]</code>：
-          M15 的网格最长边 91.5 cm，折叠桌真长 183 cm，正确比值就是 2.0 ——
-          钳完只剩 155 cm，<b>短了 15%，而且这 15% 是钳制自己造的</b>。</li>
-        <li><b>10×/0.1× 拒收带编码的是库的尺寸分布，不是物理。</b>
-          归一化到 ~1 m 的库里，任何真实尺寸小于 10 cm 或大于 10 m 的物体
-          都会仅仅因为归一化而被判「误匹配」。</li>
-        <li><b>SHAPE_MISMATCH 会常态化。</b>本次 21 个库匹配里 8 个带这个标志 ——
-          阈值 3× 是对「两个真实尺寸的盒子」调的，拿去比「真实盒 vs 归一化盒」必然虚报。</li>
-      </ul>
-      <b>正确做法：把「归一化 → 真实尺寸」当成预处理的一步补上</b>，<b>然后</b>再套这四档；
-      做不到就把阈值从<b>你自己这个库的比值分布</b>里定出来，
-      或者干脆关掉放大钳 —— 但不要照抄 1.7。
-    </div>
+    <div class="warn"><b>四档阈值全以「库网格已是真实尺寸」为前提，而图生 3D 的输出恰恰不满足。</b>
+    于是 <b>1.7× 放大钳反过来造误差</b>：M15 网格最长边 91.5 cm、折叠桌真长 183 cm，正确比值 2.0，
+    钳完只剩 <b class="num">155 cm</b> —— <b>短的这 15% 是钳制自己造的</b>。
+    10×/0.1× 拒收带编码的是<b>库的尺寸分布，不是物理</b>；<code>SHAPE_MISMATCH</code> 随之常态化，
+    21 个库匹配里 <b>8 个</b>带这个标志。<b>先补「归一化 → 真实尺寸」这一步，
+    或从自己库的比值分布定阈值，别照抄 1.7。</b></div>
   </div>
 
   <div class="tabpanel">
-    <h3 style="margin-top:4px">1 · 一份数据，两处消费</h3>
-    <p>总平面是<b>唯一数据源</b>，地面烘焙和三维摆放<b>读同一份</b>。于是场坪边界永远和院墙严丝合缝 ——
-    不是对齐出来的，是<b>构造上不可能不齐</b>。两套数据各自生成再对齐，是这类场景最常见的返工来源。</p>
-
-    <h3>2 · 反照率推近白，颜色进顶点色；UV 按世界尺寸重排</h3>
-    <p>贴图基准亮度写死，颜色由每个构件发射时写进<b>顶点色</b>，于是<b>同一张混凝土贴图可以同时
-    当墙、路面、掩体、路缘石</b> —— 这是把几十种材质压到十几个桶的前提。
-    UV 按米缩放，3 m 的墙和 30 m 的楼纹理密度一致。</p>
-
-    <h3>3 · 平铺性是构造出来的，不是修出来的</h3>
-    <p>值噪声的格点坐标<b>按周期取模</b>后再插值，右边缘的格点与左边缘是<b>同一个</b>格点，
-    无缝成了数学保证；多倍频叠加时每层各自取模，仍然无缝。「生成完再羽化接缝」永远是在补救。</p>
-
-    <h3>4 · 按材质桶合并，LOD 做在生成层，每格自带种子</h3>
-    <p>构件就地生成、直接吐世界坐标，按材质丢进桶里最后每桶 merge 成一个 Mesh；
-    发射时要把变换<b>烘进几何</b>、属性集完全一致、补平凡索引、清掉分组，缺一件合并就失败或变胖。
-    LOD 不是先生成全细节再换低模，而是按离相机的排数<b>在发射时就少发</b> ——
-    收益不只是绘制，更是生成时间与内存：那部分几何<b>从来没有存在过</b>。
-    每个院落自带种子、起一条独立随机流，于是<b>生成与顺序无关、局部稳定</b>。</p>
-    <p class="muted">这一局的实测：44 897 个构件合并成 14 个网格，每帧 60 个绘制调用，
-    外部模型与图片文件 0，换个种子约 4 秒长出另一座。</p>
+    <ul style="margin-top:4px">
+      <li><b>一份总平面两处消费</b>：地面烘焙与三维摆放读同一份，<b>构造上不可能不齐</b>。</li>
+      <li><b>噪声格点按周期取模</b>，无缝是<b>数学保证</b>；<b>LOD 做在生成层</b>，低 LOD 的几何
+        <b>从没存在过</b>。</li>
+    <p class="muted">实测数在 <a href="对照实验-程序化场景重建.html">《对照实验》</a>。</p>
   </div>
 
-  <div class="key" style="margin-top:16px"><b>实证挂钩：资产在本仓库里是一个受控变量。</b>
-  线 1 与线 3 用的是同一批 <code>.obj</code>、同一份注册表、同一个版本号 ——
-  所以两条线的摆放差异<b>不可能归因于资产</b>。资产端真实存在、并且会直接变成摆放误差的差异只有一条：
-  39 个模块的<b>作者朝向彼此不一致</b>，6 个需要 90° 偏航修正；
-  线 1 给全部 30 条资产记录写的都是 <code>forward_axis: "+X"</code>，对这 6 个就是错的。</div>
-  <p class="tiny">复核时 grep 过一遍：<code>forward_axis</code> 在整条线里只出现 3 次，
-  全是写死的字面量，<b>没有任何消费方</b>。<b>结论要往前挪一格，不能停在字段上</b> ——
-  它不是出错的机关，它是一句<b>声明了却没有任何人执行、也没有任何人核对的约定</b>。
-  同一行上的 <code>unit</code> 也一样：21 条库资产写 <code>cm</code>、9 个代理盒写 <code>m</code>，
-  <b>而两者都是如实的</b>（代理盒走引擎自带 Cube 缩放，根本不导入网格），所以这处单位混用没有变成误差。</p>
-
+  <div class="key" style="margin-top:16px"><b>资产是受控变量</b>：线 1 与线 3 用同一批
+  <code>.obj</code>、同一份注册表，摆放差异<b>不可能归因于资产</b>。唯一的真差异是 39 个模块
+  <b>作者朝向彼此不一致</b>、6 个需 90° 偏航修正，而线 1 给全部 30 条都写
+  <code>forward_axis: "+X"</code> —— 但 grep 全线只有 <b>3 处</b>字面量、<b>0 个消费方</b>：
+  它不是出错的机关，是一句<b>声明了却没人执行也没人核对的约定</b>。</div>
   <h3 id="scatter">交互 · 尺寸可信度散点</h3>
-  <p class="muted">横轴是模型估计的最长边（对数轴），纵轴是<b>网格实测</b>包围盒最长边。
-  <b>要看的就一件事：所有点都挤在一条横带里，与 y = x 毫无关系。</b></p>
-  <p class="tiny"><b>读表提示：「比值」列和「标记」列不是同一个量。</b>比值列是<b>最长边之比</b>；
-  <code>needs_review</code> 用的是注册表判据 —— 两组尺寸<b>各自排序后逐轴</b>取最大偏差倍数 &gt; 2。
-  所以会出现「比值 1.94 是绿的、却带 needs_review」这种行：那不是标错了，是逐轴看比只看最长边更严。</p>
+  <p class="muted">横轴模型估计的最长边（对数），纵轴<b>网格实测</b>最长边 ——
+  <b>点全挤在一条横带里，与 y = x 毫无关系。</b></p>
   <div class="legend" id="modLegend"></div>
   <div class="chart"><svg id="modChart" viewBox="0 0 900 360" role="img" aria-label="估计尺寸对实测尺寸"></svg></div>
-  <div class="filters" id="modFilters"></div>
-  <div class="tbl-scroll wide"><table>
-    <thead><tr><th style="width:10%">模块</th><th style="width:22%">类别</th>
-      <th class="n">估计最长边</th><th class="n">实测最长边</th><th class="n">比值</th>
-      <th class="n">三角面</th><th>标记</th></tr></thead>
-    <tbody id="modBody"></tbody>
-  </table></div>
+  <details>
+    <summary>39 个模块逐条：估计 / 实测最长边、比值、三角面、标记（14 类可筛）</summary>
+    <p class="tiny">比值列比<b>最长边</b>，<code>needs_review</code> 比<b>逐轴</b>最大偏差 —— 后者更严。</p>
+    <div class="filters" id="modFilters"></div>
+    <div class="tbl-scroll wide"><table>
+      <thead><tr><th style="width:10%">模块</th><th style="width:22%">类别</th>
+        <th class="n">估计最长边</th><th class="n">实测最长边</th><th class="n">比值</th>
+        <th class="n">三角面</th><th>标记</th></tr></thead>
+      <tbody id="modBody"></tbody>
+    </table></div>
+  </details>
 
   <details id="scaledemo">
-    <summary>四档保护的可执行版：拖三条轴比，看哪一档在什么时候触发</summary>
+    <summary>四档保护的可执行版：拖三条轴比，看哪一档触发</summary>
     <div class="ctl"><label for="rx">X 轴比 size/bbox</label>
       <input type="range" id="rx" min="0.05" max="12" step="0.01" value="1.2">
       <span class="rchip on num" id="rxv"></span></div>
@@ -466,7 +560,7 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
       <span class="rchip on num" id="rzv"></span></div>
     <div class="ctl"><label for="scr">屏幕类（x/y 同比）</label>
       <input type="checkbox" id="scr" style="flex:none;width:18px;height:18px">
-      <span class="tiny">勾上则 x/y 取两轴比均值，z 单独</span></div>
+      <span class="tiny">x/y 取两轴比均值</span></div>
     <div class="readout" id="scaleOut"></div>
   </details>
 </div>
@@ -474,105 +568,43 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
 <!-- ==================================================================== -->
 <div class="sec" id="p3">
   <div class="tag">第三部分</div>
-  <h2>三 · DCC 里的相机还原与位姿估计</h2>
-
-  <figure>
-    <img src="../process/figures/tri/bl_calib.jpg"
-      alt="解出的房间线框与 0.5 m 地面栅格投影回参考图">
-    <figcaption>先把答案放在这里：把解出来的房间线框、0.5 m 地面栅格与地平线<b>画回参考图逐点核对</b>。
-    成本只是画几条线，收益是拦住一个会被下游几何放大的外参误差。</figcaption>
-  </figure>
+  <h2>三 · 相机还原与位姿估计</h2>
 
   <h3>共同骨架就三行代数</h3>
-  <pre><code>像素 (u,v)  →  射线 d = R · K⁻¹ · [u, v, 1]ᵀ
-射线 ∩ 声明的支撑平面  →  世界点
-    地面 z = 0     t = h / (−d_z)        需 d_z &lt; 0
-    支撑面 z = z_s  t = (z_s − h) / d_z   先解出支撑物才有 z_s
-    墙面 n·P = c    t = (c − n·C) / (n·d)  取 t &gt; 0 的最近墙</code></pre>
-  <p>用什么 DCC，<b>这三行代数都不变</b>。变的是它两端的搬运层 —— 而搬运层比「手性 + 单位」多得多。
-  把下面六件事收进<b>一个</b>转换函数：</p>
+  <p>射线 <code>d = R · K⁻¹ · [u,v,1]ᵀ</code> 与<b>声明的</b>支撑平面求交，三种面三种解：</p>
+  <pre><code>地面 z = 0     t = h / (−d_z)        需 d_z &lt; 0
+支撑面 z = z_s  t = (z_s − h) / d_z   先解出支撑物才有 z_s
+墙面 n·P = c    t = (c − n·C) / (n·d)  取最近的 t &gt; 0</code></pre>
   <div class="tbl-scroll"><table>
-    <thead><tr><th style="width:20%">要换的东西</th><th style="width:26%">怎么换</th>
-      <th>抄漏了会怎样</th></tr></thead>
+    <thead><tr><th style="width:26%">要换的东西</th><th>抄漏了会怎样</th></tr></thead>
     <tbody>
-      <tr><td><b>手性</b></td><td>右手 FLU → UE 左手：Y 取负，yaw 同步取负</td>
-        <td>整场镜像。单帧里看不出来，只是所有东西「反了」</td></tr>
-      <tr><td><b>单位</b></td><td>米 → 厘米即 ×100</td>
-        <td>只在 DCC 处于默认单位刻度时才对，而两边的刻度都能被改掉</td></tr>
-      <tr><td><b>上轴</b></td><td>Y-up → Z-up：绕 X 转 +90</td>
-        <td><b>这一条不由手性推出来。</b>glTF/three.js 是 Y-up，UE/Blender 是 Z-up，四种组合都存在</td></tr>
-      <tr><td><b>枢轴</b></td><td>预处理阶段统一归到底面中心</td>
-        <td>整批物体按各自的建模原点落位。本仓库还额外用<b>引擎实测 bounds</b> 做终局重力吸附 ——
-          因为模型级枢轴和真实网格仍差到 35 cm</td></tr>
-      <tr><td><b>欧拉序 / 旋转正方向</b></td><td>物体只输出 yaw，相机的 pitch/roll 单独走标定</td>
-        <td>Blender 默认 XYZ、程序化那条线用 <code>'YXZ'</code>、UE 是 pitch/yaw/roll 且左手正方向。
-          <b>只翻 yaw 的符号在有 pitch 的相机上会立刻穿帮</b></td></tr>
-      <tr><td><b>FOV 沿哪根轴</b></td><td><code>hfov_deg</code> 与 <code>vfov_deg</code> <b>都写</b></td>
-        <td>本仓库自己就踩在两边：<code>cameras.json</code> 给的是水平 FOV，
-          而程序化那条线用的 <code>THREE.PerspectiveCamera(30, …)</code> 第一个参数是<b>垂直</b> FOV。
-          把 hfov 直接喂进去，16:9 画幅上就是一台错的相机</td></tr>
+      <tr><td><b>手性</b>（Y 与 yaw 同取负）</td><td><b>整场镜像，单帧里看不出来</b></td></tr>
+      <tr><td><b>上轴</b>（Y-up → Z-up）</td><td><b>不由手性推出来，四种组合都存在</b></td></tr>
+      <tr><td><b>FOV 沿哪根轴</b>（两个都写）</td>
+        <td>本仓库自己踩在两边：<code>cameras.json</code> 给水平 FOV，而
+          <code>THREE.PerspectiveCamera</code> 第一个参数是<b>垂直</b> FOV</td></tr>
     </tbody>
   </table></div>
-  <p class="tiny">主点偏移的表示法也各家不同：本仓库用 Blender 的 <code>shift_x/shift_y</code> 约定
-  （两个方向都按画幅宽归一化、y 取负），UE 根本不这么表达。
-  <b>所以本节最后那条「点阵双向投影」不是锦上添花，它就是这张表的验收测试</b> ——
-  六件事里错任何一件，点阵都会报出来，而任何单帧渲染都看不出来。<br>
-  求解还必须<b>分层</b>：按感知层给出的 <code>attached_to</code> 做拓扑排序，
-  地面物 → 房间盒 → 支撑面物 → 墙/顶物；环依赖降级为落地物，不让整批卡死。</p>
+  </table></div>
+  <p class="tiny">另外三件：单位、枢轴、欧拉序与旋转正方向（<b>只翻 yaw 符号，在有 pitch 的相机上
+  立刻穿帮</b>）。求解按 <code>attached_to</code> <b>拓扑排序分层</b>，环依赖降级为落地物。</p>
 
-  <h3>消失点求解的五个工程要点</h3>
-  <ul>
-    <li><b>先 CLAHE 再检线段</b>；<b>LSD 要带 Hough 回退</b>（它在若干 OpenCV 版本里因许可证冲突被移除过）。</li>
-    <li><b>按角度分族，再对残差族求第二个水平消失点</b>：求出第一个后<b>把内点剔掉</b>再求一次。</li>
-    <li><b>RANSAC 打分用长度加权，不要数内点个数</b> —— 300 px 的桌沿和 40 px 的碎屑边缘约束力差一个量级。</li>
-    <li><b>容差随长度自适应</b>（<code>tol_px × max(1, len/90)</code>）：长线段端点误差会被外推放大。</li>
-    <li><b>最后在内点上做长度加权最小二乘精修</b>。焦距由两个正交消失点解出：
-      <code>f = sqrt(−[(u₁−cx)(u₂−cx)+(v₁−cy)(v₂−cy)])</code>，
-      括号内为正说明这两个方向在该主点下不可能正交，别硬开根号。</li>
-  </ul>
-  <p class="tiny">出处提示：这几条来自本仓库<b>两个</b>消失点实现的并集 ——
-  分族后再求一次、受理窗口、多通道择优在一处；长度加权打分、长度自适应容差、内点精修在另一处，
-  前者用的是固定角度容差 + 内点计数、且没有精修。两版一比就知道后三条值得补。<b>抄的时候抄并集。</b></p>
+  <p><b>打分用长度加权，不要数内点个数</b>：300 px 桌沿和 40 px 碎屑不是同一票。<b>焦距是闭式解</b>
+  <code>f = sqrt(−[(u₁−cx)(u₂−cx)+(v₁−cy)(v₂−cy)])</code> —— 括号内为正即两方向不可能正交，
+  <b>那是无解，不是开根号</b>。</p>
 
   <figure>
     <img src="../process/figures/calib_debug.png" width="1024" height="572" decoding="async"
       alt="线段按角度分族着色，绿为非竖直族、橙为竖直族，红线是解出的地平线">
-    <figcaption>失败的那一次长这样。绿 = 非竖直线段族，橙 = 与 90° 相差小于 20° 的竖直族，
-    红线是最终采用的地平线。左上角烧的是这次的结论：<code>hfov=60.0 h=1.45m conf=0.12</code>，
-    <code>src</code> 写着先验 —— <b>60° 不是解出来的，是解不出来之后退回去的默认值</b>
-    （同一次运行还留了一条「vp2_plus_zenith 解出 hfov=15°，越界弃用」）。
-    <b>值得看的是：线段一点都不缺，缺的是「可信的消失点对」</b> ——
-    <code>calib.json</code> 自己记的三条理由分别是越界弃用、无可信消失点对、
-    机高估计离散（<code>MAD/median=0.35</code>）。这一版最终被 fSpy 人工覆盖为
-    hfov 95° / 机高 0.78 m / 置信度 0.9，本页后面所有解算用的都是覆盖后的值。</figcaption>
-  </figure>
+    <figcaption>失败的那一次：绿 = 非竖直线段族，橙 = 竖直族，红线是采用的地平线。<b>线段一点都不缺，
+    缺的是可信的消失点对</b> —— <code>hfov=60°</code> 是解不出来之后退回的默认值（<code>conf 0.12</code>）。</figcaption>
 
-  <div class="warn">
-    <b>受理窗口是必须的，不是可选的。</b>hfov 落在 <b>[30°, 120°]</b> 之外的解一律拒收，
-    并且<b>把拒收原因记下来</b>。两个尾巴都真实发生过：同一张参考图上，一条实现解出
-    <b class="num">15°</b>，另一条解出 <b class="num">155.05°</b>。没有这道窗口的实现会把 155°
-    照单全收，然后整条管线在一个错到离谱的内参上继续往下算，<b>而且不会报任何错</b>。
-  </div>
-  <p><b>但 [30°,120°] 不是「合理镜头」的区间，它是「这套方法还成不成立」的区间。</b>
-  这个区别决定了换项目时该怎么调它：</p>
-  <ul>
-    <li><b>上界卡的是针孔假设，不是视角。</b>超广角 120–150° 是真实输入，但到那个量级桶形畸变
-      已经把直线掰弯，而<b>整条消失点管线的输入就是直线</b>。正确做法不是把上界抬到 150°，
-      而是<b>先做去畸变</b>再谈受理。</li>
-    <li><b>下界卡的是可观测性。</b>长焦时两个消失点跑到画幅外很远，那一项是两个大数相乘再相加，
-      条件数极差，几个像素误差就能让 f 翻倍。更贴切的判据是<b>直接看这一项的条件数与内点残差</b>。</li>
-    <li><b>硬拒收带和软信任带应该是两条线。</b>本管线其实就是这么做的，只是没写在一处：
-      <code>[30°,120°]</code> 之外<b>拒收</b>，<code>(35°,110°)</code> 之外<b>置信度直接 ×0.2</b>，
-      人工覆盖走的又是第三条线 <code>[20°,120°]</code>。
-      <b>抄的时候把三条都抄走，只抄中间那条会失去大部分保护。</b></li>
-  </ul>
-  <p class="muted"><b>一点透视是头号失败模式。</b>正对一面墙拍的室内图只有一个可信的水平消失点，
-  这时天顶消失点是救命通道（竖直方向与<b>任意</b>水平方向正交），但置信度必须打折 ——
-  竖直线族数量少、跨度短、易被门框和管线污染，本管线取 ×0.5。</p>
+  <div class="warn"><b><code>[30°,120°]</code> 不是「合理镜头」区间，是「这套方法还成不成立」的区间。</b>
+  <b>上界卡针孔假设</b>：超广角先去畸变，不是抬上界。<b>下界卡可观测性</b>：长焦时 f 由两个大数相乘，
+  几个像素就让它翻倍。<b>一点透视</b>用天顶 VP 救并打折。</div>
 
   <h3 id="win">交互 · 受理窗口</h3>
-  <p class="muted">拖两个消失点，实时算 <code>f</code> 与 <code>hfov</code>。越界时窗口变红，
-  并打印<b>应该被记进 notes 的那一行</b> —— 记录理由和拒收本身一样重要。</p>
+  <p class="muted">越界时窗口变红，并打印<b>该记进 notes 的那一行</b>。</p>
   <div class="chart"><svg id="vpSvg" viewBox="0 0 900 340" role="img" aria-label="消失点与受理窗口"
        style="touch-action:none;cursor:crosshair"></svg></div>
   <div class="two">
@@ -594,36 +626,22 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
     </div>
   </div>
   <div class="readout" id="vpOut"></div>
-  <p class="tiny">虚线圆是以 VP₁VP₂ 为直径的圆：<b>主点落在圆内 ⇔ 有解</b>，
-  而 <b>f 正好是过主点那条垂直半弦的长度</b>。把两个消失点拖近，主点跑到圆外 —— 无解看得见。</p>
 
-  <h3>机高、离散度、误差模型</h3>
-  <p>机高由已知物高反解、多个先验物取<b>中位数</b>抗离群。这条路<b>与焦距无关</b>，
-  把尺度和焦距解耦 —— 这是它的全部价值。代价是锚点必须过滤四条（不裁断、不太小、只落地、余量够）：
-  半截入画的椅子「底边」是图像边界而不是着地点，用它反解会得到 9 cm 这种机位高。
-  解完再加一道常识钳制，越界<b>钳回并判低置信</b>。</p>
-  <div class="key">
-    几个已知高度的物体各自反解出一个相机高，取它们的 <b>MAD / median</b>。<br>
-    它<b>不能告诉你</b>焦距、俯仰、机高三个量里错的是哪一个；它<b>能告诉你</b>其中至少有一个错了。<br>
-    没有这个量，一个自洽但完全错误的标定可以一路走到底而不被发现。
-  </div>
-  <p class="muted">超阈值就记一条 note 并给置信度乘惩罚；另外<b>每一次运行都</b>把线段分族与地平线
-  画成调试图落盘 —— 别做成「低置信才画」：你事后想复盘的那一次，当时的置信度往往并不低。</p>
-  <pre><code>D = h·f / margin        dD/dpx = h·f / margin²      margin = 底边到地平线的像素距离</code></pre>
-  <p><b>margin 是你能拿到的、最好的逐物体质量代理</b> —— 不需要额外测量，和误差是解析关系。
-  它应该<b>同时</b>门控置信度（占最大权重 0.30）、高度锚点、尺度尺子，
-  以及最容易被忽略但后果最大的<b>房间尺寸证据</b>：房间盒是所有落地点的包围，
-  <b>一个病态解就能把整个房间撑大</b>，所以给敏感度设上限（10 cm/px）——
-  超过的物体照样摆放，只是不作为「房间有多大」的证据。</p>
+  <h3>机高与余量：一个数管四处</h3>
+  <p>机高由已知物高反解取<b>中位数</b>，<b>与焦距无关</b> —— 尺度和焦距就此解耦（这批值的离散度
+  就是闸门 ②）。代价是锚点要先过四条过滤：不裁断、不太小、只落地、余量够 ——
+  <b>半截入画的椅子底边是图像边界而不是着地点，用它反解会得到 9 cm 这种机位高。</b></p>
+  <p>余量 <code>margin</code> 则<b>不用额外测量就与误差成解析关系</b>，同一个数<b>同时</b>门控置信度
+  （权重上限 0.30）、高度锚点、尺度尺子和房间证据 —— 房间单设一档，因为房间盒取所有落地点的
+  <b>外包</b>，<b>一个病态解就能把整间房撑大</b>。</p>
 
   <h3 id="sens">交互 · 一像素值多少米</h3>
-  <p class="muted">圆点是线 1 那次运行真实的 30 个对象，落在各自真实的 margin 上，
-  <b>每个点自带一根 ±1 px 的须</b>：同样读错 1 px，右边的点看不出来，左边的点有好几米。
-  左侧灰区是 margin &lt; 0，地面解<b>根本不存在</b>，两个 ✗ 就是掉进去的那两个。</p>
+  <p class="muted">圆点是线 1 那次运行的 30 个真实对象，<b>各带一根 ±1 px 的须</b>；
+  左侧灰区 margin &lt; 0，地面解<b>根本不存在</b>。</p>
   <div class="labgrid">
     <div>
       <canvas id="cvS" width="1240" height="800"></canvas>
-      <p class="tiny">横轴 margin_px，纵轴深度（0–16 m）。橙带是当前 margin 的 ±1 px 区间。</p>
+      <p class="tiny">横轴 margin_px，纵轴深度（0–16 m）。</p>
     </div>
     <div>
       <div class="ctl" style="margin-top:0"><label for="sMar">margin_px</label>
@@ -636,136 +654,71 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
   <div class="pickrow" id="ampPre"></div>
   <div class="rlist" id="mchips"></div>
   <div class="tbl-scroll" style="margin-top:14px"><table>
-    <thead><tr><th style="width:22%">量</th><th style="width:39%">中心列公式口径</th>
-      <th>用求解器逐点重算（v 各 ±1 px）</th></tr></thead>
+    <thead><tr><th style="width:22%">量</th><th style="width:39%">公式口径</th>
+      <th>求解器逐点重算（v ±1 px）</th></tr></thead>
     <tbody>
-    <tr><td>最不敏感的对象</td><td class="n" id="tvA"></td><td class="n" id="tvB"></td></tr>
-    <tr><td>最敏感的对象</td><td class="n" id="tvC"></td><td class="n" id="tvD"></td></tr>
+    <tr><td>最不敏感</td><td class="n" id="tvA"></td><td class="n" id="tvB"></td></tr>
+    <tr><td>最敏感</td><td class="n" id="tvC"></td><td class="n" id="tvD"></td></tr>
     <tr><td><b>倍数差</b></td><td class="n" id="tvE"></td><td class="n" id="tvF"></td></tr>
     </tbody>
   </table></div>
-  <p class="tiny">两个口径不完全相等：公式是中心列的读法，求解器走完整射线。<b>结论不受口径影响</b> ——
-  同一张图、同一条规则，逐物体敏感度相差近两个数量级。</p>
+  <p class="tiny">同一张图、同一条规则，<b>逐物体敏感度相差近两个数量级</b>。</p>
 
   <h3>布局写在图像空间，不写坐标</h3>
-  <p>每个实例记的是<b>它与支撑面接触的那个像素</b> + <b>支撑面的名字</b>，由反投影解算成米。
-  好处是<b>可重导出</b>：改相机、改房间、改搁板高度，所有摆放用<b>同一台相机</b>一致地重新推导，
-  不会各自漂移。移动一个物体 = 改一个像素值，而它你能在参考图上直接量到。</p>
-  <pre><code>{"id":"crt_L2", "asset":"M02", "support":"shelf_L", "anchor_px":[300,250], "yaw":88}</code></pre>
+  <p>每个实例只记<b>接触像素 + 支撑面的名字</b>（<code>anchor_px</code> / <code>support</code>），
+  由反投影解成米 —— 改相机、改搁板高度，所有摆放都能<b>一致地重推</b>。</p>
 
   <figure>
     <img src="../process/recon/layout.jpg" width="1024" height="572" decoding="async"
       alt="解出的实例包围盒回投到参考图，每个框标着「实例名:模块号」">
-    <figcaption>上面那一行 JSON 解完之后回投的样子（线 3 的布局）。
-    每个黄框的标签就是 <code>id:asset</code> ——
-    左墙第二块屏幕上写的正是 <b><code>crt_L2:M02</code></b>，
-    旁边还有 <code>tower_L2:M10</code>、<code>chair_fg:M13</code>、<code>cup_mid:M11</code>。
-    左下角烧着 <b>32 instances · 0 decals · 5 lights</b>。
-    <b>这就是「可重导出」的具体含义</b>：布局文件里一个物体只占一行、位置只是一个像素坐标，
-    改相机或改搁板高度时整张图用同一台相机重新推一遍，不会有物体各自漂走。</figcaption>
+    <figcaption>这份锚点解完回投的样子：黄框标签是 <code>id:asset</code>，左墙第二块屏幕上正是
+    <b><code>crt_L2:M02</code></b>。</figcaption>
   </figure>
-  <p><b>射线打空支撑面时要重解，不要只钳。</b>只把 x 钳回带内等于让物体沿板子滑走，
-  进深还留在原来那条错误的射线上。正确做法是先把 x 钉到带边，再用<b>同一条射线</b>与竖直平面求交。
-  <b>钳制改的是约束，不是答案；答案要重新解一次。</b></p>
 
-  <h3>尺寸的裁决权在先验，位置的裁决权在测量</h3>
-  <div class="key">
-    <b>尺寸看先验。</b>FOV 只要有偏差，射线法解出的绝对尺寸就会系统性地偏大或偏小；
-    而「折叠椅约 80 cm 高」的可信度<b>远高于</b>任何单张图上的测量。
-    <b>位置看测量。</b>没有任何常识能告诉你那台显示器在房间的哪个角落。
-  </div>
+  <h3>尺寸看先验、位置看测量 —— 两边都会反</h3>
+  <div class="key"><b>尺寸看先验</b>：FOV 一有偏差，射线法解出的绝对尺寸就系统性偏大或偏小，而
+  「折叠椅约 80 cm 高」远比单图上的测量可信。<b>位置看测量</b>：没有常识能告诉你那台显示器
+  在房间哪个角落。</div>
 
   <figure>
     <img src="../process/figures/ue/s02_ground_ray.jpg" width="1024" height="572" decoding="async"
       alt="每个落地物的接触点画一条竖线到地平线，标注余量像素与解出的纵深">
-    <figcaption>「位置看测量」的实物：橙线是地平线（<code>y = 279.4 px</code>），
-    每个落地物从它的接触点向上引一条线，长度就是余量 <code>margin_px</code>，
-    纵深按 <code>d = h·f<sub>y</sub> / margin_px</code> 直接读出（<code>h = 0.78 m</code>，
-    <code>f<sub>y</sub> = 469.2 px</code>，本次 28 个物体）。
-    <b>要害在烧上去的标注上：</b>近处两把椅子余量 <b class="num">273 / 274 px</b>，解出 1.4 / 1.3 m；
-    后墙那几台余量只剩 <b class="num">38 / 40 px</b>，解出 9.7 / 9.2 m ——
-    <b>余量差 7 倍，而灵敏度按余量的平方反比走，同一个像素的接触点误差在两端差约 50 倍</b>
-    （0.005 m/px 对 0.25 m/px）。
-    所以「位置看测量」后面必须挂一句「测量先过余量门」，
-    而不是无条件相信测出来的那个数。<br>
-    <b>顺手把图上唯一一条对不上公式的标注解释掉</b>，因为它正是下一条规矩的实物：
-    最上面那条 <b class="num">28 px → 9.4 m</b>，按上式该解到 <b class="num">12.84 m</b>，
-    而房间进深只到 <code>1003.8 cm</code> —— 它解到了房间外面，被拉回墙内。
-    <code>scene_layout.json</code> 里 <code>beige_computer_tower_35</code> 的
-    <code>solve.clamped_into_room_m</code> 记着 <b class="num">3.503</b>，
-    最终 <code>position_cm</code> 是 <b class="num">937.3</b>，
-    正好等于后墙内表面减掉它自己半个身位（<code>1003.8 − 133.1/2</code>）。
-    <b>余量掉到 28 px 时，裁判已经不是测量而是规则了</b> —— 这条钳制下面还会再出现一次。</figcaption>
+    <figcaption>地平线 <code>y = 279.4 px</code>，接触点到它的竖线就是余量：近处两椅
+    <b class="num">273 / 274 px</b>，后墙那几台只剩 <b class="num">38 / 40 px</b> —— 闸门 ③ 那 50 倍
+    就是这段落差。</figcaption>
   </figure>
 
-  <p><b>但这条会反过来，而且本仓库里已经反过来了。</b>四种情形：</p>
-  <ul>
-    <li><b>类别内真实方差大时，先验会毁掉测量对的那部分。</b>先验表里有
-      <code>table (140,70,75)</code> 没有 <code>long_table</code>，而类别归一是子串匹配 ——
-      于是一张 3 m 的长条桌被归到 <code>table</code>，三轴按 140×70×75 重建，
-      <b>射线量对了的那个长度被先验抹掉</b>。判据：<b>先验只对「同一个名字意味着同一个尺寸」的类别有效</b>
-      （折叠椅、门、A4 纸），对「同一个名字覆盖一个尺寸家族」的类别（桌、招牌、货架）无效。</li>
-    <li><b>全局尺度已经用先验定过之后，就不该再逐物体用一次。</b>
-      FOV 偏差造成的是<b>全局的、乘性的</b>误差，而这正是尺度校准那一步已经消掉的东西；
-      消完之后测量剩下的是<b>相对</b>信息，逐物体套先验会把它一起抹平。
-      更稳的切法：<b>先验定绝对尺度与长宽比，测量保留个体差异那一个自由度</b>。</li>
-    <li><b>先验表本身是场景类型的假设。</b>「桌 75 cm」是办公/家居的常识；工作台 90 cm、
-      教室课桌 60–70 cm、实验台 85–95 cm。换场景类型要换表，不是换阈值。</li>
-    <li><b>「位置看测量」同样会反</b> —— 接触点被遮挡或出画时测到的锚点就是错的，
-      这时候规则比测量强。本管线自己就在这么做：射线落到脚印外<b>钳进脚印</b>、
-      解到房间外<b>拉回墙内</b>。所以准确的说法是<b>「位置优先看测量，
-      但测量必须先过可信度门（余量、是否触边），过不了就交给规则」</b>，而不是「位置永远看测量」。</li>
-  </ul>
-  <p class="muted">全局尺度也是同一套：取已知先验物（先验高 / 实测高）的中位数作为尺度因子 s，
-  越过 5% 就把相机高乘以 s <b>整体重解</b>。<b>s 先钳进 [0.5, 2.0] 再用 ——
-  注意这是钳制不是弃用：越界时仍然会按边界值缩放，所以必须同时记一条低置信，
-  否则一批坏锚点照样能把整场尺度带走 0.5×。</b></p>
+  <p><b>两条都会反。</b>先验只对「同一个名字意味着同一个尺寸」的类别有效（折叠椅、门、A4），
+  对「一个名字覆盖一个尺寸家族」的类别无效：先验表有 <code>table (140,70,75)</code> 没有
+  <code>long_table</code>，类别归一是子串匹配，于是 <b>3 m 长条桌被按 140×70×75 重建</b>，
+  射线量对了的那个长度被先验抹掉。全局尺度用先验定过之后就<b>不该再逐物体套一次</b>；
+  先验表本身是场景类型的假设。位置同样会反 —— 接触点被遮挡或出画时锚点就是错的，
+  本管线自己就在钳（落到脚印外钳进脚印、解到房间外拉回墙内）。准确说法是
+  <b>「位置优先看测量，但测量必须先过可信度门（余量、是否触边），过不了就交给规则」</b>。</p>
+  <p class="muted">全局尺度 s 取（先验高 / 实测高）的中位数，越 5% 整体重解。
+  <b>s 钳进 [0.5,2.0] 是钳制不是弃用</b> —— 越界仍按边界值缩放，但必须同时记一条低置信，
+  否则一批坏锚点能把整场尺度带走 0.5×。</p>
 
-  <h3>闭环只需要两件事</h3>
-  <ol>
-    <li><b>把解算结果重投影回参考图，和它自己的来源比。</b>这一步<b>零成本</b>，
-      而且是唯一能证明「人工填的那个数是对的」的手段 —— 人工标定本身不是问题，
-      <b>人工标定给完直接用、一次都没投影回去核对</b>才是。</li>
-    <li><b>验「渲染器」和「投影器」是否一致。</b>拿一格点阵，一边用你自己的投影函数算像素，
-      一边用 DCC 相机的实际投影算，逐点比对。<b>这是唯一能抓到全局系统性偏移的办法</b> ——
-      这类错误在任何单帧里都<b>完全看不出来</b>：没有一处「看着不对」，只是整体轻微错位。
-      符号约定不要靠推理，靠搜索。</li>
-  </ol>
+  <h3>闭环只需要两件事，都零成本</h3>
+  <p><b>重投影回参考图，再拿一格点阵比对自己的投影函数与 DCC 相机的实际投影。</b>人工标定不是问题，
+  <b>给完直接用、一次都没投影回去核对</b>才是。符号约定靠搜索，不要靠推理。</p>
 
   <figure>
     <img src="../process/recon/compare4.jpg" width="1700" height="986" decoding="async"
       alt="参考图、渲染图、1-SSIM 误差热图、边缘叠加图四联">
-    <figcaption>第一件事做出来就是这四格：参考、同机位渲染、<code>1−SSIM</code> 误差热图
-    （<b>mean ssim 0.417</b>）、边缘叠加（<b>绿=参考独有、红=渲染独有、黄=对上</b>）。
-    <b>它便宜到不该省：</b>四格全部由已经存在的两张图算出来，不需要任何额外资产或渲染。
-    读法也不用训练 —— 第四格里红绿分家的地方就是几何没对上的地方，黄线重合的地方就是对上的地方，
-    比「感觉哪里怪」精确得多。</figcaption>
+    <figcaption>参考、同机位渲染、<code>1−SSIM</code> 热图、边缘叠加。
+    <b>红绿分家的地方就是几何没对上的地方。</b></figcaption>
   </figure>
 </div>
 
 <!-- ==================================================================== -->
 <div class="sec" id="ev">
-  <div class="tag">实证 · 主证据</div>
-  <h2>同一张图，两条地平线</h2>
-  <p class="lead">上一节最后那条规定是「解完要投影回去核对」。这一节回答：<b>不做那一步会怎样。</b></p>
+  <div class="tag">实证与归因</div>
+  <h2>四 · 同一张图，两条地平线</h2>
 
-  <div class="conv">
-    <div class="cv l1"><div class="n">线 1 · UE5</div>
-      <div class="p"><code>run_fd6e434f/asset_registry.json</code></div>
-      <div class="d">21 条 mesh 路径全部指向同一个目录，<code>registry_version: 4</code></div></div>
-    <div class="cv mid"><div class="n">受控变量</div>
-      <div class="p"><code>AssetLib_processed/</code> · <code>ref.jpg</code></div>
-      <div class="d">同一张图（两侧 MD5 相同）、同一批 <code>.obj</code>、同一份注册表、
-        同一组内参 <code>hfov 95.0°</code> / <code>f 469.16 px</code></div></div>
-    <div class="cv l3"><div class="n">线 3 · Blender</div>
-      <div class="p"><code>recon/core/assetlib.py</code></div>
-      <div class="d">读同一个 <code>library_registry.json</code>，
-        <code>ASSET_TUNE</code> 键集合与它<b>完全相同</b></div></div>
-  </div>
-  <div class="key"><b>要读准这个「内参一致」：</b>它不是两套独立解法各自算出同一个数，
-  而是两条线<b>共用了同一个人工先验</b>（线 3 的 <code>tools/calib.py</code> 把 469.16 写死在候选里，
-  就是线 1 那个 fSpy 值；它自动解出并采用的是俯仰、偏航、机高）。
-  于是内参被彻底排除出变量表，剩下的差异只能来自外参、坐标系与核对。</div>
+  <div class="key"><b>要读准这个「内参一致」：</b>不是两套解法各自算出同一个数，而是两条线
+  <b>共用同一个人工先验</b> —— 线 3 把 <code>469.16</code> 写死在候选里，就是线 1 那个标定值。
+  图、<code>.obj</code>、注册表、<code>ASSET_TUNE</code> 键集合也逐项核对过相同。</div>
 
   <div class="tbl-scroll"><table>
     <thead><tr><th style="width:22%">量</th><th>线 1 · UE5</th><th>线 3 · Blender</th>
@@ -777,74 +730,68 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
     <tr><td>相机高度</td><td class="n">0.78 m</td><td class="n">1.18 m</td><td class="n">0.40 m</td></tr>
     <tr><td>是否验算</td><td class="bad-cell"><b>无</b></td>
         <td>房间线框投影回参考图：后墙两角 378 / 668 px，实测 370 / 670</td><td>—</td></tr>
-    <tr><td>最终房间</td><td class="n">10.84（前后）× 7.23（横向）× 2.85 m</td>
-        <td class="n">3.95（宽）× 7.00（深）× 2.55 m</td><td class="n">地面 <b>2.8×</b></td></tr>
+    <tr><td>最终房间</td><td class="n">10.84 前后 × 7.23 横向</td>
+        <td class="n">3.95 宽 × 7.00 深</td><td class="n">地面 <b>2.8×</b></td></tr>
     </tbody>
   </table></div>
-  <p class="muted"><b>机制就一句话：</b>地面纵深是 <code>d = h·f / (v − v_h)</code>，
-  分母是「该像素行离地平线多远」；俯仰决定 v<sub>h</sub>，越接近它的行分母越趋近零，纵深被推向无穷。
-  这不是模型「看错了」，是<b>一个没有被验算的外参在下游被几何放大了</b>。</p>
+  <p class="muted"><code>d = h·f / (v − v<sub>h</sub>)</code>：俯仰决定 v<sub>h</sub>，越接近它分母越趋近零 ——
+  <b>不是模型看错了，是一个没被验算的外参在下游被几何放大。</b></p>
 
   <h3 id="amp">交互 · 位姿放大器</h3>
-  <p class="muted">每拖一格，都会用<b>线 1 交付那次运行的同一批检测框</b>重跑一遍它自己的求解器。
-  停在 −0.8° / 0.78 m 时，读数精确回到交付值 <b>10.84 × 7.23 m</b>。
-  右侧曲线的每一个点也是一次真实重解，<b>点任意一点会把左边设到那个俯仰角</b>。</p>
   <div class="pickrow">
-    <button class="btn" id="pL1">载入线 1 标定（−0.8° / 0.78 m）</button>
-    <button class="btn" id="pL3">载入线 3 标定（−10.2° / 1.18 m）</button>
-    <button class="btn" id="pMix">只换俯仰，机高不动</button>
+    <button class="btn" id="pL1">线 1（−0.8° / 0.78 m）</button>
+    <button class="btn" id="pL3">线 3（−10.2° / 1.18 m）</button>
+    <button class="btn" id="pMix">只换俯仰</button>
   </div>
   <div class="labgrid">
     <div>
       <canvas id="cv1" width="1024" height="572"></canvas>
       <div class="tiny" style="margin-top:6px">
-        <span class="sw2" style="background:var(--good)"></span>解出且在 15 m 内
+        <span class="sw2" style="background:var(--good)"></span>15 m 内
         <span class="sw2" style="background:var(--bad)"></span>被 15 m 上限判废
-        <span class="sw2" style="background:var(--faint)"></span>底边在地平线之上，无解</div>
+        <span class="sw2" style="background:var(--faint)"></span>无解</div>
       <div class="ctl"><label for="sPitch">俯仰 pitch</label>
         <input type="range" id="sPitch" min="-2" max="14" step="0.1" value="-0.8">
         <output id="oPitch"></output></div>
       <div class="ctl"><label for="sH">相机高度</label>
         <input type="range" id="sH" min="0.5" max="1.58" step="0.04" value="0.78">
         <output id="oH"></output></div>
-      <p class="tiny">滑块口径与求解器一致：<b>正俯仰 = 相机朝下</b>。蓝虚线是地平线，
-      橙线是地面等深线，圆点是落地检测框的底边中点。</p>
+      <p class="tiny">每拖一格都用线 1 交付那次的同一批检测框重跑求解器。</p>
     </div>
     <div>
       <div class="mgrid" id="ampM" style="margin-top:0"></div>
       <div class="legend" id="roomLegend"></div>
       <div class="chart"><svg id="roomChart" viewBox="0 0 900 340" role="img"
         aria-label="房间盒随俯仰角的变化"></svg></div>
-      <p class="tiny">曲线是锯齿状的，这本身是个结论：房间盒取的是落地点的外包，
-      而 15 m 判废闸门会随俯仰<b>吞进或吐出</b>一批框（解出实例数从 28 变到 39），外包框跟着跳。
-      <b>一个会因为闸门开合而阶跃的量，不该在没有验算的情况下直接交付。</b></p>
+      <p class="tiny">曲线的锯齿本身是结论：15 m 判废闸门随俯仰<b>吞进或吐出</b>一批框（28 ↔ 39）——
+      <b>会随闸门开合而阶跃的量，不该不经验算就交付。</b></p>
     </div>
   </div>
-  <p class="muted">三个预设的读数要一起看，它们本身就是结论：线 1 交付位姿 → <b>10.84 × 7.23 m</b>；
-  只换俯仰 → <b>7.67 × 5.43 m</b>，地面掉 47%；两个外参都换 → <b>11.00 × 7.81 m</b>，几乎回到起点 ——
-  因为深度对机高是线性的，抬高机位把俯仰省下来的那部分加了回去。<b>两个外参在这里是耦合的</b>，
-  必须被<b>一起</b>验算，各自「看起来合理」不构成任何证据。</p>
+  <p class="muted">三个预设就是结论：线 1 交付的 <b>10.84 × 7.23 m</b>；只换俯仰 <b>7.67 × 5.43 m</b>，
+  地面掉 <b>47%</b>；两个外参都换 <b>11.00 × 7.81 m</b>，几乎回到起点 —— <b>两个外参耦合，
+  各自「看起来合理」不构成证据。</b></p>
 
-  <h3>三个已经越界的解，运行时一条警告都没有</h3>
-  <div class="tbl-scroll"><table>
-    <thead><tr><th style="width:30%">对象</th><th class="n" style="width:14%">margin_px</th>
-      <th>发生了什么</th></tr></thead>
-    <tbody>
-    <tr><td><code>beige_computer_tower_06</code></td><td class="n loss">−30.0</td>
-        <td>接触像素落在<b>地平线上方</b>，地面解<b>不存在</b>；最后能落地是靠支撑面兜底</td></tr>
-    <tr><td><code>beige_crt_monitor_04</code></td><td class="n loss">−46.2</td>
-        <td>同上，而且支撑面解<b>掉到桌子外面</b>，被钳回桌沿</td></tr>
-    <tr><td><code>beige_computer_tower_35</code></td><td class="n loss">28.5</td>
-        <td>求解器给出 13.7 m，越过了这条线自己解出的房间前后向，被平移 <b>3.503 m</b> 拽回室内</td></tr>
-    </tbody>
-  </table></div>
-  <p class="tiny">三条都不是异常分支，是<b>正常路径上的兜底</b>：各留下一个字段，
-  然后场景照样搭出来、回执照样 0 error。单向前馈的流程里没有一环会去问「这三个字段为什么会有值」。</p>
+  <h3>三个越界的解，运行时零警告</h3>
+  <p>它们<b>不是异常分支，是正常路径上的兜底</b>：各留一个字段，场景照搭、回执照样 0 error ——
+  单向前馈里没有一环会去问「这些字段为什么会有值」。</p>
+  <details>
+    <summary>三个越界解逐条：各自被哪一道兜底接住</summary>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th style="width:26%">对象（<code>beige_*</code>）</th>
+        <th class="n" style="width:16%">margin_px</th><th>发生了什么</th></tr></thead>
+      <tbody>
+      <tr><td><code>computer_tower_06</code></td><td class="n loss">−30.0</td>
+          <td>接触像素在<b>地平线上方</b>，地面解不存在，靠支撑面兜底</td></tr>
+      <tr><td><code>crt_monitor_04</code></td><td class="n loss">−46.2</td>
+          <td>同上，支撑面解还掉到桌外，被钳回桌沿</td></tr>
+      <tr><td><code>computer_tower_35</code></td><td class="n loss">28.5</td>
+          <td>解出 13.7 m，被平移 <b>3.503 m</b> 拽回室内</td></tr>
+      </tbody>
+    </table></div>
+  </details>
 
   <h3 id="hz">交互 · 两条地平线 + 逐框反算</h3>
-  <p class="muted">两条地平线现算出来画在同一张参考图上。<b>点图上任意一处</b>（或点下面的对象），
-  读出同一个接触像素在两套外参下的 margin 与深度 —— 框没变、内参没变、代码没变，只有外参变了。
-  这也是「投影回原图核对」长什么样：它就这么便宜。</p>
+  <p class="muted">同一个接触像素在两套外参下的 margin 与深度 —— 只有外参变了。</p>
   <div class="pickrow" id="hToggle"></div>
   <div class="ovl" id="hbox">
     <img src="../process/figures/tri/ref_interior.jpg" alt="参考图上的两条地平线" id="hImg">
@@ -852,241 +799,142 @@ cut_r = bx[2] &gt; 1 - edge and cx1 &lt; 0.999  # 同理
   </div>
   <div class="rlist" id="hchips"></div>
   <div class="readout" id="hOut"></div>
-  <p class="muted" style="margin-top:12px"><b>规律很干净：</b>画面底边那两把椅子，两套位姿给出的
-  距离只差 3% —— 近处地面谁解都差不多。越往上走差距越大，到最远那张桌子，一边解到 <b>50.2 m</b>、
-  另一边 <b>6.38 m</b>，差 <b>7.9 倍</b>；而 50 m 这种解会被 15 m 闸门<b>直接丢掉</b>，
-  连一条警告都不会留下。</p>
-  <p class="tiny">校验点（画面中心列）：线 1 得 v<sub>h</sub> = 292.55，与求解器输出逐位一致；
-  线 3 得 201.58（= 286 − 469.16 × tan 10.2°，与上表同一个数），
-  与它实测的消失点 (517.4, <b>201.5</b>) 吻合到 0.1 px。图上的读数随所点的列走。</p>
+  <p class="muted" style="margin-top:12px">底边那两把椅子，两套位姿只差 <b>3%</b>；最远那张桌子
+  一边 <b>50.2 m</b>、一边 <b>6.38 m</b> —— 而 50 m 会被 <b>15 m 闸门丢掉，不留一条警告</b>。</p>
 
-  <div class="key" style="border-left-color:var(--bad)"><b>但这里必须把话收窄一格，否则就成了神话。</b>
-  线 3 的 <code>spec/scene.json</code> 的 32 个实例里，真正带可用 <code>anchor_px</code> 的是
-  <b>22 个</b>；另外 <b>10 个</b>没有锚点，<b>直接以米为单位写死了世界坐标</b> —— 也就是线 1 那种写法。
-  文件自己的 <code>note</code> 写清了原因：「解到 x = 2.026，超出房间半宽 1.975 ——
-  v 292 处地面接近掠射，<b>锚点反投影在那里病态</b>」「解到 y = 7.538，<b>跑到后墙背后</b>，
-  渲染时嵌在墙里」「旧的反投影锚点把它放在 u 674.5，<b>差 26 px</b>」。<br>
-  换句话说：<b>图像空间锚定不是无条件更准的，它在掠射 / 近地平线的同一个区域，
-  会犯和线 1 完全同类的错。</b>两条线真正分开的地方不在这里 —— 在于<b>线 3 知道自己撞上了</b>。</div>
+  <div class="key" style="border-left-color:var(--bad)"><b>但这里必须收窄一格。</b>线 3 的 32 个实例
+  只有 <b>22 个</b>带可用 <code>anchor_px</code>，另 <b>10 个</b>以米写死世界坐标，<code>note</code>
+  记着「掠射处锚点反投影病态」。<b>图像空间锚定不是无条件更准，它在掠射区会犯和线 1 同类的错</b>
+  —— 两条线真正分开的是：<b>线 3 知道自己撞上了。</b></div>
 
-  <p><b>还有一个数要读对：那个 <code>confidence: 0.9</code>。</b>
-  它不是自动解算给出的把握，它是人工标定那份文件里的自评，被原样带进了 <code>calib.json</code>。
-  <b>下游任何一处按 <code>confidence &gt; 0.8</code> 判断「标定可信」的逻辑，
-  在这里读到的都是一个人对自己的评价，不是一个测量。</b></p>
+  <p><code>confidence: 0.9</code> 也不是解算给出的把握，<b>是人工标定那份文件里的自评</b>；下游据它
+  判「标定可信」，读到的是<b>一个人对自己的评价，不是一个测量</b>。</p>
 
-  <details>
-    <summary>本文对仓库口径的一处修正：10.84 m 是「前后向」，不是「宽度」</summary>
-    <p>仓库别处把线 1 的 10.84 m 直接与线 3 的 3.95 m 相除，说房间宽度差 2.7 倍。
-    按求解器自己的输出，这个读法要修正：它在重力对齐的 <b>FLU 系（X 前 / Y 左 / Z 上）</b>里返回尺寸，
-    所以 10.84 是<b>前后向</b>跨度，横向跨度才是 7.23 m。</p>
-    <p>逐轴对照应该是：纵深 10.84 对 7.00（<b>1.55×</b>）、宽度 7.23 对 3.95（<b>1.83×</b>）、
-    地面面积 78.4 对 27.7 m²（<b>2.8×</b>）。结论方向没变（房间被解大了一倍以上），
-    但轴向要说清楚，否则复核的人对不上账。</p>
-  </details>
-</div>
-
-<!-- ==================================================================== -->
-<div class="sec" id="why">
-  <div class="tag">归因</div>
-  <h2>差距不来自引擎</h2>
+  <p class="tiny"><b>本文对仓库口径的一处修正：</b>10.84 m 是<b>前后向</b>跨度而不是宽度（求解器在
+  重力对齐的 FLU 系里返回尺寸）。逐轴该这样对：纵深 10.84 对 7.00（<b>1.55×</b>）、
+  宽度 7.23 对 3.95（<b>1.83×</b>）—— 方向不变，但轴向不说清楚，复核的人对不上账。</p>
 
   <figure>
     <img src="../process/figures/tri/ue_compare.jpg" alt="参考图与 UE5 重建并排">
-    <figcaption>左：参考图　右：管线自动搭建的 UE5 场景（同一机位）。结构对应成立
-    （三排桌骨架、CRT 阵列、海报墙、立柱都在），但逐件款式与光影未复原 ——
-    这就是「不验算」在画面上的样子。</figcaption>
+    <figcaption>左参考图，右是管线自动搭建的 UE5 场景（同机位）：结构对应成立，款式与光影未复原。
+    <b>「不验算」在画面上就是这个样子。</b></figcaption>
   </figure>
 
   <div class="why">
     <div class="n">① 主 因</div>
-    <h3>位姿不是「估」出来的，是「解 + 验」出来的</h3>
-    <p>两条线<b>用了同一个方法</b>：消失点法，全程 OpenCV + numpy，<b>不含任何模型</b> ——
-    所以差距不在「谁用了 AI 谁没用」。线 1 的 <code>calib.json</code> notes 原文四行：</p>
+    <h3 id="why">位姿不是「估」出来的，是「解 + 验」出来的</h3>
+    <p>两条线<b>用了同一个方法</b>：消失点法，全程 OpenCV + numpy，<b>不含任何模型</b>。
+    线 1 的 <code>calib.json</code> notes 原文四行：</p>
     <pre><code>"vp2_plus_zenith 解出 hfov=15°，越界弃用"
 "无可信消失点对，退回 hfov=60.0° 先验"
 "相机高度估计离散（MAD/median=0.35）"
 "已由 calib_manual.json 覆盖（fSpy 人工标定，派生量已重算）"</code></pre>
-    <p>两条自动通道都失败了，高度那一路也散了。于是退回人工标定 —— <b>问题不在于用了人工</b>，
-    在于人工给完就直接用了，<b>没有任何一步把它投影回参考图核对</b>。
-    上一节那 91 px 的地平线错位就是这么活下来的。</p>
+    <p>两条自动通道都失败，于是退回人工标定。<b>问题不在于用了人工，在于人工给完就直接用了，
+    没有一步投影回参考图核对</b> —— 那 91 px 就是这么活下来的。</p>
     <div class="key">同一个几何量，一条线上是「填进配置文件的数字」，另一条线上是「必须过验收的结论」。</div>
   </div>
 
   <div class="why">
     <div class="n">② 次 因</div>
     <h3>让模型「估计」和让模型「写解算器」，是两种能力</h3>
-    <p>线 1 里确实有一处直接让模型做位姿估计：提示词要九自由度三维盒。
-    <b>值得称道的是，这条线自己也不信它</b> —— 源码里写着「<code>box_3d</code> 是未文档化的实验能力，
-    随时可能失效；因此它<b>只做增益不做依赖</b>」，yaw 的优先级链有四条兜底。<b>这是对的工程判断。</b>
-    对照另外两条线：线 3 的相机来自线段检测 + RANSAC，线 2 的来自取景约束的闭式三角解 ——
-    模型的角色都不是「看图报数」，而是<b>写出那个解算器</b>。</p>
+    <p>线 1 确有一处让模型估位姿（要九自由度三维盒），但<b>它自己也不信</b>：
+    <code>box_3d</code> <b>只做增益不做依赖</b>，yaw 有四条兜底。线 3 的相机来自线段检测 + RANSAC，
+    线 2 来自闭式三角解 —— 模型的角色都是<b>写出那个解算器</b>。</p>
     <div class="key">同一个模型：当<b>度量估计器</b>用，误差 ±30–50%；当<b>解算器作者</b>用，
     精度取决于所选方法本身，可以做到像素级。<b>不要把可解的几何量交给模型去估。</b></div>
   </div>
 
   <div class="why">
     <div class="n">③ 架 构</div>
-    <h3>「三维语义理解差」，很大程度是架构提出的要求太高</h3>
-    <div class="tbl-scroll"><table>
-      <thead><tr><th style="width:15%">线</th><th style="width:36%">架构要求的语义精度</th>
-        <th>实测结果</th></tr></thead>
-      <tbody>
-      <tr><td>线 1 · UE5</td><td><b>款式级</b>：要在 39 模块库里找到「就是这一件」</td>
-          <td>30 次匹配里 21 件走精确类别、9 件退代理盒，<b>0 件款式级</b>；17 件带质量标记</td></tr>
-      <tr><td>线 2 · three.js</td><td><b>无实例语义</b>：只需要「这一类院子里该有什么」</td>
-          <td>不适用 —— 这个需求被架构消掉了</td></tr>
-      <tr><td>线 3 · Blender</td><td>类别级 + <b>朝向</b>：布局写在图像空间，绕开了绝对坐标</td>
-          <td>朝向仍出过大错：整排左墙 CRT 偏航反了 90°+</td></tr>
-      </tbody>
-    </table></div>
-    <p>线 3 那个朝向错误说明问题：它<b>不是靠看图发现的</b>，是某个物体长期报「无匹配」这个
-    <b>数字不肯改善</b>才被挖出来。原因很具体 —— 他们用「投影宽度」拟合，而<b>宽度这一项是退化的</b>：
-    侧视的深显示器和正视的浅显示器可以投出同样的宽度，两个自由度一起错还能自洽。</p>
-    <div class="key">所以「三维语义理解」在这三条线上的表现差异，读作「<b>架构对语义的依赖程度</b>」
-    比读作「模型的语义能力」更准确。线 1 最惨，是因为只有它把款式对应设成了必要条件；
-    线 2 看起来没问题，是因为它根本不需要。</div>
+    <h3>「三维语义理解差」，读作「架构对语义的依赖程度」更准确</h3>
+    <p>线 1 把款式对应设成<b>必要条件</b>：30 次匹配 21 件走精确类别、9 件退代理盒，<b>0 件款式级</b>；
+    线 2 <b>根本不需要实例语义</b>。线 3 那个整排 CRT 偏航反 90° <b>不是靠看图发现的</b>，
+    是某个数字长期不改善才挖出来 —— 用「投影宽度」拟合，而<b>宽度这一项是退化的</b>：
+    侧视深屏和正视浅屏投出同样宽度，两个自由度一起错还能自洽。</p>
   </div>
 
   <div class="why">
     <div class="n">④ 环 境</div>
     <h3>软件环境真正起作用的地方：它给闭环定了价</h3>
-    <p>到这里为止引擎一次都没出现。它确实有贡献，但贡献方式是<b>决定一轮迭代有多贵</b>，
-    进而决定这条线<b>能不能有第二轮</b>。一轮成本都有机器留痕：</p>
-    <div class="tbl-scroll"><table>
-      <thead><tr><th style="width:16%">环境</th><th style="width:34%">一轮的实测代价</th>
-        <th>它买到了什么</th></tr></thead>
-      <tbody>
-      <tr><td>线 1 · UE5</td><td>装配 <b>57.8 s</b> 且要过编辑器编译；整条 run 五阶段合计 <b>146.7 s</b></td>
-          <td class="loss">贵 → 被设计成单向前馈一次 → 位姿误差没有任何机会被发现</td></tr>
-      <tr><td>线 3 · Blender</td><td>整场构建 <b>38.2 s</b> + Cycles 出图 <b>37.5 s</b>，迭代走低成本预览</td>
-          <td class="win">可承受 → 九轮闭环 → 第 8 轮抓到相机偏航符号错</td></tr>
-      <tr><td>线 2 · three.js</td><td>换种子约 <b>4 s</b> 整场重建，画面就在眼前</td>
-          <td>极便宜 → 八轮，但没建立量，三轮在同一条轴上横跳（fov 26°→38°→34°）</td></tr>
-      </tbody>
-    </table></div>
-    <p class="muted">注意最后一格 —— 便宜不等于好。线 2 八轮全靠肉眼，因为<b>没有一个量告诉它
-    离目标还有多远</b>，而所需的判据其实只是一个布尔量。线 3 第 8 轮那个偏航符号 bug 则正好是
-    「便宜的循环」买到的东西：修正后单步 +0.015 SSIM，比任何材质或灯光改动都大，
-    而它能潜伏八轮，是因为<b>单帧看不出来</b>。</p>
-    <div class="key">环境决定了你<b>能</b>迭代多少轮；判据决定了每一轮<b>算不算数</b>。
-    线 1 缺前者，线 2 缺后者，线 3 两样都有。把结论说成「UE 摆不准」会指向错误的修复方向。</div>
+    <p>引擎的贡献不是精度，是<b>给闭环定价</b>：装配 <b>57.8 s</b> 且要过编辑器编译（整条 run
+    <b>146.7 s</b>）→ 被设计成单向前馈一次 → 位姿误差没有机会被发现。线 3 整场 <b>38.2 s</b>
+    + Cycles <b>37.5 s</b>，九轮闭环，第 8 轮抓到相机偏航符号错。
+    <b>环境决定你能迭代多少轮，判据决定每一轮算不算数</b>；线 1 缺前者，线 2 缺后者。
+    把结论说成「UE 摆不准」会指向错误的修复方向。</p>
   </div>
 
-  <details>
-    <summary>一条必须补上的自我警告：把「建立度量」说成万灵药也是错的</summary>
-    <p>线 3 自己踩到过：逐物体互相关的<b>噪声地板高达 10.2 px</b>
-    （12 个可证明没动过的锚定物体，在一次 A/B 里报出的位移均值），
-    而且在一排几乎一样的米色 CRT 里，相关器会<b>锁到邻居身上</b>
-    （一个报 −39 px、一个报 +33 px，那是误配不是位移）。
-    它自己的总结是：<b>度量工具本身也要被审查。</b></p>
-  </details>
 
-  <h3 id="stages">交互 · 三条线一共 20 个环节，按角色筛</h3>
-  <p class="muted">三条管线摊平成一张表，按角色筛就能横着看「哪条线把哪一类判断交给了谁」。</p>
-  <div class="filters" id="sfilters"></div>
-  <div class="tbl-scroll wide"><table>
-    <thead><tr><th style="width:8%">线</th><th style="width:15%">环节</th><th style="width:12%">角色</th>
-      <th>这一步做什么</th><th style="width:22%">实测 / 留痕</th></tr></thead>
-    <tbody id="sbody"></tbody>
-  </table></div>
-  <div class="detail" id="sOut"></div>
-  <p class="muted" style="margin-top:12px">按角色数一遍：线 1 的 7 个环节里<b>确定性算法占 4 个</b>，
-  模型判断只占 2 个 —— 「模型不行」这个说法在这条线上解释不了它最大的那个误差，
-  因为出问题的那一环<b>根本没有模型参与</b>。</p>
+  <div class="warn">
+    <b>把「建立度量」说成万灵药，同样是错的。</b>线 3 自己踩到过：逐物体互相关的<b>噪声地板高达
+    10.2 px</b>（12 个可证明没动过的锚定物体，一次 A/B 里报出的位移均值），而且在一排几乎一样的
+    米色 CRT 里，相关器会<b>锁到邻居身上</b>（一个报 −39 px、一个报 +33 px）。
+    <b>判据本身也要过一遍审查</b>，否则「有数」只是把没有根据的自信换了个载体。
+  </div>
+
+  <h3 id="stages">交互 · 三条线一共 20 个环节</h3>
+  <details>
+    <summary>20 个环节按角色筛：模型判断 / 确定性算法 / 人工介入 / 留下问题点</summary>
+    <div class="filters" id="sfilters"></div>
+    <div class="tbl-scroll wide"><table>
+      <thead><tr><th style="width:8%">线</th><th style="width:15%">环节</th><th style="width:12%">角色</th>
+        <th>这一步做什么</th><th style="width:22%">实测 / 留痕</th></tr></thead>
+      <tbody id="sbody"></tbody>
+    </table></div>
+    <div class="detail" id="sOut"></div>
+  </details>
+  <p class="muted" style="margin-top:12px">按角色数一遍：线 1 的 7 个环节里<b>确定性算法占 4 个</b>、
+  模型判断只占 2 个 —— 出问题的那一环<b>没有模型参与</b>。</p>
 </div>
 
 <!-- ==================================================================== -->
 <div class="sec" id="list">
   <div class="tag">收尾</div>
   <h2>一页清单</h2>
-  <p class="muted">压缩版，可以直接拿去对着执行。每一条在上文都有出处。</p>
 
-  <h3>识别与分割（6 条）</h3>
-  <div class="key"><ol style="margin:0">
-    <li>先问场景、再问检测；把<b>这张图自己的</b>名词列表喂给检测器，不要用固定类别表。</li>
-    <li>至少三条召回：整图 + 语义热区 + 重叠分块。<b>同一份提示词，只换 crop。</b></li>
-    <li>分块时<b>区分接缝与图边</b>：碰切缝的丢、碰图边的留。三个前提：轴对齐矩形裁块、
-      <b>重叠带宽于最大物体</b>、留下的图边框必须带「被裁断」标记。</li>
-    <li>枚举过滤后<b>仍 ≥ 2 个</b>才替换父框，<b>一件不发明</b>。</li>
-    <li>坐标序、归一化区间、退化框，在归一化层一次性吸收。</li>
-    <li>结构可靠性做成本地契约：解析 → 配平扫描 → 校验 → <b>一次</b>修复重试 → 写回缓存槽；
-      缓存键<b>不含端点</b>。</li>
-  </ol></div>
-
-  <h3>资产生成（6 条）</h3>
-  <div class="key"><ol style="margin:0">
-    <li>先按判据选路：要「这一件」走库匹配，要「这一类」走程序化。先看<b>失败形态</b>，再看成本。</li>
-    <li>库资产必须离线预处理，并落一份实测 <code>stats.json</code>。</li>
-    <li><b>字段所有权切分</b>：语义字段人核过就冻结，几何字段永远从实测重写。
-      写在配置里却没有消费方的约定（例如朝向轴）等于没写。</li>
-    <li>四级瀑布（人工 → 精确类别 → 视觉兜底 → proxy），同类变体按<b>形状距离</b>轮换。</li>
-    <li>缩放保护取三轴比<b>中位数</b>；放大钳、缩小不钳；屏幕类锁长宽比。
-      <b>阈值从你自己库的比值分布里定</b> —— 1.7 / 10 / 0.1 只在「库网格已是真实尺寸」时成立。</li>
-    <li>程序化侧：一份总平面两处消费、颜色进顶点色、噪声按周期取模、每格自带种子、
-      按材质桶合并、LOD 做在生成层。</li>
-  </ol></div>
+  <div class="key" style="border-left-color:var(--acc2)">这条线上每一次返工，事后追溯都是
+    <b>「可解的几何量不交给模型估」</b>被打破的那一次。</div>
 
   <figure>
     <img src="../process/recon/metric_curve.jpg" width="1200" height="420" decoding="async"
       alt="九个里程碑上的边缘 F-score 与 SSIM 曲线">
-    <figcaption>这份清单不是一次写出来的，是线 3 的 <b>9 个里程碑</b>一条条被打出来的：
-    边缘 F <b class="num">0.260 → 0.650</b>，而 SSIM 从头到尾只从 0.386 爬到 0.417。
-    下面「相机与位姿」最后一条里那句<b>点阵双向投影</b>，对应的就是第 8 个里程碑 ——
-    投影器与渲染器的偏航符号不一致，整场物体右移 7.4 px，改完单步 <b>+0.015 SSIM</b>，
-    是全项目最大的一次单步收益，<b>而它在任何单帧里都看不出来</b>。
-    （绿线是直方图相似度，第 5 步光度定标后从 0.65 跳到 0.81，冲出了纵轴量程。）</figcaption>
+    <figcaption>线 3 的 <b>9 个里程碑</b>上<b>两条判据互相打架</b>：SSIM 涨得最多的一步是光度定标
+    （<b class="num">+0.055</b>），同一步边缘 F 反<b>掉 0.012</b>；真正修好几何的第 8 步
+    （偏航符号不一致，整场右移 7.4 px）只换来 <b class="num">+0.015</b>。</figcaption>
   </figure>
 
-  <h3>相机与位姿（9 条）</h3>
-  <div class="key"><ol style="margin:0">
-    <li>骨架只有「像素 → 射线 → 与声明的支撑面求交 → 米」。换 DCC 改的是搬运层的<b>六件事</b>：
-      手性、单位、上轴、枢轴、欧拉序与旋转正方向、FOV 沿哪根轴。<b>可解的几何量不要交给模型估。</b></li>
-    <li>按 <code>attached_to</code> 拓扑排序分层求解，环依赖降级为落地物。</li>
-    <li>消失点：CLAHE + LSD（带 Hough 回退）、对残差族再求一次、<b>长度加权</b>打分、
-      <b>长度自适应</b>容差、内点上精修。</li>
-    <li><b>设受理窗口并记录拒收理由。</b>出 [30°,120°] 弃用、出 (35°,110°) 置信度打两成、
-      人工覆盖走 [20°,120°] —— <b>三条线都要抄</b>。要处理超广角先做去畸变，别抬上界。</li>
-    <li>一点透视用天顶 VP 救，但<b>把置信度打折</b>。</li>
-    <li>机高由已知物高反解取中位数，锚点四条过滤；用 <b>MAD/median</b> 做一致性检查。</li>
-    <li>拿 <code>margin</code> 当逐物体质量代理，<b>同时</b>门控置信度、高度锚点、尺度尺子、房间证据。
-      射线打空支撑面时<b>重解</b>，不要只钳。</li>
-    <li><b>尺寸看先验、位置看测量</b>，但两边都会反：先验只对「同名即同尺寸」的类别有效，
-      全局尺度定过之后不该再逐物体套一次；测量过不了可信度门时位置交回规则。
-      全局尺度是钳制不是弃用，越界必须记低置信。</li>
-    <li>闭环两件事：解算结果<b>重投影回参考图</b>；<b>点阵双向投影验渲染器与投影器一致</b>。
-      <b>判据本身也要被审查</b>：先测噪声地板，再用它下结论。</li>
-  </ol></div>
-
-  <div class="key" style="border-left-color:var(--acc2)">
-    <b>如果只能记一条：</b>语义走模型，几何走算法，模型的几何输出只当提示。
-    这条线上每一次返工，事后追溯都是它被打破的那一次。
-  </div>
-
+  <details>
+    <summary>图上没有的那几步：可执行清单</summary>
+    <ol style="margin-bottom:0">
+      <li>先问场景再问检测，<b>用这张图自己的名词表</b>；三条召回<b>只换 crop</b>。</li>
+      <li>枚举<b>剩 ≥ 2 个</b>才替换父框；坐标序与退化框在归一化层一次吸收。</li>
+      <li>选路先看<b>失败形态</b>；库资产离线预处理，落一份实测 <code>stats.json</code>。</li>
+      <li>按 <code>attached_to</code> 拓扑排序分层；机高取反解中位数，锚点<b>四条过滤</b>。</li>
+      <li>射线打空支撑面时<b>重解，不要只钳</b>。</li>
+    </ol>
+  </details>
   <details>
     <summary>数据出处与复算方式</summary>
-    <p>数字来自 <code>process/figures/method/method_data.json</code>、
-    <code>process/figures/tri/section_data.json</code> 与本仓库源码；线 1 的机器留痕在
-    <code>process/run_fd6e434f/</code>，线 2 的源码在 <code>process/threejs_fob/</code>。
-    放大器、房间盒曲线、逐框反算三处的每一个数字都是这样复算出来的：</p>
+    <p>数字来自 <code>method_data.json</code>、<code>section_data.json</code> 与源码，线 1 的机器留痕
+    在 <code>process/run_fd6e434f/</code>。三处交互的读数都这样复算：</p>
     <pre><code>import sys, json, copy; sys.path.insert(0, "pipeline")
 import stages.s02_layout as L
-perc  = json.load(open("process/run_fd6e434f/perception.json", encoding="utf-8"))
-calib = json.load(open("process/run_fd6e434f/calib.json",      encoding="utf-8"))
-calib["max_solve_distance_m"] = 15.0
-inst, room, walls = L._solve_pass(copy.deepcopy(perc["detections"]), calib, 1024, 572, {})
-print([round(v * 100, 1) for v in room["size_m"]])     # -> [1083.8, 723.3, 285.0]</code></pre>
+j = lambda f: json.load(open("process/run_fd6e434f/" + f, encoding="utf-8"))
+c = j("calib.json"); c["max_solve_distance_m"] = 15.0
+d = copy.deepcopy(j("perception.json")["detections"])
+print(L._solve_pass(d, c, 1024, 572, {})[1]["size_m"])   # [10.838, 7.233, 2.850]</code></pre>
+
   </details>
 </div>
 
 <div class="foot">
-  三条线用的是同一个模型。真正把结果拉开的，是<b>交给它判断的东西是什么</b>，
-  以及<b>判断完谁来核对</b>。<br>
+  真正把结果拉开的，是<b>交给模型判断的东西是什么</b>，以及<b>判断完谁来核对</b>。<br>
   另外两份：<a href="单图重建-资产库匹配与度量闭环.html">单图重建 · 资产库匹配与度量闭环</a> ·
   <a href="对照实验-程序化场景重建.html">对照实验 · 程序化场景重建</a>
   ← <a href="../index.html">返回三条方案总览</a>
 </div>
 
 </div>
+
 
 <script id="M" type="application/json">{"image":{"w":1024,"h":572,"src":"../process/figures/tri/ref_interior.jpg"},"detections":[{"i":0,"label":"blue folding chair","src":"whole","att":"floor","box":[0.0,0.504,0.119,0.993],"mask_pts":6},{"i":1,"label":"blue folding chair","src":"whole","att":"floor","box":[0.166,0.52,0.386,0.993],"mask_pts":8},{"i":2,"label":"blue folding chair","src":"whole","att":"floor","box":[0.686,0.438,0.778,0.698],"mask_pts":8},{"i":3,"label":"beige crt monitor","src":"whole","att":"white folding table","box":[0.164,0.294,0.282,0.456],"mask_pts":6},{"i":4,"label":"beige crt monitor","src":"whole","att":"white folding table","box":[0.445,0.316,0.496,0.431],"mask_pts":4},{"i":5,"label":"beige crt monitor","src":"whole","att":"white folding table","box":[0.746,0.333,0.838,0.448],"mask_pts":4},{"i":6,"label":"beige computer tower","src":"whole","att":"white folding table","box":[0.551,0.286,0.628,0.458],"mask_pts":4},{"i":7,"label":"beige computer tower","src":"whole","att":"floor","box":[0.446,0.541,0.553,0.72],"mask_pts":4},{"i":8,"label":"white folding table","src":"whole","att":"floor","box":[0.419,0.423,0.643,0.673],"mask_pts":4},{"i":9,"label":"fluorescent ceiling light","src":"whole","att":"concrete ceiling","box":[0.27,0.036,0.438,0.065],"mask_pts":4},{"i":10,"label":"fluorescent ceiling light","src":"whole","att":"concrete ceiling","box":[0.58,0.036,0.748,0.063],"mask_pts":4},{"i":11,"label":"wall poster","src":"whole","att":"white tiled wall","box":[0.156,0.043,0.215,0.298],"mask_pts":4},{"i":12,"label":"wall poster","src":"whole","att":"white tiled wall","box":[0.24,0.123,0.278,0.288],"mask_pts":4},{"i":13,"label":"concrete pillar","src":"whole","att":"floor","box":[0.49,0.0,0.523,0.791],"mask_pts":4},{"i":14,"label":"white tiled wall","src":"whole","att":"wall","box":[0.043,0.0,0.373,0.763],"mask_pts":5},{"i":15,"label":"white tiled wall","src":"whole","att":"wall","box":[0.643,0.0,0.983,0.833],"mask_pts":5},{"i":16,"label":"concrete floor","src":"whole","att":"floor","box":[0.013,0.483,0.988,0.993],"mask_pts":4},{"i":17,"label":"concrete ceiling","src":"whole","att":"ceiling","box":[0.233,0.0,0.783,0.173],"mask_pts":4},{"i":18,"label":"cable bundle","src":"whole","att":"wall","box":[0.828,0.013,0.938,0.768],"mask_pts":4},{"i":19,"label":"floor litter","src":"whole","att":"concrete floor","box":[0.436,0.796,0.536,0.898],"mask_pts":4},{"i":20,"label":"floor litter","src":"whole","att":"concrete floor","box":[0.153,0.708,0.218,0.771],"mask_pts":4},{"i":21,"label":"beige crt monitor","src":"hotspot","att":"white folding table","box":[0.379,0.3292,0.3991,0.394],"mask_pts":4},{"i":22,"label":"beige crt monitor","src":"hotspot","att":"white folding table","box":[0.6474,0.3515,0.6824,0.408],"mask_pts":4},{"i":23,"label":"beige crt monitor","src":"hotspot","att":"floor","box":[0.662,0.4782,0.6824,0.5788],"mask_pts":4},{"i":24,"label":"beige computer tower","src":"hotspot","att":"concrete floor","box":[0.4477,0.5375,0.4933,0.711],"mask_pts":4},{"i":25,"label":"beige computer tower","src":"hotspot","att":"concrete floor","box":[0.5167,0.5402,0.5532,0.7048],"mask_pts":4},{"i":26,"label":"white folding table","src":"hotspot","att":"concrete floor","box":[0.6268,0.4014,0.6824,0.4501],"mask_pts":4},{"i":27,"label":"blue folding chair","src":"hotspot","att":"concrete floor","box":[0.4249,0.4061,0.462,0.5348],"mask_pts":4},{"i":28,"label":"blue folding chair","src":"hotspot","att":"concrete floor","box":[0.5511,0.4802,0.6012,0.6217],"mask_pts":4},{"i":29,"label":"white tiled wall","src":"hotspot","att":"floor","box":[0.3951,0.323,0.4501,0.4973],"mask_pts":4},{"i":30,"label":"white tiled wall","src":"hotspot","att":"floor","box":[0.6316,0.323,0.6815,0.4026],"mask_pts":4},{"i":31,"label":"concrete floor","src":"hotspot","att":null,"box":[0.379,0.4965,0.6824,0.711],"mask_pts":4},{"i":32,"label":"concrete pillar","src":"hotspot","att":"concrete floor","box":[0.4942,0.323,0.5198,0.711],"mask_pts":4},{"i":33,"label":"cable bundle","src":"hotspot","att":"beige computer tower","box":[0.5903,0.4802,0.6204,0.6611],"mask_pts":4},{"i":34,"label":"floor litter","src":"hotspot","att":"concrete floor","box":[0.5571,0.6233,0.6222,0.6682],"mask_pts":4},{"i":35,"label":"concrete floor","src":"hotspot","att":"floor","box":[0.593,0.586,0.7595,0.6911],"mask_pts":4},{"i":36,"label":"white tiled wall","src":"hotspot","att":"wall","box":[0.6338,0.308,0.8912,0.6884],"mask_pts":4},{"i":37,"label":"concrete ceiling","src":"hotspot","att":"ceiling","box":[0.593,0.308,0.8336,0.3604],"mask_pts":4},{"i":38,"label":"concrete pillar","src":"hotspot","att":"floor","box":[0.593,0.308,0.6338,0.586],"mask_pts":4},{"i":39,"label":"fluorescent ceiling light","src":"hotspot","att":"concrete ceiling","box":[0.7073,0.308,0.7952,0.3276],"mask_pts":4},{"i":40,"label":"wall poster","src":"hotspot","att":"concrete pillar","box":[0.593,0.3523,0.6275,0.4558],"mask_pts":4},{"i":41,"label":"white folding table","src":"hotspot","att":"white tiled wall","box":[0.6269,0.3992,0.8507,0.4782],"mask_pts":4},{"i":42,"label":"white folding table","src":"hotspot","att":"floor","box":[0.593,0.4535,0.6422,0.6607],"mask_pts":4},{"i":43,"label":"beige crt monitor","src":"hotspot","att":"white folding table","box":[0.7139,0.3176,0.7697,0.4385],"mask_pts":4},{"i":44,"label":"beige crt monitor","src":"hotspot","att":"floor","box":[0.6818,0.5128,0.7448,0.6137],"mask_pts":4},{"i":45,"label":"beige computer tower","src":"hotspot","att":"floor","box":[0.6389,0.4535,0.6878,0.5594],"mask_pts":4},{"i":46,"label":"cable bundle","src":"hotspot","att":"concrete ceiling","box":[0.8372,0.308,0.8795,0.688],"mask_pts":4},{"i":47,"label":"floor litter","src":"hotspot","att":"white folding table","box":[0.6467,0.3869,0.6572,0.4116],"mask_pts":4},{"i":48,"label":"floor litter","src":"hotspot","att":"white folding table","box":[0.6905,0.3992,0.6998,0.4262],"mask_pts":4},{"i":49,"label":"fluorescent ceiling light","src":"tile","att":"concrete ceiling","box":[0.3684,0.1668,0.4662,0.183],"mask_pts":4},{"i":50,"label":"beige crt monitor","src":"tile","att":"white folding table","box":[0.3582,0.3246,0.3996,0.396],"mask_pts":4},{"i":51,"label":"beige computer tower","src":"tile","att":"white folding table","box":[0.2808,0.3264,0.3528,0.4326],"mask_pts":4},{"i":52,"label":"beige computer tower","src":"tile","att":"concrete floor","box":[0.3354,0.4398,0.396,0.534],"mask_pts":4},{"i":53,"label":"wall poster","src":"tile","att":"white tiled wall","box":[0.1536,0.0402,0.351,0.3156],"mask_pts":4},{"i":54,"label":"wall poster","src":"tile","att":"white tiled wall","box":[0.384,0.2196,0.483,0.3282],"mask_pts":4},{"i":55,"label":"cable bundle","src":"tile","att":"white folding table","box":[0.3702,0.4044,0.393,0.5112],"mask_pts":4},{"i":56,"label":"beige crt monitor","src":"tile","att":"floor","box":[0.6628,0.4752,0.7,0.5832],"mask_pts":4},{"i":57,"label":"fluorescent ceiling light","src":"tile","att":"concrete ceiling","box":[0.5512,0.1686,0.6472,0.1818],"mask_pts":4},{"i":58,"label":"wall poster","src":"tile","att":"white tiled wall","box":[0.6784,0.195,0.6964,0.3036],"mask_pts":4},{"i":59,"label":"concrete ceiling","src":"tile","att":"ceiling","box":[0.517,0.0,0.775,0.1536],"mask_pts":4},{"i":60,"label":"beige crt monitor","src":"tile","att":"floor","box":[0.1962,0.5482,0.2868,0.7048],"mask_pts":13},{"i":61,"label":"beige computer tower","src":"tile","att":"floor","box":[0.2484,0.4996,0.3414,0.6574],"mask_pts":8},{"i":62,"label":"wall poster","src":"tile","att":"floor","box":[0.1548,0.7018,0.2172,0.7696],"mask_pts":5},{"i":63,"label":"beige crt monitor 2","src":"tile","att":"floor","box":[0.682,0.5128,0.745,0.6118],"mask_pts":4},{"i":64,"label":"beige crt monitor 3","src":"tile","att":"floor","box":[0.6622,0.4768,0.7,0.5758],"mask_pts":4},{"i":65,"label":"beige computer tower 1","src":"tile","att":"floor","box":[0.4486,0.5332,0.4966,0.7216],"mask_pts":4},{"i":66,"label":"beige computer tower 2","src":"tile","att":"floor","box":[0.517,0.5386,0.5536,0.7024],"mask_pts":4},{"i":67,"label":"white folding table","src":"enum","att":null,"box":[0.6634,0.421,0.8487,0.5232],"mask_pts":0},{"i":68,"label":"white folding table 1","src":"enum","att":null,"box":[0.6272,0.3973,0.7024,0.5475],"mask_pts":0},{"i":69,"label":"white folding table 1","src":"enum","att":null,"box":[0.3604,0.3973,0.3946,0.5283],"mask_pts":0}],"by_source":{"whole":21,"hotspot":28,"tile":18,"enum":3},"tiles":[[0.0,0.0,0.6,0.6],[0.4,0.0,1.0,0.6],[0.0,0.4,0.6,1.0],[0.4,0.4,1.0,1.0]],"match":{"n":30,"method":{"exact_category":21,"proxy_fallback":9},"flags":{"SHAPE_MISMATCH":8,"SCALE_CLAMPED":3,"NO_MATCH":9},"summary":{"library":21,"proxy":9,"flagged":17}},"modules":[{"id":"A06","cat":"mouse","est_max":11.5,"mesh_max":113.3,"ratio":9.85,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M12","cat":"soda_can","est_max":12.0,"mesh_max":112.3,"ratio":9.36,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M26","cat":"misc","est_max":11.0,"mesh_max":102.5,"ratio":9.32,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M11","cat":"paper_cup","est_max":12.0,"mesh_max":100.3,"ratio":8.36,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M33","cat":"sign","est_max":15.0,"mesh_max":101.2,"ratio":6.75,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M31","cat":"misc","est_max":18.0,"mesh_max":97.3,"ratio":5.41,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M32","cat":"misc","est_max":15.0,"mesh_max":75.0,"ratio":5.0,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"A05","cat":"cable","est_max":20.0,"mesh_max":88.6,"ratio":4.43,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"A04","cat":"power_strip","est_max":28.0,"mesh_max":111.8,"ratio":3.99,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M23","cat":"misc","est_max":32.0,"mesh_max":110.9,"ratio":3.47,"tris":80000,"screen":true,"flat":false,"needs_review":true},{"id":"M27","cat":"poster","est_max":30.0,"mesh_max":99.9,"ratio":3.33,"tris":80000,"screen":false,"flat":true,"needs_review":true},{"id":"M25","cat":"misc","est_max":30.0,"mesh_max":93.0,"ratio":3.1,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M35","cat":"sign","est_max":30.0,"mesh_max":92.8,"ratio":3.09,"tris":80000,"screen":false,"flat":true,"needs_review":true},{"id":"M39","cat":"sign","est_max":35.0,"mesh_max":99.1,"ratio":2.83,"tris":80000,"screen":false,"flat":true,"needs_review":true},{"id":"M16","cat":"keyboard","est_max":45.0,"mesh_max":115.7,"ratio":2.57,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M30","cat":"sign","est_max":40.0,"mesh_max":103.0,"ratio":2.57,"tris":79999,"screen":false,"flat":false,"needs_review":true},{"id":"M41","cat":"misc","est_max":40.0,"mesh_max":87.6,"ratio":2.19,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"A02","cat":"computer_tower","est_max":42.0,"mesh_max":87.4,"ratio":2.08,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M10","cat":"computer_tower","est_max":45.0,"mesh_max":89.5,"ratio":1.99,"tris":80000,"screen":false,"flat":false,"needs_review":false},{"id":"M08","cat":"computer_tower","est_max":48.0,"mesh_max":95.3,"ratio":1.98,"tris":80000,"screen":false,"flat":false,"needs_review":false},{"id":"M28","cat":"sign","est_max":60.0,"mesh_max":117.8,"ratio":1.96,"tris":79999,"screen":false,"flat":true,"needs_review":false},{"id":"M02","cat":"crt_monitor","est_max":45.0,"mesh_max":87.4,"ratio":1.94,"tris":80000,"screen":true,"flat":false,"needs_review":true},{"id":"M07","cat":"computer_tower","est_max":48.0,"mesh_max":93.1,"ratio":1.94,"tris":80000,"screen":false,"flat":false,"needs_review":false},{"id":"M09","cat":"computer_tower","est_max":45.0,"mesh_max":86.6,"ratio":1.92,"tris":79999,"screen":false,"flat":false,"needs_review":false},{"id":"M06","cat":"crt_monitor","est_max":45.0,"mesh_max":85.3,"ratio":1.9,"tris":80000,"screen":true,"flat":false,"needs_review":true},{"id":"M01","cat":"crt_monitor","est_max":45.0,"mesh_max":82.7,"ratio":1.84,"tris":80000,"screen":true,"flat":false,"needs_review":false},{"id":"M05","cat":"crt_monitor","est_max":45.0,"mesh_max":81.2,"ratio":1.81,"tris":199999,"screen":true,"flat":false,"needs_review":false},{"id":"M03","cat":"crt_monitor","est_max":45.0,"mesh_max":81.1,"ratio":1.8,"tris":80000,"screen":true,"flat":false,"needs_review":false},{"id":"M04","cat":"crt_monitor","est_max":45.0,"mesh_max":80.0,"ratio":1.78,"tris":80000,"screen":true,"flat":false,"needs_review":false},{"id":"M40","cat":"sign","est_max":50.0,"mesh_max":87.8,"ratio":1.76,"tris":80000,"screen":false,"flat":true,"needs_review":true},{"id":"M34","cat":"sign","est_max":60.0,"mesh_max":98.6,"ratio":1.64,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M29","cat":"newspaper","est_max":60.0,"mesh_max":93.6,"ratio":1.56,"tris":79999,"screen":false,"flat":true,"needs_review":true},{"id":"M37","cat":"sign","est_max":70.0,"mesh_max":104.4,"ratio":1.49,"tris":80000,"screen":false,"flat":false,"needs_review":true},{"id":"M24","cat":"sign","est_max":70.0,"mesh_max":94.7,"ratio":1.35,"tris":80000,"screen":false,"flat":true,"needs_review":true},{"id":"M38","cat":"drawer_cabinet","est_max":65.0,"mesh_max":83.9,"ratio":1.29,"tris":79999,"screen":false,"flat":false,"needs_review":false},{"id":"M36","cat":"sign","est_max":80.0,"mesh_max":101.0,"ratio":1.26,"tris":80000,"screen":false,"flat":false,"needs_review":false},{"id":"M13","cat":"folding_chair","est_max":80.0,"mesh_max":97.0,"ratio":1.21,"tris":200000,"screen":false,"flat":false,"needs_review":false},{"id":"A03","cat":"long_table","est_max":200.0,"mesh_max":109.3,"ratio":0.55,"tris":199999,"screen":false,"flat":false,"needs_review":false},{"id":"M15","cat":"long_table","est_max":180.0,"mesh_max":91.5,"ratio":0.51,"tris":200000,"screen":false,"flat":false,"needs_review":false}],"module_stats":{"n":39,"ratio_min":0.51,"ratio_max":9.85,"mesh_max_lo":75.0,"mesh_max_hi":117.8,"needs_review":25}}</script>
 <script id="G" type="application/json">{"grid":{"p0":-2.0,"ps":0.1,"pn":161,"h0":0.5,"hs":0.04,"hn":28,"fwd":[955,931,909,888,868,848,1096,1063,1033,1004,978,953,929,906,885,865,1039,1010,1371,1318,1269,1318,1270,1225,1338,1289,1242,1200,1161,1124,1090,1058,1028,1034,1006,979,954,930,908,887,867,848,830,812,796,780,765,751,737,724,712,700,688,677,666,765,750,736,723,711,698,687,676,665,655,645,635,626,617,608,821,803,787,771,1156,1118,1308,1260,1216,1176,1138,1103,1070,1040,1011,984,958,935,912,922,900,879,859,841,823,806,790,774,760,746,732,719,707,695,684,673,662,652,642,633,624,615,606,695,683,1124,1086,1051,1019,989,961,935,910,887,866,845,826,808,791,774,759,744,730,716,703,691,679,668,657,647,637,627,618,609,600,592,584,576,569,562,555,548,541,535,529,523,517,511,506,558,551,1022,996,972,949,927,907,887,868,1106,1075,1046,1019,994,969,946,925,904,1081,1052,1414,1361,1313,1268,1314,1269,1228,1332,1286,1244,1204,1167,1133,1101,1070,1042,1048,1021,995,971,948,927,906,886,868,850,833,817,801,787,773,759,746,733,721,710,699,688,786,771,758,745,732,720,709,697,687,676,666,657,647,638,630,840,823,807,792,1160,1352,1304,1260,1220,1182,1146,1113,1082,1053,1026,1000,975,952,930,940,919,898,879,861,843,827,811,796,781,767,754,741,729,717,706,695,684,674,664,655,645,636,628,716,1164,1126,1091,1059,1028,1000,974,949,925,903,883,863,844,827,810,794,779,764,750,737,724,712,700,689,678,668,658,648,639,630,621,613,605,597,590,582,575,568,562,555,549,543,537,531,525,1035,1061,1035,1010,987,965,944,924,905,887,1115,1086,1058,1032,1008,984,962,941,921,1091,1064,1401,1353,1308,1267,1310,1269,1230,1327,1285,1245,1208,1173,1141,1110,1081,1088,1060,1034,1010,986,964,943,923,904,886,869,852,836,821,806,792,779,766,754,742,730,719,708,805,791,778,765,752,740,729,717,707,696,686,677,667,658,875,858,842,826,1199,1164,1345,1301,1260,1222,1187,1153,1122,1093,1065,1039,1014,990,968,947,956,935,916,897,879,862,846,830,815,801,787,774,761,749,737,726,715,704,694,684,675,666,657,648,736,1163,1128,1096,1065,1037,1010,985,961,939,918,898,879,861,844,827,812,797,783,769,756,743,731,720,708,698,687,677,668,658,649,641,632,624,616,609,601,594,587,581,574,568,561,555,1098,1072,1047,1072,1047,1023,1001,979,959,939,921,1152,1123,1095,1069,1044,1020,998,977,956,937,1101,1438,1390,1346,1304,1348,1307,1269,1365,1322,1283,1246,1211,1178,1148,1119,1091,1097,1071,1046,1022,1000,979,958,939,920,902,885,869,854,839,824,811,797,784,772,760,749,738,727,823,809,796,783,771,759,747,736,726,715,705,696,686,677,891,874,858,843,1200,1167,1339,1298,1260,1225,1191,1160,1130,1102,1075,1050,1026,1004,982,992,971,951,932,913,896,879,863,848,833,819,805,792,780,768,756,745,734,723,713,703,694,684,675,766,1198,1163,1130,1100,1072,1045,1019,996,973,952,931,912,894,876,859,844,828,814,800,786,773,761,749,738,726,716,706,696,686,677,668,659,651,643,635,627,620,612,605,599,592,585,1161,1133,1107,1082,1058,1082,1058,1035,1013,992,973,954,936,1158,1130,1104,1078,1055,1032,1010,990,970,1136,1109,1425,1381,1340,1301,1343,1304,1268,1358,1318,1281,1247,1214,1183,1154,1126,1100,1106,1081,1057,1034,1012,992,972,953,935,918,901,885,870,855,841,827,814,802,789,778,766,755,853,839,826,813,800,788,776,765,754,743,733,723,713,704,923,906,889,873,858,1202,1171,1334,1296,1260,1227,1195,1165,1137,1110,1085,1061,1038,1016,995,1004,984,964,946,928,911,895,879,864,850,836,822,809,797,785,773,762,751,741,731,721,711,702,693,783,1196,1163,1133,1104,1077,1052,1028,1005,984,963,944,925,907,890,874,858,843,829,815,802,790,777,766,754,743,733,723,713,703,694,685,676,668,660,652,644,637,629,622,615,1224,1195,1167,1140,1114,1090,1114,1090,1067,1045,1024,1004,985,967,1191,1163,1137,1111,1087,1064,1042,1021,1001,982,1142,1116,1413,1373,1334,1376,1338,1302,1268,1352,1315,1280,1247,1216,1187,1159,1133,1139,1113,1089,1066,1044,1023,1003,984,966,948,931,915,900,885,870,856,843,830,818,805,794,783,772,868,855,841,828,816,804,792,781,770,759,749,739,730,720,936,919,903,888,1234,1203,1174,1329,1294,1260,1229,1199,1170,1143,1118,1093,1070,1048,1027,1007,1016,996,977,959,942,925,909,894,879,865,851,838,825,813,801,789,778,768,757,747,737,728,719,811,1227,1194,1164,1136,1109,1083,1059,1036,1014,994,974,955,937,920,903,887,872,858,844,830,817,805,793,781,770,759,749,738,729,719,710,701,692,684,676,668,660,653,645,1288,1256,1226,1198,1171,1146,1121,1098,1121,1098,1076,1055,1034,1015,996,978,1195,1168,1142,1118,1095,1073,1052,1031,1012,1173,1147,1444,1404,1365,1330,1369,1333,1299,1267,1347,1312,1279,1248,1219,1191,1164,1139,1145,1120,1097,1075,1054,1034,1014,996,978,961,944,928,913,898,884,871,857,845,832,820,809,798,787,882,869,855,843,830,818,807,796,785,775,764,755,745,736,948,931,916,901,1234,1205,1361,1326,1292,1260,1230,1202,1175,1149,1124,1101,1079,1057,1037,1046,1026,1007,989,971,954,938,922,907,893,879,865,852,840,828,816,805,794,783,773,763,753,743,734,826,1224,1194,1165,1138,1113,1088,1065,1043,1023,1003,984,965,948,931,915,900,885,871,857,844,831,819,807,796,784,774,763,753,744,734,725,716,708,699,691,683,676,1351,1318,1286,1256,1228,1201,1175,1151,1128,1151,1128,1105,1084,1063,1044,1025,1007,989,1198,1172,1148,1124,1102,1081,1060,1041,1022,1177,1153,1433,1395,1359,1325,1363,1329,1297,1376,1342,1309,1278,1249,1221,1194,1169,1174,1150,1127,1104,1083,1063,1043,1024,1006,989,972,956,940,926,911,897,884,871,858,846,834,823,812,909,895,882,869,856,844,832,821,810,799,789,779,769,760,975,959,943,928,913,1234,1206,1355,1322,1290,1260,1232,1205,1179,1154,1131,1108,1087,1066,1046,1055,1036,1017,999,982,966,950,935,920,906,892,879,866,854,842,830,819,808,797,787,777,767,758,851,839,1222,1193,1166,1141,1116,1093,1071,1050,1030,1011,993,975,958,942,926,911,897,883,870,857,844,832,820,809,798,788,777,767,758,748,739,731,722,714,706,1414,1379,1346,1315,1285,1257,1230,1204,1179,1156,1133,1156,1133,1112,1091,1071,1052,1034,1016,1226,1200,1176,1152,1130,1109,1088,1068,1049,1206,1181,1460,1423,1387,1354,1391,1358,1326,1296,1370,1337,1307,1277,1249,1222,1197,1173,1178,1155,1132,1111,1090,1071,1052,1033,1016,999,983,967,952,937,923,909,896,883,871,859,848,836,825,921,907,894,881,869,857,845,834,823,813,802,793,783,773,985,969,953,939,1262,1234,1207,1350,1319,1289,1260,1233,1207,1182,1159,1136,1114,1094,1074,1055,1063,1044,1026,1009,993,976,961,946,932,918,904,891,879,866,855,843,832,821,811,801,791,781,772,864,1248,1220,1193,1168,1143,1120,1098,1077,1057,1037,1019,1001,984,968,952,937,922,908,894,881,869,856,844,833,822,811,801,791,781,771,762,753,744,736,1373,1342,1406,1373,1342,1312,1284,1257,1231,1206,1183,1160,1138,1160,1138,1118,1098,1079,1060,1042,1025,1227,1203,1179,1157,1135,1114,1095,1076,1057,1208,1184,1449,1414,1380,1349,1385,1353,1323,1294,1364,1334,1304,1276,1250,1224,1200,1205,1182,1159,1138,1117,1097,1078,1059,1042,1025,1008,992,977,962,948,934,921,908,895,883,871,860,849,838,932,918,905,893,881,869,858,846,836,825,815,805,796,1010,994,978,963,949,1260,1234,1208,1346,1316,1287,1260,1234,1209,1186,1163,1141,1120,1100,1081,1090,1071,1053,1035,1018,1002,986,971,957,943,929,916,903,890,878,867,856,845,834,824,814,804,794,785,876,1245,1219,1193,1169,1146,1124,1102,1082,1063,1044,1026,1009,992,977,961,946,932,918,905,892,880,868,856,845,834,823,813,803,793,784,775,766,1392,1399,1368,1431,1399,1367,1338,1310,1283,1257,1232,1209,1186,1164,1186,1164,1143,1123,1104,1085,1067,1050,1033,1229,1205,1182,1161,1140,1120,1101,1082,1234,1210,1187,1439,1406,1374,1410,1379,1348,1320,1292,1359,1330,1302,1275,1250,1226,1202,1208,1185,1163,1142,1122,1103,1085,1067,1049,1033,1017,1001,986,972,958,944,931,919,906,894,883,871,860,850,942,929,916,904,892,880,869,858,847,837,827,817,808,1018,1003,987,973,1285,1259,1234,1371,1342,1313,1286,1260,1235,1211,1189,1167,1146,1126,1106,1088,1096,1078,1060,1043,1027,1011,996,981,966,953,939,926,914,902,890,878,867,856,846,836,826,816,806,899,1270,1243,1218,1193,1170,1148,1127,1107,1087,1068,1050,1033,1016,1000,985,970,956,942,928,915,903,890,879,867,856,845,835,824,815,805,796,1448,1416,1385,1392,1363,1423,1392,1362,1334,1307,1282,1257,1233,1211,1189,1168,1189,1168,1148,1128,1109,1091,1074,1057,1253,1230,1207,1185,1164,1144,1125,1106,1088,1234,1212,1463,1430,1398,1368,1403,1373,1344,1317,1384,1355,1327,1300,1275,1250,1227,1204,1210,1188,1167,1147,1127,1109,1091,1073,1057,1041,1025,1010,995,981,967,954,941,929,917,905,893,882,871,965,952,939,926,914,902,891,880,869,859,848,838,829,1042,1026,1010,996,981,1283,1258,1234,1366,1338,1311,1285,1260,1236,1213,1191,1170,1150,1131,1112,1120,1102,1084,1067,1050,1034,1019,1004,990,976,962,949,936,924,912,900,889,878,867,857,847,837,827,818,909,1266,1241,1217,1194,1172,1150,1130,1111,1092,1074,1056,1039,1023,1008,993,978,964,950,937,925,912,900,889,877,866,856,845,835,826,1498,1472,1439,1409,1416,1386,1446,1415,1386,1358,1331,1305,1281,1257,1234,1212,1191,1171,1191,1171,1152,1133,1115,1097,1080,1064,1253,1231,1209,1188,1168,1148,1130,1112,1258,1235,1213,1453,1422,1392,1426,1397,1368,1341,1315,1378,1350,1324,1298,1274,1250,1228,1233,1211,1191,1170,1151,1132,1114,1097,1080,1063,1048,1032,1018,1003,989,976,963,950,938,926,915,903,892,882,973,960,948,936,924,912,901,890,879,869,859,849,840,1048,1033,1018,1003,989,1281,1257,1234,1361,1334,1308,1284,1260,1237,1215,1194,1174,1154,1135,1117,1125,1107,1090,1073,1057,1042,1027,1012,998,984,971,958,946,934,922,910,899,888,878,868,858,848,838,930,1289,1264,1240,1216,1194,1173,1153,1133,1114,1096,1079,1062,1046,1030,1015,1000,986,972,959,946,933,921,910,898,887,876,866,856,1554,1520,1487,1461,1431,1402,1409,1381,1438,1408,1380,1354,1328,1303,1280,1257,1235,1214,1194,1214,1194,1174,1155,1137,1120,1103,1086,1276,1253,1231,1211,1190,1171,1152,1134,1116,1258,1236,1475,1444,1414,1386,1419,1390,1363,1337,1312,1373,1346,1321,1297,1273,1251,1229,1234,1213,1193,1173,1155,1136,1119,1102,1086,1070,1054,1039,1025,1011,997,984,972,959,947,935,924,913,902,892,982,969,957,944,933,921,910,900,889,879,869,859,1070,1054,1039,1025,1010,1303,1279,1256,1234,1357,1331,1306,1283,1260,1238,1217,1196,1177,1158,1139,1122,1130,1112,1096,1079,1064,1049,1034,1020,1006,992,979,967,954,943,931,920,909,898,888,877,868,858,849,939,1285,1261,1238,1216,1195,1174,1155,1136,1118,1100,1083,1067,1051,1036,1021,1007,993,980,967,954,942,930,918,907,896,886,1123,1575,1541,1508,1477,1452,1424,1430,1402,1376,1430,1402,1375,1350,1325,1302,1279,1257,1236,1216,1196,1215,1196,1177,1159,1141,1124,1107,1091,1275,1253,1232,1212,1193,1174,1156,1138,1280,1258,1237,1465,1435,1407,1380,1412,1385,1359,1334,1310,1368,1343,1318,1295,1273,1251,1256,1235,1215,1195,1176,1158,1140,1123,1107,1091,1075,1060,1046,1032,1018,1005,992,980,967,955,944,933,922,911,901,989,977,965,953,941,930,919,909,898,888,878,869,1075,1060,1045,1031,1017,1301,1278,1255,1234,1353,1328,1304,1282,1260,1238,1218,1198,1179,1161,1143,1151,1134,1117,1101,1085,1070,1055,1040,1027,1013,1000,987,975,963,951,940,929,918,907,897,887,877,868,959,947,1282,1259,1237,1216,1195,1176,1157,1139,1121,1104,1088,1072,1056,1042,1027,1013,1000,987,974,962,950,938,927,916,1161,1144,1128,1560,1528,1497,1474,1444,1417,1423,1396,1450,1423,1396,1371,1346,1323,1300,1278,1257,1237,1217,1236,1217,1198,1180,1162,1145,1128,1112,1097,1274,1253,1233,1213,1195,1176,1159,1142,1279,1258,1485,1456,1428,1401,1433,1406,1380,1355,1331,1389,1364,1339,1316,1294,1272,1251,1256,1236,1216,1197,1179,1161,1144,1128,1112,1096,1081,1066,1052,1038,1025,1012,999,987,975,963,952,941,930,920,1009,997,984,972,961,949,938,928,917,907,897,887,878,1080,1065,1051,1037,1321,1298,1276,1255,1374,1349,1325,1303,1281,1259,1239,1219,1200,1182,1164,1147,1155,1138,1121,1105,1090,1075,1061,1047,1033,1020,1007,995,982,971,959,948,937,926,916,906,896,886,877,967,1302,1279,1257,1236,1216,1196,1177,1159,1141,1124,1108,1092,1076,1062,1047,1033,1019,1006,993,981,969,957,946,1199,1181,1164,1148,1206,1547,1516,1487,1465,1437,1410,1416,1391,1443,1416,1391,1366,1343,1320,1298,1277,1257,1237,1218,1237,1218,1200,1182,1165,1148,1132,1116,1294,1273,1253,1234,1215,1196,1179,1162,1299,1278,1258,1475,1447,1421,1395,1426,1400,1375,1351,1328,1384,1360,1336,1314,1292,1271,1276,1256,1236,1217,1199,1181,1164,1148,1131,1116,1101,1086,1072,1058,1044,1031,1019,1006,994,982,971,960,949,938,928,1016,1003,991,980,968,957,946,936,925,915,906,896,1100,1085,1071,1057,1043,1318,1296,1275,1254,1369,1346,1323,1301,1280,1259,1239,1220,1202,1184,1167,1150,1158,1141,1125,1110,1095,1080,1066,1053,1039,1026,1014,1001,990,978,967,956,945,934,924,914,904,895,886,974,1298,1277,1255,1235,1216,1197,1178,1161,1144,1127,1111,1096,1081,1066,1052,1039,1025,1012,1000,988,976,1237,1219,1201,1184,1167,1151,1565,1535,1506,1478,1456,1430,1435,1410,1386,1435,1410,1386,1362,1340,1318,1297,1276,1257,1238,1219,1238,1219,1201,1184,1168,1151,1136,1120,1293,1273,1253,1234,1216,1198,1181,1164,1297,1277,1257,1466,1440,1414,1445,1419,1394,1371,1348,1326,1379,1356,1333,1312,1291,1271,1276,1256,1237,1219,1201,1184,1167,1151,1135,1120,1105,1091,1077,1063,1050,1037,1025,1013,1001,989,978,967,956,946,936,1022,1010,998,986,975,964,954,943,933,923,914,904,1104,1089,1075,1062,1048,1315,1294,1273,1254,1365,1342,1320,1299,1279,1259,1240,1221,1204,1186,1170,1177,1161,1145,1129,1114,1100,1085,1072,1058,1045,1032,1020,1008,996,985,974,963,952,942,932,922,912,903,992,1317,1295,1274,1254,1234,1215,1197,1180,1163,1146,1130,1114,1099,1085,1071,1057,1044,1031,1018,1006,1275,1256,1238,1220,1203,1186,1170,1225,1553,1524,1496,1475,1448,1423,1429,1404,1454,1429,1404,1381,1358,1337,1316,1295,1276,1257,1238,1257,1238,1220,1203,1186,1170,1154,1139,1312,1292,1272,1253,1235,1217,1200,1183,1167,1296,1276,1484,1458,1433,1408,1438,1413,1389,1366,1344,1323,1374,1352,1330,1310,1290,1270,1275,1256,1237,1220,1202,1186,1170,1154,1138,1124,1109,1095,1082,1068,1055,1043,1031,1019,1007,996,985,974,963,953,1040,1028,1016,1004,993,982,971,961,950,941,931,921,1122,1108,1094,1080,1066,1334,1313,1292,1272,1253,1361,1339,1318,1298,1278,1259,1240,1222,1205,1188,1172,1179,1163,1148,1133,1118,1104,1090,1076,1063,1051,1038,1026,1014,1003,991,981,970,959,949,939,930,920,911,999,1313,1292,1272,1253,1234,1216,1198,1181,1164,1148,1133,1118,1103,1089,1075,1062,1049,1036,1313,1293,1274,1256,1238,1221,1204,1188,1172,1570,1541,1513,1487,1467,1441,1417,1422,1399,1446,1422,1399,1376,1355,1334,1313,1294,1275,1256,1239,1256,1239,1221,1205,1188,1172,1157,1142,1310,1290,1271,1253,1235,1218,1201,1185,1314,1294,1275,1476,1450,1426,1455,1431,1407,1385,1363,1341,1392,1370,1349,1328,1308,1288,1293,1274,1256,1238,1221,1204,1188,1172,1157,1142,1127,1113,1099,1086,1073,1060,1048,1036,1024,1013,1002,991,980,970,960,1045,1033,1022,1010,999,988,978,967,957,947,938,928,1125,1111,1097,1084,1071,1331,1310,1290,1271,1379,1357,1336,1316,1296,1277,1259,1241,1223,1206,1190,1174,1182,1166,1151,1136,1122,1108,1094,1081,1068,1056,1044,1032,1020,1009,998,987,976,966,956,946,937,927,1016,1331,1310,1290,1270,1251,1233,1216,1198,1182,1166,1150,1135,1121,1106,1092,1079,1066,1351,1330,1311,1292,1274,1256,1238,1222,1205,1190,1243,1557,1530,1504,1484,1459,1434,1440,1417,1394,1440,1416,1394,1372,1351,1331,1312,1293,1274,1256,1274,1256,1239,1222,1206,1190,1175,1160,1145,1308,1289,1271,1253,1236,1219,1203,1187,1312,1293,1493,1467,1443,1420,1448,1425,1402,1380,1359,1338,1388,1366,1345,1325,1306,1287,1292,1273,1256,1238,1222,1205,1189,1174,1159,1145,1131,1117,1103,1090,1078,1065,1053,1041,1030,1019,1008,997,987,976,967,1050,1038,1027,1016,1005,994,984,974,964,954,945,1143,1128,1115,1101,1088,1348,1327,1308,1289,1270,1375,1354,1333,1314,1295,1276,1258,1241,1224,1208,1192,1199,1184,1168,1154,1139,1125,1112,1098,1085,1073,1061,1049,1037,1026,1015,1004,993,983,973,963,953,944,934,1021,1327,1307,1287,1269,1250,1233,1216,1199,1183,1167,1152,1138,1123,1109,1096,1389,1368,1347,1328,1309,1291,1273,1256,1239,1222,1207,1191,1573,1546,1520,1495,1476,1451,1428,1433,1411,1456,1433,1411,1389,1368,1348,1329,1310,1291,1273,1256,1273,1256,1239,1223,1207,1192,1177,1162,1325,1306,1288,1270,1253,1236,1220,1204,1329,1310,1292,1484,1460,1436,1414,1441,1419,1397,1376,1355,1336,1383,1362,1342,1323,1304,1309,1291,1273,1255,1239,1222,1207,1191,1176,1162,1147,1134,1120,1107,1094,1082,1070,1058,1046,1035,1024,1013,1003,993,983,973,1055,1043,1032,1021,1010,1000,990,980,970,960,951,1145,1131,1118,1105,1092,1344,1325,1306,1287,1269,1371,1351,1331,1312,1293,1275,1258,1241,1225,1209,1193,1201,1185,1171,1156,1142,1128,1115,1102,1090,1077,1065,1053,1042,1031,1020,1009,999,989,979,969,959,950,1038,1343,1323,1304,1285,1267,1249,1232,1216,1200,1184,1169,1154,1140,1126,1426,1405,1384,1364,1344,1326,1307,1289,1272,1255,1239,1223,1208,1193,1562,1536,1511,1486,1468,1444,1450,1427,1406,1449,1427,1406,1385,1365,1345,1326,1308,1290,1273,1256,1273,1256,1240,1224,1208,1193,1179,1164,1323,1304,1287,1269,1253,1236,1221,1205,1327,1308,1290,1476,1453,1430,1458,1435,1413,1392,1372,1352,1333,1379,1359,1340,1321,1303,1307,1289,1272,1255,1239,1223,1208,1193,1178,1164,1150,1137,1123,1111,1098,1086,1074,1062,1051,1040,1029,1019,1008,998,988,1071,1059,1048,1037,1026,1016,1005,995,986,976,966,957,1148,1134,1121,1108,1095,1341,1322,1303,1286,1268,1367,1347,1328,1310,1292,1275,1258,1241,1226,1210,1217,1202,1187,1173,1159,1145,1131,1118,1106,1093,1081,1070,1058,1047,1036,1025,1015,1004,994,985,975,966,956,1042,1339,1320,1301,1283,1265,1248,1232,1216,1200,1185,1170,1156,1384,1442,1421,1400,1380,1361,1342,1323,1306,1288,1271,1255,1239,1224,1209,1577,1551,1526,1502,1484,1461,1438,1443,1422,1465,1443,1422,1401,1381,1361,1342,1324,1306,1289,1272,1289,1272,1256,1240,1224,1209,1195,1180,1167,1320,1303,1285,1269,1252,1237,1221,1343,1324,1307,1491,1468,1446,1424,1451,1429,1408,1388,1368,1349,1395,1375,1356,1337,1319,1323,1305,1288,1271,1255,1239,1224,1209,1194,1180,1166,1153,1139,1126,1114,1102,1090,1078,1067,1056,1045,1034,1024,1013,1004,994,1075,1064,1053,1042,1031,1021,1011,1001,991,982,972,1163,1150,1136,1124,1111,1357,1338,1319,1302,1284,1267,1363,1344,1326,1308,1291,1274,1258,1242,1226,1211,1218,1203,1189,1175,1161,1147,1134,1122,1109,1097,1085,1074,1062,1051,1041,1030,1020,1010,1000,990,981,971,962,1047,1335,1317,1299,1281,1264,1248,1232,1216,1201,1186,1145,1400,1380,1436,1415,1395,1376,1357,1339,1321,1304,1287,1271,1255,1240,1224,1210,1565,1541,1517,1494,1476,1454,1432,1437,1416,1458,1437,1416,1396,1377,1358,1340,1322,1305,1288,1271,1288,1271,1255,1240,1225,1210,1196,1182,1336,1318,1301,1284,1268,1252,1237,1222,1340,1322,1305,1483,1461,1440,1466,1445,1424,1403,1384,1365,1346,1390,1371,1352,1334,1317,1321,1304,1287,1271,1255,1239,1224,1210,1196,1182,1168,1155,1142,1129,1117,1105,1093,1082,1071,1060,1049,1039,1028,1018,1009,999,1079,1068,1057,1046,1036,1026,1016,1006,996,987,978,1165,1152,1139,1126,1114,1353,1335,1317,1300,1283,1379,1360,1342,1324,1306,1290,1273,1257,1242,1227,1212,1219,1204,1190,1176,1163,1150,1137,1125,1112,1101,1089,1078,1066,1056,1045,1035,1025,1015,1005,995,986,977,1062,1350,1332,1314,1296,1279,1263,1247,1231,1216,1173,1160,1147,1395,1451,1430,1410,1391,1372,1354,1336,1319,1302,1286,1270,1255,1240,1225,1273,1555,1531,1508,1486,1469,1447,1452,1431,1411,1452,1431,1411,1392,1373,1355,1337,1320,1303,1287,1303,1287,1271,1255,1240,1226,1211,1197,1184,1333,1316,1300,1283,1268,1252,1237,1355,1337,1320,1498,1476,1454,1434,1459,1439,1418,1399,1380,1361,1343,1386,1368,1349,1332,1315,1319,1302,1286,1270,1255,1240,1225,1211,1197,1183,1170,1157,1144,1132,1120,1108,1097,1086,1075,1064,1053,1043,1033,1023,1013,1094,1082,1071,1061,1050,1040,1030,1020,1011,1001,992,1180,1167,1154,1141,1129,1368,1350,1332,1315,1298,1282,1375,1357,1339,1322,1305,1288,1273,1257,1242,1227,1234,1219,1205,1192,1178,1165,1152,1140,1127,1115,1104,1092,1081,1070,1060,1049,1039,1029,1019,1010,1000,991,982,1066,1347,1329,1311,1294,1278,1262,1246,1201,1188,1174,1162,1149,1391,1445,1425,1406,1387,1369,1351,1334,1317,1301,1285,1270,1255,1240,1226,1569,1545,1522,1500,1483,1462,1441,1446,1426,1466,1446,1426,1406,1388,1369,1352,1334,1318,1301,1286,1301,1286,1270,1255,1240,1226,1212,1198,1348,1331,1314,1298,1282,1267,1252,1237,1352,1335,1318,1490,1469,1448,1474,1453,1433,1413,1394,1376,1358,1341,1382,1364,1347,1330,1334,1317,1301,1285,1269,1254,1240,1225,1212,1198,1185,1172,1159,1147,1135,1123,1111,1100,1089,1078,1068,1057,1047,1037,1028,1018,1097,1086,1075,1065,1054,1044,1034,1025,1015,1006,997,1181,1168,1156,1143,1131,1364,1347,1329,1313,1296,1280,1371,1354,1336,1320,1303,1287,1272,1257,1242,1228,1234,1220,1206,1193,1180,1167,1154,1142,1130,1118,1107,1096,1085,1074,1064,1053,1043,1034,1024,1014,1005,996,1080,1361,1343,1325,1309,1292,1276,1229,1215,1202,1189,1176,1163,1405,1387,1439,1420,1401,1383,1365,1348,1332,1315,1299,1284,1269,1254,1240,1286,1559,1536,1514,1492,1476,1456,1460,1440,1421,1460,1440,1421,1402,1384,1366,1349,1332,1316,1300,1285,1300,1284,1269,1255,1240,1226,1213,1199,1345,1329,1312,1297,1281,1266,1252,1366,1349,1332,1504,1483,1462,1442,1467,1447,1428,1409,1390,1372,1355,1397,1378,1361,1344,1327,1331,1315,1299,1284,1269,1254,1240,1226,1212,1199,1186,1173,1161,1149,1137,1125,1114,1103,1092,1082,1071,1061,1051,1041,1032,1022,1100,1089,1079,1068,1058,1048,1038,1029,1020,1010,1196,1183,1170,1157,1145,1133,1361,1344,1327,1311,1295,1279,1368,1351,1334,1318,1302,1286,1271,1256,1242,1228,1234,1221,1207,1194,1181,1169,1156,1144,1133,1121,1110,1099,1088,1078,1067,1057,1047,1038,1028,1019,1010,1001,1083,1357,1339,1323,1306],"lat":[596,586,576,567,558,550,560,548,536,525,514,507,500,494,487,481,480,474,504,493,482,651,634,618,620,604,589,575,561,549,537,526,516,536,526,516,506,497,489,481,473,466,459,452,445,439,433,428,422,417,411,406,402,397,392,491,484,478,471,465,459,453,447,441,436,431,425,421,416,411,507,493,480,468,531,520,515,505,495,486,477,468,460,453,445,438,431,426,420,650,638,626,613,601,590,579,569,559,549,539,528,517,507,497,488,480,472,464,456,449,442,435,429,510,503,541,528,516,505,495,486,477,468,461,453,444,436,427,420,412,405,399,392,386,381,376,371,367,363,359,355,351,347,344,340,337,334,331,328,325,322,319,316,314,311,309,306,304,301,313,310,638,627,616,606,597,587,579,570,572,560,549,541,534,527,520,513,507,506,499,526,515,504,494,661,645,630,630,614,600,586,574,562,551,540,531,551,541,531,522,513,505,496,489,482,475,468,462,455,449,444,438,433,427,422,417,413,408,509,502,495,489,482,476,470,464,459,453,448,443,438,433,428,512,499,487,476,543,539,528,518,508,499,491,482,474,467,459,453,448,442,437,669,656,643,631,619,608,597,587,575,563,552,541,531,521,512,503,494,486,478,471,464,457,450,444,529,564,551,539,528,518,508,499,491,483,473,464,455,447,439,431,424,417,411,405,400,395,390,385,381,377,373,369,365,361,358,354,351,348,344,341,338,335,333,330,327,324,322,319,317,314,617,667,656,645,635,625,615,606,597,589,584,576,568,560,553,546,539,532,526,524,517,536,525,515,506,671,656,641,638,624,611,598,586,574,564,555,575,564,554,545,536,527,519,511,504,497,490,483,477,471,465,459,453,448,442,437,432,427,423,526,519,512,506,499,493,487,481,475,469,464,459,454,449,530,517,505,494,566,555,551,540,530,521,512,504,495,488,481,475,469,463,456,449,685,672,659,647,635,624,612,599,587,575,564,554,544,534,525,516,508,500,492,485,478,471,464,458,547,574,562,551,540,530,522,513,503,493,483,474,466,457,450,442,435,429,423,418,413,408,403,399,394,390,386,382,378,375,371,367,364,361,357,354,351,348,345,342,340,337,334,332,654,641,628,684,673,663,652,643,633,624,615,610,601,593,585,578,570,563,556,550,543,541,556,545,535,526,695,680,666,662,647,634,621,608,597,587,578,569,587,577,567,558,549,541,533,526,518,511,504,497,491,485,479,473,467,462,457,451,446,441,437,542,535,528,521,515,508,502,496,491,485,479,474,469,464,534,522,511,500,577,566,562,552,542,533,524,516,509,502,496,489,482,475,467,712,699,686,674,662,649,635,622,609,598,586,576,565,556,546,537,529,521,513,505,498,491,484,477,572,595,583,572,561,552,543,532,521,511,501,492,483,475,467,460,453,447,441,436,431,426,421,416,411,407,403,399,395,391,387,384,380,377,373,370,367,364,361,358,355,352,349,691,677,664,651,640,700,689,679,669,659,650,637,624,626,618,610,602,594,587,580,573,567,564,557,565,554,545,535,703,689,676,669,656,643,631,620,610,600,591,582,599,589,580,571,562,554,546,539,531,524,518,511,505,498,492,486,481,475,470,465,460,455,564,557,550,543,536,530,523,517,511,505,500,494,489,483,551,539,527,517,507,587,577,572,562,553,544,536,529,522,516,508,500,492,485,478,725,712,699,685,671,657,644,631,619,608,597,586,576,567,558,549,541,533,525,517,510,503,496,490,588,604,592,583,573,561,549,539,528,519,509,501,492,484,477,471,465,459,453,448,443,438,433,428,424,419,415,411,407,403,399,396,392,389,385,382,379,375,372,369,366,728,713,699,686,673,662,726,715,705,694,684,671,657,645,650,642,634,626,618,610,603,596,589,583,579,573,573,563,554,726,712,698,685,677,664,653,642,632,622,612,603,620,610,601,592,583,575,567,559,551,544,537,530,524,517,511,505,499,494,488,483,478,473,468,578,571,564,557,550,544,537,531,525,519,513,508,503,497,555,543,533,522,607,596,586,581,572,564,556,549,542,534,526,517,510,502,495,488,737,722,707,692,678,664,652,640,628,617,607,596,587,578,569,560,552,544,536,529,522,515,508,611,624,613,603,590,578,566,556,545,536,526,517,509,501,495,488,482,476,470,465,459,454,449,445,440,436,431,427,423,419,415,411,407,404,400,397,393,390,387,384,765,749,735,721,707,695,683,671,740,729,719,704,690,677,664,652,665,657,649,641,633,625,618,611,604,601,594,591,581,573,567,734,720,707,694,685,674,663,653,642,633,623,614,630,621,612,603,594,586,578,571,563,556,549,542,536,529,523,517,511,506,500,495,490,485,480,591,584,577,570,563,557,550,544,538,532,527,521,516,510,558,548,538,528,615,605,600,592,584,576,569,560,551,542,534,526,518,511,504,759,742,727,712,698,684,672,659,648,637,626,616,606,597,587,579,570,562,554,547,540,533,526,520,625,633,619,606,594,583,572,562,552,542,533,525,518,511,505,499,492,487,481,476,470,465,461,456,451,447,442,438,434,430,426,422,418,415,411,408,404,401,802,785,770,755,741,728,715,703,692,765,754,738,723,709,696,683,671,660,679,671,663,655,647,640,633,626,619,615,608,600,593,587,581,741,727,713,706,695,684,673,663,653,643,634,650,640,631,622,614,605,597,589,582,574,567,560,554,547,541,535,529,523,517,512,507,501,496,611,604,596,589,583,576,569,563,557,551,545,539,534,528,573,562,552,543,533,623,615,611,603,595,586,577,567,559,550,542,534,527,519,512,762,746,731,717,704,691,678,667,655,645,634,624,615,606,597,588,580,572,564,557,550,543,537,646,634,635,622,610,598,588,577,567,558,549,542,535,528,521,515,509,503,497,492,486,481,476,471,467,462,458,453,449,445,441,437,433,429,426,422,418,839,822,805,790,775,761,748,735,723,711,700,772,756,742,728,714,702,690,678,701,693,684,676,669,661,654,647,640,635,626,620,613,607,600,760,745,730,717,714,703,693,682,672,662,652,643,659,650,641,632,624,615,607,600,592,585,578,571,565,558,552,546,540,534,528,523,518,512,507,623,616,608,601,594,588,581,575,569,563,557,551,546,540,576,566,557,548,642,634,625,622,612,602,592,583,574,566,557,550,542,535,527,521,765,750,736,722,709,697,685,674,663,652,642,633,623,614,606,597,589,581,574,567,560,554,547,651,650,637,625,614,603,592,582,573,566,558,551,544,537,531,524,518,513,507,502,496,491,486,482,477,472,468,463,459,455,451,447,443,439,436,821,805,841,824,809,794,780,767,754,742,730,719,708,774,759,745,732,719,707,696,685,714,706,697,689,682,674,667,660,653,645,638,632,626,618,610,762,748,734,721,722,712,701,690,680,670,661,678,668,659,650,642,633,625,617,610,602,595,588,581,575,568,562,556,550,545,539,534,528,523,518,634,627,620,613,606,599,593,586,580,574,568,563,557,590,580,570,563,556,652,644,634,628,617,608,598,589,581,572,564,557,549,542,535,782,768,753,740,727,715,703,691,680,670,660,650,640,631,623,614,606,598,591,584,577,570,564,557,656,652,640,628,617,607,597,589,581,574,566,559,553,546,540,534,528,522,517,511,506,501,496,491,487,482,478,473,469,465,461,457,453,845,839,823,859,843,828,813,799,786,773,761,749,737,726,791,776,762,749,736,724,713,702,691,726,718,710,702,694,687,680,673,664,657,650,643,634,626,779,764,750,737,724,730,719,708,698,688,679,669,686,677,668,659,650,642,634,627,619,612,605,598,591,585,578,572,566,560,555,549,544,538,533,529,645,637,630,623,617,610,604,597,591,585,579,574,568,593,585,578,571,670,660,649,642,632,622,613,604,595,587,579,571,564,556,549,543,785,771,757,744,732,720,708,697,687,676,666,657,648,639,630,622,615,607,600,593,586,579,573,671,666,654,642,632,621,613,605,597,589,582,574,568,561,555,549,543,537,532,526,521,516,511,506,501,496,492,487,483,479,475,470,879,864,849,841,826,861,846,831,817,804,791,778,767,755,744,734,793,779,766,753,741,729,718,707,746,738,730,722,714,706,699,692,685,676,668,659,650,641,633,780,766,753,740,747,736,725,715,705,695,686,677,694,685,676,667,659,651,643,635,628,621,614,607,600,594,588,582,576,570,564,559,554,549,544,662,655,647,640,633,627,620,614,608,602,596,590,584,608,600,593,586,579,674,663,652,647,637,627,618,610,601,593,585,578,570,563,556,801,787,774,761,748,736,725,714,703,693,683,673,664,655,646,638,631,623,616,608,602,595,588,582,675,667,656,646,637,628,620,612,604,596,589,583,576,570,563,557,552,546,540,535,530,525,520,515,510,505,501,496,492,488,774,781,882,867,858,843,878,863,848,834,821,808,796,784,773,762,751,741,795,782,769,757,745,734,723,713,757,749,741,733,725,718,711,703,693,683,674,665,657,648,795,782,768,755,742,753,742,732,722,712,703,694,710,701,692,684,675,667,659,651,644,637,630,623,616,609,603,597,591,585,579,574,569,563,559,554,672,664,657,650,643,637,630,624,618,611,606,600,594,615,607,600,593,587,677,666,656,651,641,632,623,615,607,599,591,584,576,570,563,803,790,777,764,752,740,729,719,708,698,689,679,671,662,654,646,638,631,624,617,610,603,597,690,681,670,660,651,643,634,626,618,611,604,597,590,584,578,572,566,560,554,549,543,538,533,528,523,519,514,510,505,802,792,783,899,884,870,860,846,880,865,851,838,825,813,801,789,778,768,757,810,797,785,772,761,750,739,729,776,768,760,752,744,736,729,720,710,699,690,680,672,663,655,796,782,769,756,743,758,748,738,728,719,710,701,717,708,699,691,683,675,667,659,652,645,638,631,624,618,612,605,599,594,588,583,578,573,568,563,681,673,666,659,653,646,639,633,627,621,615,609,629,622,614,607,601,690,679,669,659,655,645,637,628,620,612,604,597,589,582,576,569,805,792,779,767,756,745,734,724,713,704,695,686,677,669,661,653,646,639,632,625,618,612,606,694,684,675,666,657,649,640,633,625,618,611,605,598,592,586,580,574,568,562,557,552,547,542,537,532,527,523,832,820,810,801,792,901,886,876,862,848,881,868,854,841,829,817,806,795,784,774,764,812,800,788,776,765,754,744,734,786,778,770,762,754,745,735,725,713,704,695,686,678,670,662,796,782,769,757,745,764,753,744,734,725,716,733,724,715,706,698,690,682,674,667,660,653,646,639,632,626,620,614,608,603,598,592,587,582,577,573,689,682,675,668,661,655,648,642,636,630,624,619,635,628,621,614,608,692,682,672,663,658,650,641,633,625,617,609,602,595,588,582,820,807,794,782,771,760,749,738,728,719,710,701,692,684,676,668,661,653,646,639,633,626,620,708,699,689,680,671,662,654,647,639,632,625,618,612,605,599,593,587,581,576,570,565,560,555,550,545,540,861,850,840,828,819,809,815,903,889,877,864,897,883,870,857,845,833,822,810,800,789,779,827,814,802,791,780,769,759,749,739,796,788,780,770,760,750,740,730,718,709,701,692,684,676,809,795,783,770,758,779,769,759,749,740,731,722,739,730,721,713,705,697,689,682,674,667,660,653,647,640,634,628,623,617,612,606,601,596,591,586,705,697,690,683,677,670,663,657,651,645,639,633,627,642,634,628,621,705,695,685,676,671,662,654,645,637,629,622,615,607,601,594,587,821,809,797,785,774,763,753,743,733,724,715,707,698,690,682,675,667,660,653,647,641,634,628,712,702,693,684,676,668,660,653,646,639,632,625,619,612,606,600,594,589,583,578,572,567,562,557,889,878,868,857,847,836,827,818,823,905,892,879,866,899,886,873,860,849,837,826,815,805,795,785,829,817,805,794,783,773,763,753,814,805,796,785,774,764,753,743,732,723,714,706,698,690,682,808,795,783,771,759,784,774,764,755,746,737,754,745,736,727,719,711,703,696,688,681,674,667,661,654,648,642,637,631,626,620,615,610,605,600,595,713,705,698,691,685,678,672,665,659,653,647,642,655,648,641,634,627,707,697,688,679,674,666,658,649,642,634,627,619,613,606,599,593,823,811,799,788,777,767,757,748,738,730,721,713,704,696,689,681,674,667,661,654,648,642,636,716,706,698,690,682,674,666,659,652,645,638,632,625,619,613,607,601,596,590,585,580,575,917,906,895,885,874,864,853,843,834,825,920,907,894,881,869,901,888,875,864,852,841,830,820,810,800,791,830,819,808,797,787,777,767,758,821,809,798,788,777,767,757,747,736,727,718,711,703,696,820,808,795,783,772,761,788,779,769,760,751,743,759,750,742,733,725,717,710,702,695,688,681,674,668,662,656,650,645,639,634,628,623,618,613,608,603,720,713,706,699,692,686,680,673,667,661,655,650,660,653,647,640,634,709,700,691,682,678,669,661,653,646,638,631,624,617,611,604,836,824,813,802,791,781,771,762,752,743,735,726,718,710,702,695,688,681,675,668,662,656,650,729,719,711,703,695,687,679,672,665,658,651,645,638,632,626,620,614,608,603,597,592,946,934,923,912,901,891,881,870,860,851,842,846,922,910,895,883,915,902,890,878,867,856,845,835,824,815,805,844,833,821,811,800,790,781,771,834,823,812,801,790,780,770,760,751,740,731,725,717,709,701,819,807,795,784,773,762,793,783,774,765,757,748,764,756,747,739,731,723,716,708,701,695,688,682,676,670,664,658,652,647,642,636,631,626,621,616,734,727,720,713,706,700,693,687,681,675,669,663,673,666,659,652,646,721,711,702,693,685,681,673,665,657,650,643,636,629,622,616,609,838,826,815,805,795,785,775,766,757,748,740,731,723,716,709,702,695,688,682,675,669,663,657,733,724,715,707,700,692,685,677,670,664,657,651,644,638,632,626,620,615,609,974,962,951,939,928,918,907,897,887,876,867,858,849,853,924,912,897,885,917,904,893,881,870,859,849,839,829,819,810,846,835,824,814,804,794,785,775,836,824,813,803,792,782,773,764,753,744,735,730,722,714,831,819,807,795,785,774,806,797,788,779,770,762,778,769,761,752,744,737,729,722,715,708,702,695,689,683,677,671,666,660,655,649,644,639,634,629,624,741,734,727,720,714,707,701,694,688,682,676,671,678,671,664,658,651,722,713,705,696,692,684,676,669,661,654,647,640,633,627,621,615,839,828,818,808,798,788,779,770,761,753,745,737,729,722,715,708,701,695,688,682,676,670,746,736,728,720,712,704,697,690,683,676,669,663,656,650,644,638,632,627,1003,990,978,967,955,944,933,923,913,903,892,882,873,864,869,860,926,911,899,887,918,907,895,884,873,863,853,843,833,824,859,848,837,827,817,807,798,788,779,837,826,815,805,795,785,776,767,756,748,742,734,727,719,830,818,807,796,786,776,810,801,792,783,775,767,782,774,766,758,750,742,735,728,721,715,708,702,696,690,684,678,673,667,662,657,651,646,641,636,632,748,741,734,727,720,714,708,701,695,689,684,690,683,676,670,663,733,724,716,708,700,695,687,680,672,665,658,651,644,638,632,626,852,841,831,821,811,801,792,783,774,766,758,750,742,735,728,721,714,708,701,695,689,683,677,749,740,732,724,717,709,702,695,688,681,675,668,662,656,650,644,1031,1018,1006,994,982,971,960,949,938,928,918,909,898,888,879,871,875,940,928,912,901,932,920,909,898,887,876,866,856,847,838,829,860,850,839,829,820,810,801,791,849,838,827,817,807,797,788,779,768,760,751,747,739,732,725,830,819,808,798,787,778,814,805,796,788,780,795,787,778,770,762,755,748,741,734,728,721,715,709,703,697,691,685,680,674,669,664,658,653,648,644,639,754,747,740,733,727,721,714,708,702,696,690,695,688,681,675,668,735,727,719,711,703,698,690,683,675,668,661,655,649,643,638,633,854,844,833,823,814,805,796,787,778,771,763,755,748,741,734,727,720,714,707,701,695,689,762,752,744,736,729,721,714,707,700,693,686,680,674,667,661,1059,1046,1034,1021,1009,997,986,975,964,954,943,933,924,914,903,894,885,877,881,942,925,914,903,933,922,911,900,890,880,870,860,851,842,833,862,852,842,832,822,813,803,794,849,839,829,819,809,800,791,782,771,763,755,751,744,737,841,830,819,809,799,789,779,818,809,801,792,784,799,791,783,775,768,761,754,747,740,734,728,721,715,709,703,698,692,686,681,676,671,665,660,656,651,767,760,753,746,740,733,727,721,715,709,703,697,699,692,686,680,674,738,730,722,714,706,701,693,686,679,672,666,660,654,649,644,866,856,846,836,826,817,808,799,791,783,775,768,761,753,746,739,733,726,720,714,707,701,696,765,756,748,740,733,725,718,711,704,698,691,685,679,1036,1074,1061,1048,1036,1024,1012,1001,990,979,968,958,948,938,929,918,909,900,894,895,886,944,927,916,946,935,924,913,903,893,883,873,864,855,846,874,864,854,844,834,824,815,806,797,850,840,830,821,811,802,793,783,775,766,763,756,749,742,840,830,819,809,800,790,830,821,813,805,796,811,803,795,788,781,773,766,760,753,746,740,734,727,721,716,710,704,698,693,688,682,677,672,667,662,658,772,766,759,752,746,739,733,727,721,715,709,710,704,697,691,685,748,740,732,724,717,710,703,696,689,683,677,671,666,660,655,650,868,858,848,838,829,820,812,804,796,788,780,773,766,759,752,745,738,732,726,720,713,708,702,769,759,752,744,737,730,723,716,709,702,696,924,1053,1044,1076,1063,1051,1039,1027,1015,1004,993,983,972,962,953,943,934,923,917,910,904,902,895,946,929,919,948,937,926,916,905,896,886,877,868,859,850,876,865,855,845,836,827,817,809,861,851,841,832,822,813,804,796,786,778,770,768,761,754,851,840,830,820,810,801,792,834,825,817,809,801,815,808,800,793,786,779,772,765,758,752,746,739,733,727,722,716,710,705,699,694,689,684,679,674,669,664,778,771,764,758,751,745,739,733,727,721,715,715,709,702,696,691,751,743,735,727,720,713,706,700,694,688,682,677,671,666,661,656,869,860,850,841,832,824,816,808,800,792,785,778,771,764,757,750,744,738,731,725,719,714,780,771,763,755,748,741,734,727,720,713,947,940,932,1061,1090,1077,1065,1053,1041,1030,1018,1008,997,987,976,967,957,948,940,933,926,919,910,911,958,942,931,921,949,938,928,918,908,898,889,880,871,862,887,876,866,857,847,838,829,820,811,862,852,843,833,824,815,807,797,789,781,780,773,766,759,850,840,830,821,811,802,793,837,828,820,813,805,820,812,805,798,791,784,777,770,764,758,751,745,739,733,728,722,716,711,706,700,695,690,685,680,675,790,783,776,770,763,757,751,745,739,733,727,726,719,713,707,702,761,753,745,737,730,724,717,710,704,699,693,688,682,677,672,667,881,871,862,853,844,836,828,820,812,804,797,790,782,775,769,762,756,749,743,737,731,725,719,783,774,766,759,751,744,738,731,970,963,955,947,940,1068,1091,1079,1067,1055,1043,1032,1021,1011,1000,990,980,971,964,957,949,941,932,924,927,921,960,944,934,961,951,940,930,920,911,901,892,883,874,865,887,877,867,858,849,840,831,822,873,863,854,844,835,826,818,810,800,793,785,784,777,771,860,850,840,831,821,812,803,794,840,832,825,817,832,824,817,810,803,796,789,782,776,769,763,757,751,745,739,733,728,722,717,712,706,701,696,691,686,682,795,788,782,775,769,762,756,750,745,739,734,730,724,718,712,707,763,755,748,741,734,727,721,715,709,704,698,693,688,682,677,672,883,874,865,856,848,839,831,824,816,808,801,794,787,780,774,767,761,754,748,742,736,731,794,784,777,769,762,755,748,994,985,978,970,962,955,1085,1075,1092,1080,1068,1057,1046,1035,1024,1014,1004,994,987,979,972,964,955,946,938,929,936,930,956,946,936,963,952,942,932,923,913,904,895,886,877,868,888,878,869,859,850,841,833,825,874,864,855,846,837,828,820,811,804,797,796,789,782,776,860,850,840,831,822,813,804,852,844,836,829,822,836,829,821,814,807,800,794,787,781,774,768,762,756,750,745,739,733,728,723,717,712,707,702,697,692,688,800,793,787,780,774,768,762,756,751,745,741,735,729,723,717,711,765,758,751,744,737,731,726,720,714,709,703,698,693,688,683,679,885,876,868,859,851,843,835,827,820,813,805,798,792,785,778,772,766,759,753,748,742,736,797,787,780,773,766],"ng":[28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,30,30,31,31,31,32,32,32,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,42,42,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,30,31,31,31,31,32,32,32,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,33,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,29,30,30,31,31,31,32,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,33,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,32,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,24,24,24,24,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,32,33,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,24,24,24,24,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,23,23,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,23,23,23,23,23,24,24,24,25,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,31,31,31,31,32,32,32,32,32,32,33,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,41,41,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,41,41,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,41,21,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,41,41,21,21,21,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,41,21,21,21,21,21,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,25,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,29,30,30,30,31,31,31,32,32,32,32,32,32,32,32,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41,41,41,21,21,21,21,21,21,22,22,23,23,23,23,23,23,23,23,23,23,23,23,23,23,24,24,24,24,25,25,26,26,26,27,27,27,27,27,27,27,27,27,27,27,28,28,28,28,28,28,28,28,29,29,29,29,29,29,29,30,30,30,31,31,31,31,32,32,32,32,32,32,32,33,33,33,33,33,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,35,35,35,35,35,35,35,35,35,35,36,36,36,36,36,36,37,37,37,37,37,37,38,38,38,38,38,38,38,38,38,38,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,39,40,41,41,41,41]},"anchors":{"L1":{"fwd":10.838,"lat":7.233,"far":10.038,"near":-0.8,"vh":292.551,"ng":28,"n":36},"L3":{"fwd":10.995,"lat":7.81,"far":10.195,"near":-0.8,"vh":201.583,"ng":39,"n":52},"MIX":{"fwd":7.675,"lat":5.434,"far":6.875,"near":-0.8,"vh":201.583,"ng":39,"n":52}},"dets":[{"k":"d67","lab":"white folding table","bb":[0.66344,0.421,0.84874,0.5232],"rect":[679.4,240.8,869.1,299.3],"vb":299.3,"um":774.2,"dA":50.4,"dB":6.38},{"k":"d69","lab":"white folding table 1","bb":[0.3604,0.39731,0.3946,0.52828],"rect":[369.0,227.3,404.1,302.2],"vb":302.2,"um":386.6,"dA":42.78,"dB":5.72},{"k":"d68","lab":"white folding table 1","bb":[0.62716,0.39731,0.7024,0.54754],"rect":[642.2,227.3,719.3,313.2],"vb":313.2,"um":680.7,"dA":17.96,"dB":5.18},{"k":"d45","lab":"beige computer tower","bb":[0.6389,0.45353,0.6878,0.55941],"rect":[654.2,259.4,704.3,320.0],"vb":320.0,"um":679.3,"dA":13.67,"dB":4.87},{"k":"d64","lab":"beige crt monitor 3","bb":[0.6622,0.4768,0.7,0.5758],"rect":[678.1,272.7,716.8,329.4],"vb":329.4,"um":697.4,"dA":10.38,"dB":4.56},{"k":"d23","lab":"beige crt monitor","bb":[0.66202,0.47822,0.68239,0.57884],"rect":[677.9,273.5,698.8,331.1],"vb":331.1,"um":688.3,"dA":9.88,"dB":4.47},{"k":"d56","lab":"beige crt monitor","bb":[0.6628,0.4752,0.7,0.5832],"rect":[678.7,271.8,716.8,333.6],"vb":333.6,"um":697.8,"dA":9.34,"dB":4.41},{"k":"d38","lab":"concrete pillar","bb":[0.593,0.308,0.6338,0.58597],"rect":[607.2,176.2,649.0,335.2],"vb":335.2,"um":628.1,"dA":8.71,"dB":4.17},{"k":"d63","lab":"beige crt monitor 2","bb":[0.682,0.5128,0.745,0.6118],"rect":[698.4,293.3,762.9,349.9],"vb":349.9,"um":730.6,"dA":6.88,"dB":4.01},{"k":"d44","lab":"beige crt monitor","bb":[0.6818,0.51282,0.7448,0.61369],"rect":[698.2,293.3,762.7,351.0],"vb":351.0,"um":730.4,"dA":6.76,"dB":3.98},{"k":"d61","lab":"beige computer tower","bb":[0.2484,0.4996,0.3414,0.6574],"rect":[254.4,285.8,349.6,376.0],"vb":376.0,"um":302.0,"dA":4.89,"dB":3.42},{"k":"d42","lab":"white folding table","bb":[0.593,0.45353,0.6422,0.66066],"rect":[607.2,259.4,657.6,377.9],"vb":377.9,"um":632.4,"dA":4.4,"dB":3.12},{"k":"d8","lab":"white folding table","bb":[0.419,0.423,0.643,0.673],"rect":[429.1,242.0,658.4,385.0],"vb":385.0,"um":543.7,"dA":3.97,"dB":2.91},{"k":"d2","lab":"blue folding chair","bb":[0.686,0.438,0.778,0.698],"rect":[702.5,250.5,796.7,399.3],"vb":399.3,"um":749.6,"dA":3.8,"dB":3.02},{"k":"d66","lab":"beige computer tower 2","bb":[0.517,0.5386,0.5536,0.7024],"rect":[529.4,308.1,566.9,401.8],"vb":401.8,"um":548.1,"dA":3.36,"dB":2.65},{"k":"d60","lab":"beige crt monitor","bb":[0.1962,0.5482,0.2868,0.7048],"rect":[200.9,313.6,293.7,403.1],"vb":403.1,"um":247.3,"dA":3.87,"dB":3.09},{"k":"d7","lab":"beige computer tower","bb":[0.446,0.541,0.553,0.72],"rect":[456.7,309.5,566.3,411.8],"vb":411.8,"um":511.5,"dA":3.08,"dB":2.51},{"k":"d65","lab":"beige computer tower 1","bb":[0.4486,0.5332,0.4966,0.7216],"rect":[459.4,305.0,508.5,412.8],"vb":412.8,"um":483.9,"dA":3.07,"dB":2.5},{"k":"d62","lab":"wall poster","bb":[0.1548,0.7018,0.2172,0.7696],"rect":[158.5,401.4,222.4,440.2],"vb":440.2,"um":190.5,"dA":3.06,"dB":2.74},{"k":"d13","lab":"concrete pillar","bb":[0.49,0.0,0.523,0.791],"rect":[501.8,0.0,535.6,452.5],"vb":452.5,"um":518.7,"dA":2.3,"dB":2.07},{"k":"d0","lab":"blue folding chair","bb":[0.0,0.504,0.119,0.993],"rect":[0.0,288.3,121.9,568.0],"vb":568.0,"um":60.9,"dA":1.87,"dB":2.02},{"k":"d1","lab":"blue folding chair","bb":[0.166,0.52,0.386,0.993],"rect":[170.0,297.4,395.3,568.0],"vb":568.0,"um":282.6,"dA":1.5,"dB":1.55}],"f":469.1616,"W":1024,"H":572}</script>

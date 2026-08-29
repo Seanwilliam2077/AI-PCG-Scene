@@ -57,13 +57,12 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
   <figure>
     <img src="../process/figures/comparison.png"
       alt="左为输入参考图，右为管线自动搭建的 UE5 场景">
-    <figcaption>左是参考照片，右是路一装配完、在标定机位下截的关卡。右边明显更粗糙 ——
-    代理盒、糊掉的海报、缺失的物件，这就是全文要归因的东西，没有换一个更讨巧的角度。</figcaption>
+    <figcaption>左参考照片，右是路一在标定机位下截的关卡；代理盒、糊掉的海报、缺失的物件正是要归因的。</figcaption>
   </figure>
 
-  <p><b>路一</b>（UE5 资产库管线）单向前馈跑到底，判据是能不能交付。
-  <b>路三</b>（Blender 度量闭环）允许「渲染 → 度量 → 定位病因 → 改」无限循环，判据是还原度上限在哪。
-  两条线读同一张室内机房参考图、用同一份 39 模块资产库、共享同一组内参 hfov 95° / f 469.16 px。</p>
+  <p><b>路一</b>（UE5 资产库管线）单向前馈到底，判据是能否交付；<b>路三</b>（Blender 度量闭环）
+  允许「渲染 → 度量 → 归因 → 改」无限循环，判据是还原度上限。
+  同图、同一份 39 模块库、同一组内参 hfov 95° / f 469.16 px。</p>
 
   <div class="warn">但<b>外参并不相同</b>：路一是人工覆盖的 pitch −0.8° / 机高 0.78 m，
   路三是自己解出的 pitch −10.2° / 机高 1.18 m。可比的是同一张输入图、同一份资产库与同一组焦距假设，
@@ -72,9 +71,9 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
   <div class="mgrid" style="margin-top:16px">
     <div class="mcell"><div class="k">路一 · actor</div><div class="v">127</div><div class="d muted">0 error</div></div>
     <div class="mcell"><div class="k">路一 · 自检</div><div class="v">0 / 0</div><div class="d muted">穿模 / 悬空</div></div>
-    <div class="mcell"><div class="k">路一 · 装配</div><div class="v">57.8 s</div><div class="d muted">UE GameThread</div></div>
+    <div class="mcell"><div class="k">路一 · 装配</div><div class="v">57.8 s</div><div class="d muted">UE 主线程</div></div>
     <div class="mcell"><div class="k">路三 · 边缘 F</div><div class="v" style="color:var(--good)">0.650</div><div class="d muted">起点 0.260</div></div>
-    <div class="mcell"><div class="k">路三 · 分区误差和</div><div class="v" style="color:var(--good)">2.44</div><div class="d muted">档，起点 5.62</div></div>
+    <div class="mcell"><div class="k">路三 · 分区误差</div><div class="v" style="color:var(--good)">2.44</div><div class="d muted">起点 5.62</div></div>
     <div class="mcell"><div class="k">路三 · SSIM</div><div class="v">0.417</div><div class="d muted">起点 0.386</div></div>
   </div>
 </div>
@@ -85,48 +84,50 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 
   <figure>
     <img src="../process/recon/sbs.jpg" alt="参考图与 Blender 重建并排">
-    <figcaption>路三：左参考、右 Cycles 渲染，166 个物体、480 spp，机位由解算得到。</figcaption>
+    <figcaption>路三：左参考、右 Cycles 渲染，166 物体、480 spp，机位由解算得到。</figcaption>
   </figure>
 
-  <p>差别不在分数上，在性质上。路一做到结构对应，款式退化成代理盒，产物是一个能打开、能改、能继续装配的关卡；
-  路三被度量追到逐像素，但它只活在 Blender 里，<b>没有引擎交付形态</b>。</p>
+  <p>差别不在分数，在性质：路一做到结构对应、款式退化成代理盒，产物是能继续装配的关卡；
+  路三被度量追到逐像素，但只活在 Blender 里，<b>没有引擎交付形态</b>。</p>
 
   <div id="wipeWrap"><div id="wipe"></div></div>
   <div class="filters" id="wipeSet" style="margin-top:8px"></div>
-  <p class="cap">同一张输入，两个输出。拖动、点击或按 ← → 方向键。</p>
+  <p class="cap">同一张输入，两个输出，可拖动。</p>
 
   <figure>
     <img src="../process/recon/views.jpg" alt="重建场景的四个自由机位">
-    <figcaption>四个自由机位。这是真几何，不是把原图投影贴回去 —— 换机位仍然成立。</figcaption>
+    <figcaption>四个自由机位。真几何，不是把原图投影贴回去，换机位仍然成立。</figcaption>
   </figure>
 </div>
 
 <div class="sec" id="calib">
   <div class="tag">转折点</div>
   <h2>同一张图，两次相机标定</h2>
-  <p class="muted">两条线唯一严格同题的对照，也是后面所有差距的源头。参数都烧在画面里。</p>
+  <p class="muted">唯一严格同题的对照，也是后面所有差距的源头。</p>
 
   <div class="figrow">
     <figure style="margin-top:0">
       <img src="../process/figures/ue/s01_calib.jpg" alt="路一的自动标定调试输出">
-      <figcaption><b>路一</b>。左上角烧着它自己的结论 <code>hfov=60.0 h=1.45m conf=0.12</code> ——
-      那是退回先验后的值，不是解出来的值。</figcaption>
+      <figcaption><b>路一</b>。左上角烧着它自己的结论 <code>hfov=60.0 h=1.45m conf=0.12</code>。</figcaption>
     </figure>
     <figure style="margin-top:0">
       <img src="../process/recon/calib.jpg" alt="路三的消失点标定与房间线框">
-      <figcaption><b>路三</b>。LSD + RANSAC 对 61 条纵深族线段求消失点得 (517.4, 201.5)，只偏画面中心列 5 px；
+      <figcaption><b>路三</b>。LSD + RANSAC 对 61 条纵深族线段求消失点 (517.4, 201.5)，只偏中心列 5 px；
       机高由两把已知 0.82 m 的椅子按地平线比例解出，<b>与焦距无关</b>。</figcaption>
     </figure>
   </div>
 
-  <div class="warn"><b>自动消失点标定这一次是失败的。</b><code>calib.json</code> 自己记了三条 ——
-  「vp2_plus_zenith 解出 hfov=15°，越界弃用」「无可信消失点对，退回 hfov=60.0° 先验」
-  「相机高度估计离散（MAD/median=0.35）」，置信度 0.12。最终由 <code>calib_manual.json</code>
-  人工覆盖为 hfov 95° / 相机高 0.78 m / 置信度 0.9，派生量重算。
+  <div class="warn"><b>自动消失点标定这一次是失败的。</b>置信度 0.12，最终由
+  <code>calib_manual.json</code> 人工覆盖为 hfov 95° / 相机高 0.78 m / 置信度 0.9，派生量重算。
   <b>这次运行的机位是人标的，不是解出来的。</b></div>
 
-  <p>差别不在运气，在<b>有没有把标定当成可验证的求解</b>：路三把解出的地平线画回参考图逐点核对，
-  路一没有这一步 —— 后面每一级都在一个没人验算过的位姿上继续算。</p>
+  <p class="muted"><code>calib.json</code> 自己记下的三条失败理由，原文照抄：</p>
+  <pre><code>vp2_plus_zenith 解出 hfov=15°，越界弃用
+无可信消失点对，退回 hfov=60.0° 先验
+相机高度估计离散（MAD/median=0.35）</code></pre>
+
+  <p>差别不在运气，在<b>有没有把标定当成可验证的求解</b>：路三把地平线画回参考图核对，路一没有 ——
+  后面每一级都在没人验算过的位姿上继续算。</p>
 
   <p class="muted"><b>上限也要承认</b>：参考图是 AI 生成图，<b>自身透视不自洽约 ±15 px</b>
   （同一面墙不同砖缝外推的消失点能差 30 px）。追求亚分米级解算没有意义，早点转入闭环才对。</p>
@@ -135,8 +136,7 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 <div class="sec" id="feed">
   <div class="tag">路一 · 过程</div>
   <h2>五阶段前馈</h2>
-  <p class="muted">整条管线只有一条规矩：<b>AI 只出提案，裁决全部交给确定性规则</b> ——
-  每一步的「裁决」就是它的落点。秒数与计数都来自那次运行当场写下的留档。</p>
+  <p class="muted">整条管线只有一条规矩：<b>AI 只出提案，裁决全部交给确定性规则</b>。</p>
   <div class="dots" id="dots"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
     <button class="btn" id="prev">‹ 上一步</button>
@@ -154,18 +154,15 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
   </div>
   <p class="cap" id="sCap"></p>
   <div class="key" id="totalKey"></div>
-  <p class="tiny">指标格里的「AI 调用」是<b>整个调试期的累计</b>，不是单次冷跑的调用数，
-  口径说明在<a href="#repro">文末复现一节</a>。</p>
 </div>
 
 <div class="sec" id="depth">
   <div class="tag">路一 · 实测</div>
   <h2>一像素的代价</h2>
-  <p>布局阶段不用 AI，只做一件事：把检测框的底边当成物体与地面的接触点，从相机高度和焦距反解深度。</p>
+  <p>布局阶段不用 AI：把检测框底边当成与地面的接触点，由机高和焦距反解深度。</p>
   <pre><code>depth_cm = cam_height_cm × fy / margin_px      margin_px = 接触点到地平线的像素距离</code></pre>
   <p class="muted" id="lawCheck"></p>
-  <p>这条式子是双曲线，所以<b>误差不是均匀噪声，是远端的悬崖</b>。
-  拖动滑块给底边加 ±N 像素，看深度带怎么张开。</p>
+  <p>式子是双曲线，所以<b>误差不是均匀噪声，是远端的悬崖</b>。</p>
   <div class="slide">
     <span class="tiny">检测框底边误差 ±</span>
     <input type="range" id="pxR" min="1" max="10" step="1" value="2" aria-label="像素误差">
@@ -173,24 +170,21 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
   </div>
   <div class="chart"><svg id="dChart" viewBox="0 0 900 380" role="img" aria-label="深度对像素误差的灵敏度"></svg></div>
   <div class="readout" id="dOut"></div>
-  <p class="cap">横轴是 28 个 <code>ground_ray</code> 对象各自的 <code>margin_px</code>，纵轴是按上式算出的深度。
-  曲线是式子本身，点是真实对象。</p>
+  <p class="cap">横轴 28 个 <code>ground_ray</code> 对象的 <code>margin_px</code>，纵轴深度；点是真实对象。</p>
   <div class="key" id="depthKey"></div>
 </div>
 
 <div class="sec" id="build">
   <div class="tag">路一 · 结果</div>
   <h2>装配结果与自检回执</h2>
-  <p class="muted">不是截图，是 <code>scene_manifest.json</code> 里 127 个 actor 的
-  <code>loc_cm</code> 直接画出来的。点类别筛选，移到点上读坐标与朝向。</p>
+  <p class="muted">不是截图，是 <code>scene_manifest.json</code> 里 127 个 actor 的 <code>loc_cm</code> 画出来的。</p>
   <div class="filters" id="tdFilters"></div>
   <div class="grid2">
     <div class="plot"><svg id="td" viewBox="0 0 900 640" role="img" aria-label="127 个 actor 的俯视分布"></svg></div>
     <div>
-      <div class="readout" id="tdOut">把鼠标移到任意点上。</div>
+      <div class="readout" id="tdOut">移到任意点上读数。</div>
       <div class="mgrid" id="tdM" style="margin-top:12px"></div>
-      <p class="tiny">房间盒来自 <code>scene_layout.json</code>，相机与视锥来自 <code>cameras.json</code>。
-      横轴 +X 进深、纵轴 +Y 横向，单位厘米。</p>
+      <p class="tiny">房间盒来自 <code>scene_layout.json</code>，相机与视锥来自 <code>cameras.json</code>。</p>
     </div>
   </div>
   <div class="key" id="buildKey"></div>
@@ -199,39 +193,29 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 <div class="sec" id="gap">
   <div class="tag">路一 · 诚实</div>
   <h2>为什么与原图仍有差距</h2>
-  <p class="muted">把鼠标移到框或标签上，读那个对象的实测解算值。归因表按层拆，成串的细节收在表下的展开区里。</p>
 
   <div id="pb"></div>
   <div class="rlist" id="pbChips"></div>
-  <div class="readout" id="pbOut">把鼠标移到任意框上。</div>
-  <p class="cap">框来自 <code>scene_layout.json → objects[].bbox_2d</code>，归一化坐标直接乘图宽高，未做任何位置调整。</p>
+  <div class="readout" id="pbOut">移到任意框上读数。</div>
+  <p class="cap">框来自 <code>scene_layout.json</code> 的 <code>bbox_2d</code>，未做位置调整。</p>
 
-  <div class="tbl-scroll"><table>
-    <tr><th style="width:13%">层</th><th style="width:37%">根因与实测证据</th><th style="width:23%">画面表现</th><th>改进方向</th></tr>
-    <tr><td><b>感知</b></td>
-        <td>VLM 整排并框（CRT 召回 <b>13/16</b>）；贴墙桌带被框成内部框，「沿墙长桌」结构<b>零证据</b>，只能规则反推</td>
-        <td>密度不足；桌带位置是推断值</td>
-        <td>开放词汇检测器 + 实例分割</td></tr>
-    <tr><td><b>深度/标定</b></td>
-        <td>单目绝对深度误差 <b>±30–50%</b>；自动标定置信不足退化为手标（<code>fov_source=manual</code>）</td>
-        <td>尺度漂移、前后间距不符</td>
-        <td>度量深度模型逐像素摆放；灭点标定常态化</td></tr>
-    <tr><td><b>布局</b></td>
-        <td>规则补全（镜像带 / 等距上桌）是「合理化」而非「复原」，整齐排布抹掉原图的有机杂乱</td>
-        <td>过于整齐、局部空旷</td>
-        <td>闭环：截图 ↔ 参考图比对后增量修正</td></tr>
-    <tr><td><b>匹配</b></td>
-        <td>21 件库命中<b>全部只到类别级</b>，0 件款式级；<b>17/30</b> 带质量 flag；注册表 bbox 虚大 <b>1.56×</b>（UE 实测发现）</td>
-        <td>款式错位、个别比例失真</td>
-        <td>预览图 embedding 检索；实测 bbox 回写注册表</td></tr>
-    <tr><td><b>材质/光照</b></td>
-        <td>VLM 估白平衡 4000K（直用整场发蓝，被钳到 6500）；墙材单点取样重铺，釉面/污渍空间变化全丢</td>
-        <td>墙面平板感、氛围偏暖偏平</td>
-        <td>PBR 库检索；曝光 / 白平衡闭环自校</td></tr>
-  </table></div>
+  <p>五层归因都落到数上：CRT 召回 <b>13/16</b>；单目绝对深度误差 <b>±30–50%</b>；21 件库命中
+  <b>全部只到类别级</b>、0 件款式级，<b>17/30</b> 带质量 flag，注册表 bbox 虚大 <b>1.56×</b>（UE 实测才发现）。</p>
 
   <details>
-    <summary>匹配层 · 30 个对象逐条（移到某一行，它的框在上图亮起来）</summary>
+    <summary>五层归因表：每层的根因与实测证据、画面表现</summary>
+    <div class="tbl-scroll"><table>
+      <tr><th style="width:22%">层</th><th style="width:48%">根因与实测证据</th><th>画面表现</th></tr>
+      <tr><td><b>感知</b></td><td>整排并框；「沿墙长桌」零检出证据，只能规则反推</td><td>密度不足</td></tr>
+      <tr><td><b>深度/标定</b></td><td>单目深度只能估；标定置信不足退化为手标（<code>fov_source=manual</code>）</td><td>尺度漂移</td></tr>
+      <tr><td><b>布局</b></td><td>规则补全（镜像带 / 等距上桌）是「合理化」不是「复原」</td><td>过于整齐</td></tr>
+      <tr><td><b>匹配</b></td><td>只按类别检索，无款式级证据；注册表 bbox 与实测不一致</td><td>款式错位</td></tr>
+      <tr><td><b>材质/光照</b></td><td>白平衡估 4000K（整场发蓝，钳到 6500）；墙材单点取样重铺</td><td>墙面平板</td></tr>
+    </table></div>
+  </details>
+
+  <details>
+    <summary>匹配层 · 30 个对象逐条：请求 / 装配后尺寸、偏差、标记</summary>
     <p class="muted" id="mWarn"></p>
     <div class="filters" id="mFilters"></div>
     <div class="tbl-scroll tall"><table>
@@ -239,16 +223,15 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
         <th class="n">请求 cm</th><th class="n">装配后 cm</th><th class="n">最大轴偏差</th><th>标记</th></tr></thead>
       <tbody id="mBody"></tbody>
     </table></div>
-    <div class="readout" id="mOut">把鼠标移到任意一行。</div>
+    <div class="readout" id="mOut">移到任意一行。</div>
   </details>
 
-  <details>
-    <summary>材质层 · 三张无缝材质的接缝分数</summary>
-    <div class="tbl-scroll"><table id="seamT">
-      <thead><tr><th>材质</th><th>类别</th><th class="n">接缝分数</th><th class="n">质检轮数</th><th>结果</th></tr></thead>
-      <tbody id="seamB"></tbody>
-    </table></div>
-  </details>
+  <p class="muted">材质层还有一条要写明：三张无缝材质里，<b>墙面那张跑满 3 轮质检仍未过阈</b>（接缝分数 1.321），
+  而单向前馈没有第二次机会，只能记录在案后照常采用。</p>
+  <div class="tbl-scroll"><table id="seamT">
+    <thead><tr><th>材质</th><th>类别</th><th class="n">接缝分数</th><th class="n">质检轮数</th><th>结果</th></tr></thead>
+    <tbody id="seamB"></tbody>
+  </table></div>
 
   <div class="key"><b>差距不是某个环节的 bug</b>，而是<b>「单张图的信息上限」×「单向前馈架构」</b> ——
   单目图缺深度、缺被遮挡结构、缺光照物理参数，每级只能「估计」；管线一次前馈，误差逐级放大且无法回收。</div>
@@ -264,7 +247,7 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 
   <figure>
     <img src="../process/recon/iteration_strip.jpg" alt="九步迭代的九宫格，每格烧着当步指标">
-    <figcaption>九步一屏看完，每格烧着当步实测的 ssim / edgeF / prec / hist / exposure。</figcaption>
+    <figcaption>九步一屏，每格烧着当步的五项实测指标。</figcaption>
   </figure>
 
   <div class="dots" id="ldots"></div>
@@ -283,32 +266,32 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
     </div>
   </div>
 
-  <p>九步里只有两条判断可以搬走。<b>一、先把「像不像」变成可测量的量</b>：容差边缘 F 管结构、
-  16 分区曝光色相表管「哪里错」、直方图交集管影调、逐物体互相关管「哪个物体错」。
-  第一版渲染很难看，但闭环通了，此后每个改动都能被量化。</p>
+  <p>九步里只有两条判断可以搬走。<b>一、先把「像不像」变成可测量的量</b>：边缘 F 管结构、
+  16 分区曝光色相表管「哪里错」、直方图交集管影调、逐物体互相关管「哪个物体错」。</p>
 
   <p><b>二、布局写在图像空间，不写坐标</b>：每个物体记的是它与支撑面接触的那个像素加支撑面名字，
-  由反投影解算成米。移动一个物体 = 改一个像素值。</p>
+  由反投影解算成米。移动一个物体 = 改一个像素。</p>
   <pre><code>{"id":"crt_L2","asset":"M02","support":"shelf_L","anchor_px":[300,250],"yaw":88}</code></pre>
   <p class="muted"><b>代价</b>：掠射墙上这个办法是<b>病态</b>的（读数差几像素、纵深差几米），
   墙架必须改成同时约束投影宽度、中心、顶行、底行的联合拟合 ——
   只用宽度一项是退化的，侧视的深物体和正视的浅物体投出同样宽度。</p>
 
-  <p class="muted"><b>并发怎么拆</b>：所有权按文件切；有先后依赖的不并发 —— 系统性分量必须先定，
-  否则四个区域 owner 会把系统误差各自吸收进坐标里，事后无法拆分。
-  真实成本：三轮并发共 13 个 agent、约 155 万 token；第一轮 16 个 agent 因 API 529 全部失败、零产出。</p>
+  <p class="muted"><b>并发怎么拆</b>：所有权按文件切，有先后依赖的不并发 —— 系统性分量必须先定，
+  否则各区域 owner 会把系统误差各自吸收进坐标里，事后拆不开。</p>
+
+  <p class="muted"><b>真实并发成本</b>：三轮共 13 个 agent、约 155 万 token；
+  <b>第一轮 16 个 agent 因 API 529 全灭、零产出</b>。</p>
 </div>
 
 <div class="sec" id="metric">
   <div class="tag">路三 · 方法</div>
   <h2>SSIM 是错的目标函数</h2>
-  <p class="muted">点图例开关曲线，点某一步跳回上面的步进器。这张图的全部意义就是证明一件事：
-  边缘 F 从 0.260 翻到 0.650，SSIM 几乎不动。</p>
+  <p class="muted">这张图只证明一件事：边缘 F 从 0.260 翻到 0.650，SSIM 只从 0.386 爬到 0.417。</p>
   <div class="legend" id="legend"></div>
   <div class="chart"><svg id="chart" viewBox="0 0 900 340" role="img" aria-label="九步指标轨迹"></svg></div>
   <p>它被高频纹理一致性主导（污渍、单块砖的色差、地上的碎屑），而这些没有任何重建能逐像素复现。
   结果是它<b>奖励一面空白墙胜过一面正确的墙</b>。</p>
-  <p class="muted">砖缝暗度实验：拖动滑块，SSIM 一路上升，而渲染出的砖缝振幅早已跌到参考图（虚线）之下。
+  <p class="muted">砖缝暗度实验：拖动滑块 SSIM 一路上升，而渲染砖缝振幅早已跌到参考图（虚线）之下。
   砖缝最终按<b>振幅</b>定，不按 SSIM 定。</p>
   <div class="slide">
     <span class="tiny">砖缝暗度 bed_mul</span>
@@ -325,19 +308,17 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 
   <figure>
     <img src="../process/recon/align.jpg" alt="逐物体位移箭头叠在参考图上">
-    <figcaption>逐物体位移箭头（绿 ≤3 px / 琥珀 ≤8 px / 红 &gt;8 px）。满屏红箭头本身不可读，
-    信息由下面的探针和表承载。</figcaption>
+    <figcaption>逐物体位移箭头：绿 ≤3 px / 琥珀 ≤8 px / 红 &gt;8 px。满屏红箭头不可读，看探针与表。</figcaption>
   </figure>
 
-  <p class="muted">整图指标说不清「哪里」不对。切换两组：<b>16 分区</b>标在渲染图上，给「哪里不对」；
-  <b>逐物体</b>标在参考图上，给「哪个物体不对」。</p>
+  <p class="muted">整图指标说不清「哪里」不对：<b>16 分区</b>给「哪里」，<b>逐物体</b>给「哪个物体」。</p>
   <div class="filters" id="rpSet"></div>
   <div id="rp"></div>
   <div class="rlist" id="rpChips"></div>
-  <div class="readout" id="rpOut">把鼠标移到任意区域上。</div>
+  <div class="readout" id="rpOut">移到任意区域上读数。</div>
 
   <details>
-    <summary>逐物体配准 · 32 行（点筛选换判定，点某一行在图上高亮）</summary>
+    <summary>逐物体配准 · 32 行：dx / dy / 位移 / 相关峰 / 判定（可筛）</summary>
     <div class="filters" id="aFilters"></div>
     <div class="tbl-scroll tall"><table>
       <thead><tr><th>物体</th><th>资产</th><th class="n">dx</th><th class="n">dy</th>
@@ -357,51 +338,38 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
 
   <figure>
     <img src="../process/recon/chair.jpg" alt="前景椅子的参考图与渲染局部对照">
-    <figcaption>①的物证：前景那把椅子的参考图 / 渲染局部对照。</figcaption>
+    <figcaption>①的物证：那把椅子的参考图 / 渲染局部对照。</figcaption>
   </figure>
 
-  <p class="muted">都曾被当成缺陷记录，后来被测量推翻。保留而不删，因为推翻的过程比结论更有用。</p>
+  <p class="muted">都曾被当成缺陷记录，后来被测量推翻。推翻的过程比结论更有用。</p>
 
-  <details><summary>①「前景那把椅子太小、太远」—— 撤回</summary>
-    <p>判断来自缩略图而不是测量。实际它靠背顶点与参考图相差 3 px、后腿脚 5 px、
-    靠背轮廓宽 117 px 对 117 px。</p>
-  </details>
+  <p><b>①「前景那把椅子太小、太远」—— 撤回。</b>判断来自缩略图不是测量：实测靠背顶点差 <b>3 px</b>、
+  后腿脚 <b>5 px</b>、轮廓宽 <b>117 对 117</b>。</p>
 
-  <details><summary>②「左前那台 CRT 纵深错了 0.93 m」—— 错的是公式</summary>
-    <p>那个数字来自我自己推的一个「视宽 → 纵深」闭式近似。改用直接投影网格重解之后，
-    原摆放误差只有 6 px —— <b>错的是近似式，不是摆放</b>。</p>
-  </details>
+  <p><b>②「左前那台 CRT 纵深错了 0.93 m」—— 错的是公式。</b>那个数来自我推的「视宽 → 纵深」闭式
+  近似；改用直接投影重解后，原摆放误差只有 <b>6 px</b>。</p>
 
-  <details><summary>③「存在 −6.3 px 的系统性竖直偏移」—— 前提本身是错的</summary>
-    <p>这条是我作为<b>前提</b>交给 agent 去诊断的，结果它把前提推翻了：</p>
-    <ul>
-      <li>趋势由单个物体造成。<code>chair_edge</code> 占 57% 面积权重，
-        而它的搜索窗被画面下缘和左缘<b>裁切</b>，<code>dy</code> 只可能落在 [−40,0]。
-        剔掉这一行，加权均值从 −6.3 翻成 +2.6。</li>
-      <li>相机俯仰：需要的 −0.754° 会把地平线推离实测消失点 6.3 px，A/B 渲染后每项指标都变差。</li>
-      <li>相机高度：高度误差有 1/纵深 的特征，而实测 dy 与纵深<b>零相关</b>
-        （Pearson r = −0.09, t = −0.37, n = 19）。</li>
-      <li>共享支撑高度：同一支撑面上 CRT 平均 dy +18.6 而托架 −5.3，<b>同一面里 24 px 的分裂</b>。</li>
-    </ul>
-    <p>它还指出一个我自己架构上的性质我没想到：<b>相机改动在原理上就修不了这些数</b> ——
-    布局写在图像空间并通过同一台相机重新解算，所以任何俯仰 / 高度改动下，
-    锚定物体的接触像素移动量 ≤ 0.011 px。<b>我却让它去考虑改相机。</b></p>
-    <p>后续闭合得很干净：区域 owner 实际去修 <code>chair_edge</code>（它确实近了 0.26 m、偏航错了 108°），
-    修完那个「系统性趋势」自己消失了 —— 加权均值 dy 从 −6.3 变成 +2.4。</p>
-  </details>
+  <p><b>③「存在 −6.3 px 的系统性竖直偏移」—— 前提本身是错的。</b>这条是我作为<b>前提</b>交给 agent
+  诊断的，它把前提推翻了：<code>chair_edge</code> 占 <b>57%</b> 面积权重，搜索窗被下缘与左缘<b>裁切</b>，
+  <code>dy</code> 只能落在 [−40,0]，剔掉它均值从 −6.3 翻成 <b>+2.6</b>；而需要的 −0.754° 俯仰会把
+  地平线推离实测消失点 <b>6.3 px</b>，A/B 渲染后每项指标都变差。</p>
+
+  <p><b>另外两条反证。</b>相机高度误差应当有 1/纵深 特征，而实测 dy 与纵深<b>零相关</b>
+  （r = −0.09, t = −0.37, n = 19）；同一支撑面上 CRT 平均 dy +18.6、托架 −5.3，
+  <b>同一面 24 px 的分裂</b> —— 一个相机参数不可能同时产生这两种分布。</p>
+
+  <p>它还指出一个我没想到的架构性质：<b>相机改动在原理上修不了这些数</b> —— 布局写在图像空间、
+  由同一台相机重新解算，任何俯仰 / 高度改动下锚定物体的接触像素移动量 <b>≤ 0.011 px</b>。
+  <b>我却让它去考虑改相机。</b>闭合：区域 owner 去修 <code>chair_edge</code>（确实近了 0.26 m、偏航错了
+  108°），修完那个「系统性趋势」自己消失了 —— 加权均值 dy 从 −6.3 变成 <b>+2.4</b>。</p>
 </div>
 
 <div class="sec" id="both">
   <div class="tag">收束</div>
   <h2>两条路合起来说明什么</h2>
-  <p>路一给出的是<b>可交付与工程可复现</b>：人工在环成本低 —— 「存在即覆盖」的文件钩子，
-  本次的机位就是这么救回来的；单件失败不断链 —— 9 个对象没匹配上库，走代理盒继续装配，零静默丢弃。</p>
-
-  <p>路三给出的是<b>还原度上限与病因定位能力</b>：同一张图能被追到逐像素，代价是没有引擎交付形态，
-  成本也诚实写在上面（13 个 agent、155 万 token，一轮全灭）。</p>
-
-  <p>桥在中间：<b>把前馈改成闭环</b> —— 装配 → 截图 → 与参考图比对 → 增量修正。
-  本版的装配回执与对象寻址（每个 actor 有稳定 id）正是为此预留的接口。</p>
+  <p><b>路一</b>给出可交付与工程可复现：「存在即覆盖」的文件钩子（本次机位就是这么救回来的）、
+  单件失败不断链 —— 9 个对象走代理盒继续装配，零静默丢弃。<b>路三</b>给出还原度上限与病因定位，
+  代价是没有引擎交付形态。</p>
 
   <div class="key">当前版本做到的是<b>结构对应 + 工程可复现</b>，尚未做到<b>款式对应 + 光影复原</b>，此为下一版目标。</div>
 </div>
@@ -411,25 +379,22 @@ body{overflow-wrap:break-word}code{overflow-wrap:anywhere}
   <h2>复现与引用</h2>
 
   <details>
-    <summary>展开：两条线各自怎么跑起来、以及数字口径</summary>
+    <summary>两条线各自怎么跑起来、留痕口径与引用</summary>
 
-    <h3>路一 · 评审快速上手（约 5 分钟）</h3>
-    <p class="muted">UE <b>5.5.4</b> 打开 <code>AISceneBuilderDemo.uproject</code>（首开等 shader 编译 5–15 分钟）→
-    Plugins 面板勾选<b>「离线回放」</b>（无网无 Key 必开）→ Tools 面板选参考图跑五步 →
-    产物 <code>/Game/Maps/GenScene</code>，回执与留痕在 <code>.../Python/output/run_*/</code>。</p>
+    <h3>路一 · 跑起来</h3>
+    <p class="muted">UE <b>5.5.4</b> 打开 <code>AISceneBuilderDemo.uproject</code> → 勾选<b>「离线回放」</b>（无网无 Key 必开）
+    → 选参考图跑五步；留痕在 <code>output/run_*/</code>。</p>
     <video controls preload="none" playsinline
       poster="../process/figures/tri/ue_shot.jpg"
       src="../media/演示视频-剪辑.mp4">你的浏览器不支持内嵌视频。</video>
-    <p class="cap">38 秒实跑录像（联网），与离线回放构成两个口径。片尾卡的读数来自交付工程包的另一次运行，
-    与本文这次 <code>run_fd6e434f</code> 不是同一批数字。</p>
+    <p class="cap">38 秒实跑录像（联网）。片尾读数来自另一次运行，不是本文的 <code>run_fd6e434f</code>。</p>
 
     <h3>路三 · 复现命令</h3>
-    <pre><code>python tools/bake_wall_layer.py
-python tools/merge_parts.py --resolve
-blender -b --python build.py -- --engine CYCLES --samples 480 \
-        --out out/render_final.png --save-blend
-python tools/compare.py     --render out/render_final.png --tag final
-python tools/align_check.py --render out/render_final.png --vis</code></pre>
+    <p class="muted">先 <code>bake_wall_layer.py</code> 与 <code>merge_parts.py --resolve</code>，再：</p>
+    <pre><code>R=out/render_final.png
+blender -b --python build.py -- --engine CYCLES --samples 480 --out $R
+python tools/compare.py     --render $R --tag final
+python tools/align_check.py --render $R --vis</code></pre>
     <p class="muted">Blender 4.2.3 LTS · Cycles / OptiX · RTX 3080 · 参考图 1024×572 ·
     39 模块贴图资产库 · <b>全程无云端调用、无 API Key</b>。</p>
 
@@ -437,25 +402,23 @@ python tools/align_check.py --render out/render_final.png --vis</code></pre>
     <p class="muted" id="apiHonest"></p>
 
     <h3>引用</h3>
-    <p class="muted">云端图像拆分 / 图生 3D 服务、云端 VLM 网关；NumPy · OpenCV · PyYAML ·
-    PyMeshLab（GPL-3，仅作者侧，不随工程分发）· UE5 PythonScriptPlugin。
-    <b>未使用 ComfyUI；未引入第三方美术资产</b> —— 网格与贴图全部由上述服务从参考图生成或程序化创建。</p>
+    <p class="muted">云端图像拆分 / 图生 3D 服务、云端 VLM 网关；NumPy · OpenCV ·
+    PyMeshLab（GPL-3）。<b>未使用 ComfyUI；未引入第三方美术资产</b>。</p>
   </details>
 </div>
 
 <div class="foot">
-  数据源：<code>process/run_fd6e434f/</code>（<code>run_summary.json</code> · <code>scene_manifest.json</code> ·
-  <code>match_report.json</code> · <code>calib.json</code> 等）与 <code>process/recon/data.json</code>。<br>
+  数据源：<code>process/run_fd6e434f/</code> 与 <code>process/recon/data.json</code>。<br>
   所有数字均为实测，可用上面的命令复现；<b>被推翻的结论按原样保留</b>。<br>
-  另外两份：<a href="方法论-单图到三维美术场景.html">方法论 · 单图到三维美术场景</a> ·
-  <a href="对照实验-程序化场景重建.html">对照实验 · 程序化场景重建</a>
+  另外两份：<a href="方法论-单图到三维美术场景.html">方法论</a> ·
+  <a href="对照实验-程序化场景重建.html">对照实验</a>
   ← <a href="../index.html">返回三条路总览</a>
 </div>
 
 </div>
 
 <script id="D1" type="application/json">{"run":"run_fd6e434f","img":{"w":1024,"h":572},"calib":{"fx":469.1615610969207,"fy":469.1615610969207,"cx":512,"cy":286,"hfov_deg":95,"vfov_deg":62.73281192308421,"pitch_deg":-0.8,"roll_deg":-0.35,"cam_height_m":0.78,"up_cam":[-0.006108018947438851,-0.9998838680690448,0.013962180339145272],"fov_source":"manual","confidence":0.9,"notes":["vp2_plus_zenith 解出 hfov=15°，越界弃用","无可信消失点对，退回 hfov=60.0° 先验","相机高度估计离散（MAD/median=0.35）","已由 calib_manual.json 覆盖（fSpy 人工标定，派生量已重算）"]},"cam":{"position_cm":[0,0,78],"rotation_deg":{"pitch":-0.8,"yaw":0,"roll":-0.35},"hfov_deg":95,"vfov_deg":62.73,"aspect":1.7902,"fov_source":"manual","calib_confidence":0.9},"manual":{"hfov_deg":95,"pitch_deg":-0.8,"roll_deg":-0.35,"cam_height_m":0.78,"confidence":0.9},"K":36594.6,"room":{"size_cm":[1083.8,723.3,285],"center_cm":[461.9,132.5,0],"wall_thickness_cm":20,"wall_yaws_deg":[0,90]},"summary":{"s05_build_scene":{"seconds":57.8,"compiled":true,"ue":"ok","actors":127,"errors":0,"exit_code":0},"s01_perceive":{"seconds":85.6,"objects":12,"detections":70,"calib_conf":0.9,"fov_source":"manual","box3d":10,"vlm_gateway":{"calls":7,"cache_hits":9,"retries":0}},"s02_layout":{"seconds":0,"objects":36,"room_cm":[1083.8,723.3,285],"scale_calibration":1,"low_confidence":6},"s03_gen2d":{"seconds":2.9,"hero":0,"materials":3,"decals":5,"screens":0,"skipped":0,"vlm_gateway":{"calls":0,"cache_hits":12,"retries":0}},"s04_gen3d":{"seconds":0.4,"assets":30,"matched":21,"proxy":9,"decal_tex":6,"flagged":17,"provider":"library"},"_last_invocation":{"ts":"2026-08-10T22:30:06","stages":"s05","ran":["s05_build_scene"]}},"counts":{"actors":127,"errors":0,"floating":0,"overlaps":0,"actorClasses":{"StaticMeshActor":59,"DecalActor":48,"RectLight":8,"PointLight":9,"ExponentialHeightFog":1,"PostProcessVolume":1,"CineCameraActor":1},"objects":36,"detections":70,"percObjects":12,"matched":21,"proxy":9,"flagged":17,"decalTex":6,"modules":13,"flagKinds":{"SHAPE_MISMATCH":8,"SCALE_CLAMPED":3,"NO_MATCH":9},"solve":{"ground_ray":28,"support_ray":2,"wall_ray":6},"yawSrc":{"wall_axis_snap":33,"follow_support":2,"wall_normal":1},"lowConf":11,"stageRuns":{"s01_perceive":16,"s02_layout":25,"s03_gen2d":14,"s04_gen3d":18,"s05_build_scene":58}},"seam":{"wall":{"seam_score":1.321,"seam_pass":false,"rounds":3,"material_class":"glazed_tile","tile_size_cm":100},"floor":{"seam_score":1.121,"seam_pass":true,"rounds":0,"material_class":"concrete","tile_size_cm":100},"ceiling":{"seam_score":1.087,"seam_pass":true,"rounds":0,"material_class":"concrete","tile_size_cm":100}},"ambience":{"key_light":{"azimuth_deg":0,"elevation_deg":85,"color_temp_k":4200,"relative_intensity":0.6},"ambient":{"color_temp_k":4500,"level":0.15},"practicals_temp_k":2800,"fog_density":0.04,"ev_bias":-0.5,"white_temp_k":4000,"mood":"grimy fluorescent computer basement","time_of_day":"artificial_only"},"callStats":{"s01_perceive":{"n":62,"hit":44,"miss":18,"missSec":588.4,"hitSec":0},"s03_gen2d":{"n":149,"hit":112,"miss":37,"missSec":1039.8,"hitSec":0},"s04_gen3d":{"n":20,"hit":12,"miss":8,"missSec":77.9,"hitSec":0}},"callTotal":{"n":231,"hit":168,"miss":63,"sec":1706.1,"first":"2026-08-10T12:04:43","last":"2026-08-10T18:15:06","rate":72.7},"matches":[{"id":"beige_computer_tower_06","cat":"computer_tower","mod":"M08","meth":"exact_category","conf":1,"scale":0.7527,"flags":[],"req":[44.4,26.7,71.7],"mesh":[67.71,31.05,95.26],"built":[51,23.4,71.7],"dev":0.149,"box":[0.551,0.286,0.628,0.458],"pos":[340.5,66.7],"yaw":-270,"yawSrc":"follow_support","solve":"support_ray","margin":-30,"pconf":0.6,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_07","cat":"computer_tower","mod":"M09","meth":"exact_category","conf":1,"scale":0.7727,"flags":["SHAPE_MISMATCH"],"req":[71.7,43,66.9],"mesh":[37.56,79.73,86.58],"built":[29,61.6,66.9],"dev":0.596,"box":[0.446,0.541,0.553,0.72],"pos":[307.9,-0.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":119.3,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_1_54","cat":"computer_tower","mod":"M10","meth":"exact_category","conf":1,"scale":0.782,"flags":["SHAPE_MISMATCH"],"req":[32,19.2,70],"mesh":[33.52,75.55,89.51],"built":[26.2,59.1,70],"dev":2.078,"box":[0.4486,0.5332,0.4966,0.7216],"pos":[306,-18.7],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":120,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_20","cat":"computer_tower","mod":"M09","meth":"exact_category","conf":1,"scale":0.7842,"flags":["SHAPE_MISMATCH"],"req":[32,19.2,67.9],"mesh":[37.56,79.73,86.58],"built":[29.5,62.5,67.9],"dev":2.255,"box":[0.4477,0.5375,0.4933,0.711],"pos":[322.2,-21.2],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":114,"pconf":0.9,"clamped":false,"occl":false,"actors":0},{"id":"beige_computer_tower_21","cat":"computer_tower","mod":"A02","meth":"exact_category","conf":1,"scale":0.6836,"flags":["SHAPE_MISMATCH"],"req":[26.3,15.8,66.2],"mesh":[38.47,78.93,87.42],"built":[26.3,54,59.8],"dev":2.418,"box":[0.5167,0.5402,0.5532,0.7048],"pos":[331.4,24.7],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":110.8,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_2_55","cat":"computer_tower","mod":"M08","meth":"exact_category","conf":1,"scale":0.5153,"flags":[],"req":[26.7,16,66.7],"mesh":[67.71,31.05,95.26],"built":[34.9,16,49.1],"dev":0.307,"box":[0.517,0.5386,0.5536,0.7024],"pos":[335.5,25.3],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":109.4,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_35","cat":"computer_tower","mod":"M09","meth":"exact_category","conf":1,"scale":1.7,"flags":["SCALE_CLAMPED","SHAPE_MISMATCH"],"req":[133.1,79.9,166.1],"mesh":[37.56,79.73,86.58],"built":[63.9,135.5,147.2],"dev":0.696,"box":[0.6389,0.4535,0.6878,0.5594],"pos":[937.3,454.2],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":28.5,"pconf":0.685,"clamped":false,"occl":false,"actors":1},{"id":"beige_computer_tower_50","cat":"computer_tower","mod":"M10","meth":"exact_category","conf":1,"scale":0.9574,"flags":["SHAPE_MISMATCH"],"req":[91.8,55.1,85.7],"mesh":[33.52,75.55,89.51],"built":[32.1,72.3,85.7],"dev":0.65,"box":[0.2484,0.4996,0.3414,0.6574],"pos":[446.4,-199.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":82.2,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_crt_monitor_04","cat":"crt_monitor","mod":"M01","meth":"exact_category","conf":1,"scale":0.6069,"flags":[],"req":[42.8,45,43.9],"mesh":[74.13,70.71,82.71],"built":[45,42.9,50.2],"dev":0.144,"box":[0.445,0.316,0.496,0.431],"pos":[274.7,-14.1],"yaw":-270,"yawSrc":"follow_support","solve":"support_ray","margin":-46.2,"pconf":0.4,"clamped":false,"occl":false,"actors":2},{"id":"beige_crt_monitor_19","cat":"crt_monitor","mod":"M04","meth":"exact_category","conf":1,"scale":0.6973,"flags":[],"req":[51.9,54.5,53.2],"mesh":[73.41,79.25,80.05],"built":[51.2,55.3,55.8],"dev":0.049,"box":[0.662,0.4782,0.6824,0.5788],"pos":[924.9,346.6],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":39.6,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"beige_crt_monitor_2_52","cat":"crt_monitor","mod":"M05","meth":"exact_category","conf":1,"scale":0.6839,"flags":[],"req":[51.9,54.5,53.2],"mesh":[74.46,81.24,77.89],"built":[50.9,55.6,53.3],"dev":0.02,"box":[0.682,0.5128,0.745,0.6118],"pos":[624.3,289.8],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":58.7,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"beige_crt_monitor_34","cat":"crt_monitor","mod":"M03","meth":"exact_category","conf":1,"scale":0.6891,"flags":[],"req":[51.9,54.5,53.2],"mesh":[73.48,81.12,81],"built":[50.6,55.9,55.8],"dev":0.049,"box":[0.6818,0.5128,0.7448,0.6137],"pos":[613,284.3],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":59.8,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"beige_crt_monitor_3_53","cat":"crt_monitor","mod":"M06","meth":"exact_category","conf":1,"scale":0.6779,"flags":[],"req":[51.9,54.5,53.2],"mesh":[72.59,85.05,85.29],"built":[49.2,57.7,57.8],"dev":0.086,"box":[0.6622,0.4768,0.7,0.5758],"pos":[965.9,380.8],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":37.9,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"beige_crt_monitor_46","cat":"crt_monitor","mod":"M02","meth":"exact_category","conf":1,"scale":0.6798,"flags":[],"req":[51.9,54.5,53.2],"mesh":[73.53,83.36,87.42],"built":[50,56.7,59.4],"dev":0.117,"box":[0.6628,0.4752,0.7,0.5832],"pos":[869,343],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":42.2,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"beige_crt_monitor_49","cat":"crt_monitor","mod":"M01","meth":"exact_category","conf":1,"scale":0.7354,"flags":[],"req":[51.9,54.5,53.2],"mesh":[74.13,70.71,82.71],"built":[54.5,52,60.8],"dev":0.143,"box":[0.1962,0.5482,0.2868,0.7048],"pos":[337,-190],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":109,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"blue_folding_chair_00","cat":"folding_chair","mod":"M13","meth":"exact_category","conf":1,"scale":0.8696,"flags":[],"req":[44.2,47.1,80],"mesh":[49.55,54.16,96.99],"built":[43.1,47.1,84.3],"dev":0.054,"box":[0,0.504,0.119,0.993],"pos":[135.3,-129.5],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":272.7,"pconf":0.65,"clamped":false,"occl":true,"actors":1},{"id":"blue_folding_chair_01","cat":"folding_chair","mod":"M13","meth":"exact_category","conf":1,"scale":0.8364,"flags":[],"req":[42.6,45.3,77],"mesh":[49.55,54.16,96.99],"built":[41.4,45.3,81.1],"dev":0.053,"box":[0.166,0.52,0.386,0.993],"pos":[134.7,-65.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":274,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"blue_folding_chair_02","cat":"folding_chair","mod":"M13","meth":"exact_category","conf":1,"scale":1.1651,"flags":[],"req":[59.3,63.1,107.3],"mesh":[49.55,54.16,96.99],"built":[57.7,63.1,113],"dev":0.053,"box":[0.686,0.438,0.778,0.698],"pos":[339.5,170.8],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":108.2,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"blue_folding_chair_24","cat":"folding_chair","mod":"M13","meth":"exact_category","conf":1,"scale":1.0801,"flags":[],"req":[55,58.5,99.4],"mesh":[49.55,54.16,96.99],"built":[53.5,58.5,104.8],"dev":0.054,"box":[0.5511,0.4802,0.6012,0.6217],"pos":[577,95.2],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":63.6,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"cable_bundle_14","cat":"cable","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[141.5,2,678.7],"mesh":null,"built":null,"dev":null,"box":[0.828,0.013,0.938,0.768],"pos":[589.5,494.2],"yaw":-270,"yawSrc":"wall_normal","solve":"wall_ray","margin":0,"pconf":0.6,"clamped":false,"occl":false,"actors":1},{"id":"cable_bundle_26","cat":"cable","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[27.7,16.6,93.6],"mesh":null,"built":null,"dev":null,"box":[0.5903,0.4802,0.6204,0.6611],"pos":[425.3,97],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":86.3,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"cable_bundle_36","cat":"cable","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[32,19.2,164.5],"mesh":null,"built":null,"dev":null,"box":[0.8372,0.308,0.8795,0.688],"pos":[355.7,276.8],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":103.2,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"concrete_pillar_13","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[16.5,9.9,222.6],"mesh":null,"built":null,"dev":null,"box":[0.49,0,0.523,0.791],"pos":[229.9,2.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":159.9,"pconf":0.65,"clamped":false,"occl":true,"actors":1},{"id":"concrete_pillar_25","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[17.9,10.7,152.1],"mesh":null,"built":null,"dev":null,"box":[0.4942,0.323,0.5198,0.711],"pos":[321.6,4.4],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":114.2,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"concrete_pillar_28","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[74.2,44.5,287],"mesh":null,"built":null,"dev":null,"box":[0.593,0.308,0.6338,0.586],"pos":[845.8,208.5],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":43.3,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"floor_litter_15","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[36.2,21.7,20.5],"mesh":null,"built":null,"dev":null,"box":[0.436,0.796,0.536,0.898],"pos":[166.7,-5.6],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":221,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"floor_litter_16","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[35.9,21.6,19.1],"mesh":null,"built":null,"dev":null,"box":[0.153,0.708,0.218,0.771],"pos":[250.9,-172],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":146.5,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"floor_litter_27","cat":"misc","mod":null,"meth":"proxy_fallback","conf":0,"scale":null,"flags":["NO_MATCH"],"req":[57.3,34.4,22.1],"mesh":null,"built":null,"dev":null,"box":[0.5571,0.6233,0.6222,0.6682],"pos":[406.9,78.9],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":90.2,"pconf":0.9,"clamped":false,"occl":false,"actors":1},{"id":"white_folding_table_08","cat":"long_table","mod":"M15","meth":"exact_category","conf":1,"scale":1.7,"flags":["SCALE_CLAMPED","SHAPE_MISMATCH"],"req":[243.4,101.1,99.8],"mesh":[58.2,91.53,56.61],"built":[98.9,155.6,96.2],"dev":0.594,"box":[0.419,0.423,0.643,0.673],"pos":[396.4,26.2],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":92.6,"pconf":0.9,"clamped":false,"occl":false,"actors":2},{"id":"white_folding_table_32","cat":"long_table","mod":"A03","meth":"exact_category","conf":1,"scale":1.7,"flags":["SCALE_CLAMPED","SHAPE_MISMATCH"],"req":[243.4,101.1,99.8],"mesh":[38.31,109.35,36.06],"built":[65.1,185.9,61.3],"dev":0.839,"box":[0.593,0.4535,0.6422,0.6607],"pos":[426.3,108.6],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":86.1,"pconf":0.9,"clamped":false,"occl":false,"actors":2}],"objects":[{"id":"beige_computer_tower_07","cat":"beige_computer_tower","box":[0.446,0.541,0.553,0.72],"pos":[307.9,-0.8,0],"size":[71.7,43,66.9],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":119.3,"depth":306.7,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M09","meth":"exact_category","flags":["SHAPE_MISMATCH"]},{"id":"beige_computer_tower_1_54","cat":"beige_computer_tower_1","box":[0.4486,0.5332,0.4966,0.7216],"pos":[306,-18.7,0],"size":[32,19.2,70],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":120,"depth":305,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M10","meth":"exact_category","flags":["SHAPE_MISMATCH"]},{"id":"beige_computer_tower_20","cat":"beige_computer_tower","box":[0.4477,0.5375,0.4933,0.711],"pos":[322.2,-21.2,0],"size":[32,19.2,67.9],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":114,"depth":321,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M09","meth":"exact_category","flags":["SHAPE_MISMATCH"]},{"id":"beige_computer_tower_21","cat":"beige_computer_tower","box":[0.5167,0.5402,0.5532,0.7048],"pos":[331.4,24.7,0],"size":[26.3,15.8,66.2],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":110.8,"depth":330.3,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"A02","meth":"exact_category","flags":["SHAPE_MISMATCH"]},{"id":"beige_computer_tower_2_55","cat":"beige_computer_tower_2","box":[0.517,0.5386,0.5536,0.7024],"pos":[335.5,25.3,0],"size":[26.7,16,66.7],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":109.4,"depth":334.5,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M08","meth":"exact_category","flags":[]},{"id":"beige_computer_tower_35","cat":"beige_computer_tower","box":[0.6389,0.4535,0.6878,0.5594],"pos":[937.3,454.2,0],"size":[133.1,79.9,166.1],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":28.5,"depth":1284,"conf":0.685,"strategy":"hero","support":null,"roomClamp":3.503,"clamped":false,"occl":false,"mod":"M09","meth":"exact_category","flags":["SCALE_CLAMPED","SHAPE_MISMATCH"]},{"id":"beige_computer_tower_50","cat":"beige_computer_tower","box":[0.2484,0.4996,0.3414,0.6574],"pos":[446.4,-199.8,0],"size":[91.8,55.1,85.7],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":82.2,"depth":445.2,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M10","meth":"exact_category","flags":["SHAPE_MISMATCH"]},{"id":"beige_crt_monitor_19","cat":"crt_monitor","box":[0.662,0.4782,0.6824,0.5788],"pos":[924.9,346.6,0],"size":[51.9,54.5,53.2],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":39.6,"depth":924.1,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M04","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_2_52","cat":"crt_monitor","box":[0.682,0.5128,0.745,0.6118],"pos":[624.3,289.8,0],"size":[51.9,54.5,53.2],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":58.7,"depth":623.4,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M05","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_34","cat":"crt_monitor","box":[0.6818,0.5128,0.7448,0.6137],"pos":[613,284.3,0],"size":[51.9,54.5,53.2],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":59.8,"depth":611.9,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M03","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_3_53","cat":"crt_monitor","box":[0.6622,0.4768,0.7,0.5758],"pos":[965.9,380.8,0],"size":[51.9,54.5,53.2],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":37.9,"depth":965.6,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M06","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_46","cat":"crt_monitor","box":[0.6628,0.4752,0.7,0.5832],"pos":[869,343,0],"size":[51.9,54.5,53.2],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":42.2,"depth":867.2,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M02","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_49","cat":"crt_monitor","box":[0.1962,0.5482,0.2868,0.7048],"pos":[337,-190,0],"size":[51.9,54.5,53.2],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":109,"depth":335.7,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M01","meth":"exact_category","flags":[]},{"id":"blue_folding_chair_00","cat":"chair","box":[0,0.504,0.119,0.993],"pos":[135.3,-129.5,0],"size":[44.2,47.1,80],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":272.7,"depth":134.2,"conf":0.65,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":true,"mod":"M13","meth":"exact_category","flags":[]},{"id":"blue_folding_chair_01","cat":"chair","box":[0.166,0.52,0.386,0.993],"pos":[134.7,-65.8,0],"size":[42.6,45.3,77],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":274,"depth":133.6,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M13","meth":"exact_category","flags":[]},{"id":"blue_folding_chair_02","cat":"chair","box":[0.686,0.438,0.778,0.698],"pos":[339.5,170.8,0],"size":[59.3,63.1,107.3],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":108.2,"depth":338.2,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M13","meth":"exact_category","flags":[]},{"id":"blue_folding_chair_24","cat":"chair","box":[0.5511,0.4802,0.6012,0.6217],"pos":[577,95.2,0],"size":[55,58.5,99.4],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":63.6,"depth":575.4,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M13","meth":"exact_category","flags":[]},{"id":"cable_bundle_26","cat":"cable_bundle","box":[0.5903,0.4802,0.6204,0.6611],"pos":[425.3,97,0],"size":[27.7,16.6,93.6],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":86.3,"depth":424,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"cable_bundle_36","cat":"cable_bundle","box":[0.8372,0.308,0.8795,0.688],"pos":[355.7,276.8,0],"size":[32,19.2,164.5],"yaw":-90,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":103.2,"depth":354.6,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"concrete_pillar_13","cat":"concrete_pillar","box":[0.49,0,0.523,0.791],"pos":[229.9,2.8,0],"size":[16.5,9.9,222.6],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":159.9,"depth":228.9,"conf":0.65,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":true,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"concrete_pillar_25","cat":"concrete_pillar","box":[0.4942,0.323,0.5198,0.711],"pos":[321.6,4.4,0],"size":[17.9,10.7,152.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":114.2,"depth":320.4,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"concrete_pillar_28","cat":"concrete_pillar","box":[0.593,0.308,0.6338,0.586],"pos":[845.8,208.5,0],"size":[74.2,44.5,287],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":43.3,"depth":845.1,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"floor_litter_15","cat":"floor_litter","box":[0.436,0.796,0.536,0.898],"pos":[166.7,-5.6,0],"size":[36.2,21.7,20.5],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":221,"depth":165.6,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"floor_litter_16","cat":"floor_litter","box":[0.153,0.708,0.218,0.771],"pos":[250.9,-172,0],"size":[35.9,21.6,19.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":146.5,"depth":249.8,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"floor_litter_27","cat":"floor_litter","box":[0.5571,0.6233,0.6222,0.6682],"pos":[406.9,78.9,0],"size":[57.3,34.4,22.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":90.2,"depth":405.7,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"wall_poster_51","cat":"wall_poster","box":[0.1548,0.7018,0.2172,0.7696],"pos":[252.3,-172.7,0],"size":[37.5,1.5,52.5],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":145.7,"depth":251.2,"conf":0.9,"strategy":"decal","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"decal_pool","flags":[]},{"id":"white_folding_table_08","cat":"folding_table","box":[0.419,0.423,0.643,0.673],"pos":[396.4,26.2,0],"size":[243.4,101.1,99.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":92.6,"depth":395.2,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"M15","meth":"exact_category","flags":["SCALE_CLAMPED","SHAPE_MISMATCH"]},{"id":"white_folding_table_32","cat":"folding_table","box":[0.593,0.4535,0.6422,0.6607],"pos":[426.3,108.6,0],"size":[243.4,101.1,99.8],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"ground_ray","margin":86.1,"depth":425,"conf":0.9,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":"A03","meth":"exact_category","flags":["SCALE_CLAMPED","SHAPE_MISMATCH"]},{"id":"beige_computer_tower_06","cat":"beige_computer_tower","box":[0.551,0.286,0.628,0.458],"pos":[340.5,66.7,99.8],"size":[44.4,26.7,71.7],"yaw":-270,"yawSrc":"follow_support","solve":"support_ray","margin":-30,"depth":null,"conf":0.6,"strategy":"hero","support":"white_folding_table_32","roomClamp":null,"clamped":false,"occl":false,"mod":"M08","meth":"exact_category","flags":[]},{"id":"beige_crt_monitor_04","cat":"crt_monitor","box":[0.445,0.316,0.496,0.431],"pos":[274.7,-14.1,99.8],"size":[42.8,45,43.9],"yaw":-270,"yawSrc":"follow_support","solve":"support_ray","margin":-46.2,"depth":null,"conf":0.4,"strategy":"hero","support":"white_folding_table_08","roomClamp":null,"clamped":false,"occl":false,"mod":"M01","meth":"exact_category","flags":[]},{"id":"cable_bundle_14","cat":"cable_bundle","box":[0.828,0.013,0.938,0.768],"pos":[589.5,494.2,162.1],"size":[141.5,2,678.7],"yaw":-270,"yawSrc":"wall_normal","solve":"wall_ray","margin":0,"depth":null,"conf":0.6,"strategy":"hero","support":null,"roomClamp":null,"clamped":false,"occl":false,"mod":null,"meth":"proxy_fallback","flags":["NO_MATCH"]},{"id":"wall_poster_11","cat":"wall_poster","box":[0.156,0.043,0.215,0.298],"pos":[333.1,-229.1,218.6],"size":[66.5,2.7,93.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"wall_ray","margin":0,"depth":null,"conf":0.45,"strategy":"decal","support":null,"roomClamp":null,"clamped":true,"occl":false,"mod":null,"meth":"decal_pool","flags":[]},{"id":"wall_poster_12","cat":"wall_poster","box":[0.24,0.123,0.278,0.288],"pos":[435.2,-229.1,242.6],"size":[66.5,2.7,93.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"wall_ray","margin":0,"depth":null,"conf":0.45,"strategy":"decal","support":null,"roomClamp":null,"clamped":true,"occl":false,"mod":null,"meth":"decal_pool","flags":[]},{"id":"wall_poster_43","cat":"wall_poster","box":[0.1536,0.0402,0.351,0.3156],"pos":[423.3,-229.1,252.5],"size":[66.5,2.7,93.1],"yaw":-270,"yawSrc":"wall_axis_snap","solve":"wall_ray","margin":0,"depth":null,"conf":0.45,"strategy":"decal","support":null,"roomClamp":null,"clamped":true,"occl":false,"mod":null,"meth":"decal_pool","flags":[]},{"id":"wall_poster_44","cat":"wall_poster","box":[0.384,0.2196,0.483,0.3282],"pos":[1003.8,-144.6,370.7],"size":[66.5,2.7,93.1],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"wall_ray","margin":0,"depth":null,"conf":0.45,"strategy":"decal","support":null,"roomClamp":null,"clamped":true,"occl":false,"mod":null,"meth":"decal_pool","flags":[]},{"id":"wall_poster_48","cat":"wall_poster","box":[0.6784,0.195,0.6964,0.3036],"pos":[1003.8,414.2,397.7],"size":[66.5,2.7,93.1],"yaw":-180,"yawSrc":"wall_axis_snap","solve":"wall_ray","margin":0,"depth":null,"conf":0.45,"strategy":"decal","support":null,"roomClamp":null,"clamped":true,"occl":false,"mod":null,"meth":"decal_pool","flags":[]}],"classes":["CineCameraActor","DecalActor","ExponentialHeightFog","PointLight","PostProcessVolume","RectLight","StaticMeshActor"],"actors":[["shell_floor","Shell_Floor",6,461.9,132.5,-10,0],["shell_ceiling","Shell_Ceiling",6,461.9,132.5,295,0],["shell_wall_n","Shell_Wall_N",6,1013.8,132.5,142.5,0],["shell_wall_s","Shell_Wall_S",6,-90,132.5,142.5,0],["shell_wall_e","Shell_Wall_E",6,461.9,504.1,142.5,0],["shell_wall_w","Shell_Wall_W",6,461.9,-239.1,142.5,0],["beige_computer_tower_07","SM_beige_computer_tower_07",6,280.4,-0.8,0,90],["beige_computer_tower_1_54","SM_beige_computer_tower_1_54",6,306,-30,0,90],["beige_computer_tower_21","SM_beige_computer_tower_21",6,295.5,31.9,0,90],["beige_computer_tower_2_55","SM_beige_computer_tower_2_55",6,335.5,36.2,0,90],["beige_computer_tower_35","SM_beige_computer_tower_35",6,937.3,325.5,0,-90],["beige_computer_tower_50","SM_beige_computer_tower_50",6,446.4,-199.8,0,90],["beige_crt_monitor_19_00","SM_beige_crt_monitor_19_00",6,855.5,422.3,76,-90],["beige_crt_monitor_19_01","SM_beige_crt_monitor_19_01",6,910.7,390.1,74,180],["beige_crt_monitor_2_52_00","SM_beige_crt_monitor_2_52_00",6,613.6,422.3,76,-90],["beige_crt_monitor_2_52_01","SM_beige_crt_monitor_2_52_01",6,675.6,422.3,76,-90],["beige_crt_monitor_34_00","SM_beige_crt_monitor_34_00",6,551.6,422.3,76,-90],["beige_crt_monitor_3_53_00","SM_beige_crt_monitor_3_53_00",6,965.9,454,74,180],["beige_crt_monitor_3_53_01","SM_beige_crt_monitor_3_53_01",6,965.9,391.3,74,180],["beige_crt_monitor_46_00","SM_beige_crt_monitor_46_00",6,737.6,422.3,76,-90],["beige_crt_monitor_46_01","SM_beige_crt_monitor_46_01",6,799.6,422.3,76,-90],["beige_crt_monitor_49_00","SM_beige_crt_monitor_49_00",6,856.6,-157.3,76,90],["beige_crt_monitor_49_01","SM_beige_crt_monitor_49_01",6,722.2,-157.3,76,90],["blue_folding_chair_00","SM_blue_folding_chair_00",6,100,-129.5,0,90],["blue_folding_chair_01","SM_blue_folding_chair_01",6,284.7,-65.8,0,90],["blue_folding_chair_02","SM_blue_folding_chair_02",6,189.5,170.8,0,-90],["blue_folding_chair_24","SM_blue_folding_chair_24",6,427,104.4,0,90],["cable_bundle_26","SM_cable_bundle_26",6,425.3,97,46.8,90],["cable_bundle_36","SM_cable_bundle_36",6,355.7,276.8,82.2,-90],["concrete_pillar_13","SM_concrete_pillar_13",6,229.9,2.8,142.5,90],["concrete_pillar_25","SM_concrete_pillar_25",6,321.6,4.4,142.5,90],["concrete_pillar_28","SM_concrete_pillar_28",6,845.8,208.5,142.5,180],["floor_litter_15","SM_floor_litter_15",6,166.7,-5.6,10.2,90],["floor_litter_16","SM_floor_litter_16",6,250.9,-172,9.6,90],["floor_litter_27","SM_floor_litter_27",6,406.9,78.9,11.1,90],["white_folding_table_08_00","SM_white_folding_table_08_00",6,570.4,26.2,0,90],["white_folding_table_08_01","SM_white_folding_table_08_01",6,409.8,26.2,0,90],["white_folding_table_32_00","SM_white_folding_table_32_00",6,578.4,108.6,0,90],["white_folding_table_32_01","SM_white_folding_table_32_01",6,274.2,108.6,0,90],["beige_computer_tower_06","SM_beige_computer_tower_06",6,340.5,73,96.2,90],["beige_crt_monitor_04_00","SM_beige_crt_monitor_04_00",6,587.8,-157.3,76,90],["beige_crt_monitor_04_01","SM_beige_crt_monitor_04_01",6,274.7,12.7,66.9,0],["cable_bundle_14","SM_cable_bundle_14",6,589.5,484.1,413.4,90],["band_l_00","SM_band_l_00",6,580.6,422.3,0,0],["band_l_01","SM_band_l_01",6,700.6,422.3,0,0],["band_l_02","SM_band_l_02",6,820.6,422.3,0,0],["band_l_03","SM_band_l_03",6,940.6,422.3,0,0],["band_r_00","SM_band_r_00",6,580.6,-157.3,0,0],["band_r_01","SM_band_r_01",6,700.6,-157.3,0,0],["band_r_02","SM_band_r_02",6,820.6,-157.3,0,0],["band_r_03","SM_band_r_03",6,940.6,-157.3,0,0],["wall_poster_51_00","Decal_wall_poster",1,312.6,-227.1,51.3,90],["wall_poster_51_01","Decal_wall_poster",1,433,-227.1,51.3,90],["wall_poster_51_02","Decal_wall_poster",1,553.4,-227.1,51.3,90],["wall_poster_51_03","Decal_wall_poster",1,673.8,-227.1,51.3,90],["wall_poster_51_04","Decal_wall_poster",1,794.2,-227.1,51.3,90],["wall_poster_51_05","Decal_wall_poster",1,914.6,-227.1,51.3,90],["wall_poster_51_06","Decal_wall_poster",1,-36.6,-227.1,51.3,90],["wall_poster_51_07","Decal_wall_poster",1,71.6,-227.1,51.3,90],["wall_poster_51_08","Decal_wall_poster",1,192,-227.1,51.3,90],["wall_poster_11_00","Decal_wall_poster",1,393.4,-227.1,201.5,90],["wall_poster_11_01","Decal_wall_poster",1,513.8,-227.1,241.4,90],["wall_poster_11_02","Decal_wall_poster",1,634.2,-227.1,201.5,90],["wall_poster_11_03","Decal_wall_poster",1,754.6,-227.1,241.4,90],["wall_poster_11_04","Decal_wall_poster",1,875,-227.1,201.5,90],["wall_poster_11_05","Decal_wall_poster",1,960.4,-227.1,241.4,90],["wall_poster_11_06","Decal_wall_poster",1,32.1,-227.1,201.5,90],["wall_poster_11_07","Decal_wall_poster",1,152.5,-227.1,241.4,90],["wall_poster_11_08","Decal_wall_poster",1,272.9,-227.1,201.5,90],["wall_poster_12_00","Decal_wall_poster",1,495.5,-227.1,225.5,90],["wall_poster_12_01","Decal_wall_poster",1,615.9,-227.1,250.8,90],["wall_poster_12_02","Decal_wall_poster",1,736.3,-227.1,225.5,90],["wall_poster_12_03","Decal_wall_poster",1,856.7,-227.1,250.8,90],["wall_poster_12_04","Decal_wall_poster",1,960.4,-227.1,225.5,90],["wall_poster_12_05","Decal_wall_poster",1,13.7,-227.1,250.8,90],["wall_poster_12_06","Decal_wall_poster",1,134.2,-227.1,225.5,90],["wall_poster_12_07","Decal_wall_poster",1,254.6,-227.1,250.8,90],["wall_poster_12_08","Decal_wall_poster",1,375,-227.1,225.5,90],["wall_poster_43_00","Decal_wall_poster",1,483.6,-227.1,235.4,90],["wall_poster_43_01","Decal_wall_poster",1,604,-227.1,250.8,90],["wall_poster_43_02","Decal_wall_poster",1,724.4,-227.1,235.4,90],["wall_poster_43_03","Decal_wall_poster",1,844.8,-227.1,250.8,90],["wall_poster_43_04","Decal_wall_poster",1,960.4,-227.1,235.4,90],["wall_poster_43_05","Decal_wall_poster",1,1.8,-227.1,250.8,90],["wall_poster_43_06","Decal_wall_poster",1,122.2,-227.1,235.4,90],["wall_poster_43_07","Decal_wall_poster",1,242.6,-227.1,250.8,90],["wall_poster_43_08","Decal_wall_poster",1,363.1,-227.1,235.4,90],["wall_poster_44_00","Decal_wall_poster",1,1001.8,-84.3,250.8,180],["wall_poster_44_01","Decal_wall_poster",1,1001.8,36.2,250.8,180],["wall_poster_44_02","Decal_wall_poster",1,1001.8,156.8,250.8,180],["wall_poster_44_03","Decal_wall_poster",1,1001.8,277.3,250.8,180],["wall_poster_44_04","Decal_wall_poster",1,1001.8,397.9,250.8,180],["wall_poster_44_05","Decal_wall_poster",1,1001.8,-200.2,250.8,180],["wall_poster_48_00","Decal_wall_poster",1,1001.8,465.2,250.8,180],["wall_poster_48_01","Decal_wall_poster",1,1001.8,-128.2,250.8,180],["wall_poster_48_02","Decal_wall_poster",1,1001.8,-7.7,250.8,180],["wall_poster_48_03","Decal_wall_poster",1,1001.8,112.8,250.8,180],["wall_poster_48_04","Decal_wall_poster",1,1001.8,233.4,250.8,180],["wall_poster_48_05","Decal_wall_poster",1,1001.8,354,250.8,180],["lightpanel_0","LightPanel_0",6,55.5,-48.3,282,0],["rectlight_0","RectLight_0",5,55.5,-48.3,279,180],["ceilfill_0","CeilingFill_0",3,55.5,-48.3,257,0],["lightpanel_1","LightPanel_1",6,55.5,313.3,282,0],["rectlight_1","RectLight_1",5,55.5,313.3,279,180],["ceilfill_1","CeilingFill_1",3,55.5,313.3,257,0],["lightpanel_2","LightPanel_2",6,326.4,-48.3,282,0],["rectlight_2","RectLight_2",5,326.4,-48.3,279,180],["ceilfill_2","CeilingFill_2",3,326.4,-48.3,257,0],["lightpanel_3","LightPanel_3",6,326.4,313.3,282,0],["rectlight_3","RectLight_3",5,326.4,313.3,279,180],["ceilfill_3","CeilingFill_3",3,326.4,313.3,257,0],["lightpanel_4","LightPanel_4",6,597.4,-48.3,282,0],["rectlight_4","RectLight_4",5,597.4,-48.3,279,180],["ceilfill_4","CeilingFill_4",3,597.4,-48.3,257,0],["lightpanel_5","LightPanel_5",6,597.4,313.3,282,0],["rectlight_5","RectLight_5",5,597.4,313.3,279,180],["ceilfill_5","CeilingFill_5",3,597.4,313.3,257,0],["lightpanel_6","LightPanel_6",6,868.3,-48.3,282,0],["rectlight_6","RectLight_6",5,868.3,-48.3,279,180],["ceilfill_6","CeilingFill_6",3,868.3,-48.3,257,0],["lightpanel_7","LightPanel_7",6,868.3,313.3,282,0],["rectlight_7","RectLight_7",5,868.3,313.3,279,180],["ceilfill_7","CeilingFill_7",3,868.3,313.3,257,0],["screenfill_0","ScreenFill_0",3,0,0,100,0],["fog","Fog_Volumetric",2,0,0,0,0],["postprocess","PP_Global",4,0,0,0,0],["camera","Cam_RefMatch",0,0,0,78,0]],"ground":[{"id":"beige_computer_tower_35","cat":"beige_computer_tower","m":28.5,"D":1284,"x":937.3,"err":27,"sens":45.05},{"id":"beige_crt_monitor_3_53","cat":"crt_monitor","m":37.9,"D":965.6,"x":965.9,"err":0.04,"sens":25.48},{"id":"beige_crt_monitor_19","cat":"crt_monitor","m":39.6,"D":924.1,"x":924.9,"err":0.09,"sens":23.34},{"id":"beige_crt_monitor_46","cat":"crt_monitor","m":42.2,"D":867.2,"x":869,"err":0.21,"sens":20.55},{"id":"concrete_pillar_28","cat":"concrete_pillar","m":43.3,"D":845.1,"x":845.8,"err":0.08,"sens":19.52},{"id":"beige_crt_monitor_2_52","cat":"crt_monitor","m":58.7,"D":623.4,"x":624.3,"err":0.14,"sens":10.62},{"id":"beige_crt_monitor_34","cat":"crt_monitor","m":59.8,"D":611.9,"x":613,"err":0.17,"sens":10.23},{"id":"blue_folding_chair_24","cat":"chair","m":63.6,"D":575.4,"x":577,"err":0.28,"sens":9.05},{"id":"beige_computer_tower_50","cat":"beige_computer_tower","m":82.2,"D":445.2,"x":446.4,"err":0.27,"sens":5.42},{"id":"white_folding_table_32","cat":"folding_table","m":86.1,"D":425,"x":426.3,"err":0.3,"sens":4.94},{"id":"cable_bundle_26","cat":"cable_bundle","m":86.3,"D":424,"x":425.3,"err":0.3,"sens":4.91},{"id":"floor_litter_27","cat":"floor_litter","m":90.2,"D":405.7,"x":406.9,"err":0.29,"sens":4.5},{"id":"white_folding_table_08","cat":"folding_table","m":92.6,"D":395.2,"x":396.4,"err":0.31,"sens":4.27},{"id":"cable_bundle_36","cat":"cable_bundle","m":103.2,"D":354.6,"x":355.7,"err":0.31,"sens":3.44},{"id":"blue_folding_chair_02","cat":"chair","m":108.2,"D":338.2,"x":339.5,"err":0.38,"sens":3.13},{"id":"beige_crt_monitor_49","cat":"crt_monitor","m":109,"D":335.7,"x":337,"err":0.38,"sens":3.08},{"id":"beige_computer_tower_2_55","cat":"beige_computer_tower_2","m":109.4,"D":334.5,"x":335.5,"err":0.3,"sens":3.06},{"id":"beige_computer_tower_21","cat":"beige_computer_tower","m":110.8,"D":330.3,"x":331.4,"err":0.34,"sens":2.98},{"id":"beige_computer_tower_20","cat":"beige_computer_tower","m":114,"D":321,"x":322.2,"err":0.37,"sens":2.82},{"id":"concrete_pillar_25","cat":"concrete_pillar","m":114.2,"D":320.4,"x":321.6,"err":0.36,"sens":2.81},{"id":"beige_computer_tower_07","cat":"beige_computer_tower","m":119.3,"D":306.7,"x":307.9,"err":0.38,"sens":2.57},{"id":"beige_computer_tower_1_54","cat":"beige_computer_tower_1","m":120,"D":305,"x":306,"err":0.34,"sens":2.54},{"id":"wall_poster_51","cat":"wall_poster","m":145.7,"D":251.2,"x":252.3,"err":0.45,"sens":1.72},{"id":"floor_litter_16","cat":"floor_litter","m":146.5,"D":249.8,"x":250.9,"err":0.44,"sens":1.71},{"id":"concrete_pillar_13","cat":"concrete_pillar","m":159.9,"D":228.9,"x":229.9,"err":0.45,"sens":1.43},{"id":"floor_litter_15","cat":"floor_litter","m":221,"D":165.6,"x":166.7,"err":0.67,"sens":0.75},{"id":"blue_folding_chair_00","cat":"chair","m":272.7,"D":134.2,"x":135.3,"err":0.82,"sens":0.49},{"id":"blue_folding_chair_01","cat":"chair","m":274,"D":133.6,"x":134.7,"err":0.86,"sens":0.49}]}</script>
-<script id="D3" type="application/json">{"milestones":[{"n":1,"img":"steps/step1.jpg","title":"首次端到端","what":"外壳 + 资产实例 + 灯管，EEVEE 冒烟测试。砖纹完全没出来 —— UV 映射错了。","gain":"闭环通了：spec 驱动、五模块各自建、相机对齐、出图、量分。画面难看，但此后每个改动都能被量化。","ssim":0.3857,"edge":0.2597,"prec":0.2034,"hist":0.7332,"exp":0.33,"mae":0.1529},{"n":2,"img":"steps/step2.jpg","title":"转 Cycles","what":"GPU 路径追踪；屏幕改为按纹理饱和度自发光，露出 CRT 自己的画面内容。","gain":"边缘 F 一步 +0.32，结构开始对上。曝光还高 0.64 档。","ssim":0.3369,"edge":0.5843,"prec":0.6082,"hist":0.6153,"exp":0.64,"mae":0.1953},{"n":3,"img":"steps/step3.jpg","title":"海报层","what":"把参考图自身的海报按墙面矫正后贴回去，而不是画一批假海报。","gain":"内容补齐比调色优先 —— 内容会改变所有分区读数，先调色等于白调。","ssim":0.3345,"edge":0.6024,"prec":0.6412,"hist":0.621,"exp":0.6,"mae":0.191},{"n":4,"img":"steps/step4.jpg","title":"线缆管路","what":"黑色缆束、赭黄悬链、立管、地面走线。","gain":"边缘 F 到 0.603。此时仍偏亮 0.44 档，但先不动。","ssim":0.3283,"edge":0.6032,"prec":0.6391,"hist":0.6498,"exp":0.44,"mae":0.177},{"n":5,"img":"steps/step5.jpg","title":"光度定标","what":"按实测直方图与 16 分区表配光调色，不靠眼睛。","gain":"曝光 +0.44 → +0.03 档，对比度 0.206 对参考 0.210。","ssim":0.3828,"edge":0.5909,"prec":0.5985,"hist":0.8089,"exp":0.03,"mae":0.144},{"n":6,"img":"steps/step6.jpg","title":"法线 + 门洞","what":"外壳面法线全部朝房间外（旋转 plane 留下的反向绕序）；顺手删掉一个不该有的门洞。","gain":"单是法线一项值 +0.005 ssim / +0.012 直方图。Cycles 漫反射两面都着色，所以看不出来，但 Bump 链按翻转法线求值。","ssim":0.3895,"edge":0.5768,"prec":0.5944,"hist":0.8145,"exp":0.17,"mae":0.1471},{"n":7,"img":"steps/step7.jpg","title":"并发：海报 + 材质","what":"两个 owner 并行。海报 owner 发现参考图的海报根本不贴在砖上 —— 每面墙有一块无砖缝的公告板。","gain":"按「偏离局部中位数」找海报的像素规则永远看不见板子（板子本身均匀），这是后墙长期偏亮 0.48 档的真因。","ssim":0.3834,"edge":0.6168,"prec":0.6643,"hist":0.8152,"exp":0.15,"mae":0.1419},{"n":8,"img":"steps/step8.jpg","title":"相机偏航修正","what":"投影器 +yaw 右转（复现实测消失点），Blender 绕 +Z 左转。两边都没动，渲染把所有物体放到规格右侧 7.4px。","gain":"全项目单步 ssim 收益最大的一次：+0.015。它能潜伏这么久是因为单帧看不出来 —— 没有一处「看着不对」，只是整体轻微错位。","ssim":0.3982,"edge":0.6198,"prec":0.6679,"hist":0.8171,"exp":0.15,"mae":0.1399},{"n":9,"img":"steps/step9.jpg","title":"并发：逐物体归位","what":"系统性分量先单独定，再四区域并行拟合位置与朝向。","gain":"无匹配物体 7 → 4，已对齐 0 → 4。左墙整排 CRT 的偏航原来是反的：参考图里它们几乎全是侧视。","ssim":0.4172,"edge":0.6499,"prec":0.7008,"hist":0.8116,"exp":0.15,"mae":0.1317}],"regions":{"ceiling":{"rect":[280,0,780,90],"lum_ref":0.3066,"lum_render":0.3488,"lum_delta":0.0422,"stops":0.19,"sat_ref":0.11,"sat_render":0.177,"hue_ref":25.434682846069336,"hue_render":26.869062423706055,"hue_delta":1.4},"wall_left":{"rect":[60,60,330,230],"lum_ref":0.4252,"lum_render":0.4248,"lum_delta":-0.0004,"stops":0,"sat_ref":0.331,"sat_render":0.298,"hue_ref":27.946041107177734,"hue_render":24.250593185424805,"hue_delta":3.7},"wall_right":{"rect":[700,60,980,230],"lum_ref":0.5863,"lum_render":0.5329,"lum_delta":-0.0534,"stops":-0.14,"sat_ref":0.245,"sat_render":0.225,"hue_ref":34.71189880371094,"hue_render":29.735530853271484,"hue_delta":5},"wall_back":{"rect":[390,95,660,260],"lum_ref":0.4392,"lum_render":0.4577,"lum_delta":0.0185,"stops":0.06,"sat_ref":0.257,"sat_render":0.275,"hue_ref":30.171154022216797,"hue_render":24.279802322387695,"hue_delta":5.9},"shelf_left":{"rect":[150,180,400,300],"lum_ref":0.3169,"lum_render":0.3818,"lum_delta":0.065,"stops":0.27,"sat_ref":0.373,"sat_render":0.415,"hue_ref":26.650253295898438,"hue_render":25.166683197021484,"hue_delta":1.5},"shelf_right":{"rect":[650,175,900,290],"lum_ref":0.4684,"lum_render":0.4011,"lum_delta":-0.0673,"stops":-0.22,"sat_ref":0.282,"sat_render":0.325,"hue_ref":35.548763275146484,"hue_render":24.120880126953125,"hue_delta":11.4},"table_island":{"rect":[410,170,660,290],"lum_ref":0.423,"lum_render":0.379,"lum_delta":-0.044,"stops":-0.16,"sat_ref":0.298,"sat_render":0.381,"hue_ref":28.049863815307617,"hue_render":23.955181121826172,"hue_delta":4.1},"floor_near":{"rect":[250,430,800,570],"lum_ref":0.1369,"lum_render":0.1484,"lum_delta":0.0115,"stops":0.12,"sat_ref":0.272,"sat_render":0.256,"hue_ref":30.401784896850586,"hue_render":17.780282974243164,"hue_delta":12.6},"floor_mid":{"rect":[330,300,720,430],"lum_ref":0.1568,"lum_render":0.176,"lum_delta":0.0192,"stops":0.17,"sat_ref":0.25,"sat_render":0.345,"hue_ref":14.483597755432129,"hue_render":18.377092361450195,"hue_delta":3.9},"chair_fg":{"rect":[150,290,400,570],"lum_ref":0.1349,"lum_render":0.1727,"lum_delta":0.0378,"stops":0.36,"sat_ref":0.275,"sat_render":0.336,"hue_ref":8.820976257324219,"hue_render":18.944625854492188,"hue_delta":10.1},"chair_edge":{"rect":[0,280,140,570],"lum_ref":0.1057,"lum_render":0.113,"lum_delta":0.0073,"stops":0.1,"sat_ref":0.314,"sat_render":0.321,"hue_ref":353.0395812988281,"hue_render":12.275567054748535,"hue_delta":19.2},"column":{"rect":[480,0,545,400],"lum_ref":0.2587,"lum_render":0.2657,"lum_delta":0.007,"stops":0.04,"sat_ref":0.232,"sat_render":0.396,"hue_ref":14.775796890258789,"hue_render":19.41188621520996,"hue_delta":4.6},"poster_left":{"rect":[140,25,380,205],"lum_ref":0.4219,"lum_render":0.4179,"lum_delta":-0.004,"stops":-0.01,"sat_ref":0.25,"sat_render":0.24,"hue_ref":31.962886810302734,"hue_render":25.072799682617188,"hue_delta":6.9},"poster_back":{"rect":[385,90,505,190],"lum_ref":0.4089,"lum_render":0.4774,"lum_delta":0.0686,"stops":0.22,"sat_ref":0.205,"sat_render":0.167,"hue_ref":38.68812561035156,"hue_render":28.648380279541016,"hue_delta":10},"poster_right":{"rect":[675,90,765,170],"lum_ref":0.5317,"lum_render":0.476,"lum_delta":-0.0557,"stops":-0.16,"sat_ref":0.248,"sat_render":0.208,"hue_ref":29.119348526000977,"hue_render":24.0029239654541,"hue_delta":5.1},"cables_right":{"rect":[810,10,1015,270],"lum_ref":0.4468,"lum_render":0.5216,"lum_delta":0.0748,"stops":0.22,"sat_ref":0.26,"sat_render":0.234,"hue_ref":32.85200119018555,"hue_render":30.620676040649414,"hue_delta":2.2}},"align":[{"id":"crt_L3","asset":"M03","dx":-39,"dy":19,"mag":43.382023926967726,"peak":0.37331852316856384,"area":1704.874931136887,"box":[359,183,412,237],"verdict":"shift is real"},{"id":"crt_L1","asset":"M06","dx":13,"dy":-3,"mag":13.341664064126334,"peak":0.396323025226593,"area":16789.608510302194,"box":[145,156,308,279],"verdict":"shift is real"},{"id":"tower_floorL3","asset":"M09","dx":-37,"dy":19,"mag":41.593268686170845,"peak":0.5942083597183228,"area":1153.1685852430187,"box":[367,246,414,292],"verdict":"shift is real"},{"id":"tower_floorR1","asset":"M07","dx":-37,"dy":17,"mag":40.718546143004666,"peak":0.6613786220550537,"area":1038.0204772842103,"box":[649,270,692,316],"verdict":"shift is real"},{"id":"cab_floorR","asset":"M38","dx":-19,"dy":-16,"mag":24.839484696748443,"peak":0.63665372133255,"area":2708.031321212639,"box":[647,258,706,328],"verdict":"shift is real"},{"id":"crt_L2","asset":"M02","dx":13,"dy":12,"mag":17.69180601295413,"peak":0.47062399983406067,"area":4965.363432588944,"box":[233,186,323,261],"verdict":"shift is real"},{"id":"box_underL","asset":"M08","dx":4,"dy":16,"mag":16.492422502470642,"peak":0.547794759273529,"area":4942.321713276358,"box":[445,316,516,412],"verdict":"shift is real"},{"id":"chair_R","asset":"M13","dx":5,"dy":8,"mag":9.433981132056603,"peak":0.6007002592086792,"area":13747.576304168164,"box":[699,250,810,399],"verdict":"shift is real"},{"id":"crt_mid","asset":"M02","dx":4,"dy":-17,"mag":17.46424919657298,"peak":0.7650895714759827,"area":3594.9613780307113,"box":[455,187,524,262],"verdict":"shift is real"},{"id":"tower_L2","asset":"M10","dx":-33,"dy":15,"mag":36.24913792078372,"peak":0.6337957978248596,"area":809.5248039198616,"box":[360,194,394,244],"verdict":"shift is real"},{"id":"tower_L1","asset":"M09","dx":-9,"dy":20,"mag":21.93171219946131,"peak":0.5705375671386719,"area":1333.6533915384323,"box":[332,182,370,246],"verdict":"shift is real"},{"id":"crt_floorR1","asset":"M06","dx":7,"dy":-2,"mag":7.280109889280518,"peak":0.7254718542098999,"area":3268.041898580208,"box":[686,292,762,355],"verdict":"shift is real"},{"id":"crt_floorR2","asset":"M04","dx":4,"dy":-5,"mag":6.4031242374328485,"peak":0.5501351952552795,"area":4181.5268585535805,"box":[663,275,745,347],"verdict":"shift is real"},{"id":"crt_R2","asset":"M03","dx":3,"dy":4,"mag":5,"peak":0.35003867745399475,"area":6100.244381908837,"box":[718,175,823,253],"verdict":"shift is real"},{"id":"crt_floorL","asset":"M04","dx":4,"dy":0,"mag":4,"peak":0.5970333814620972,"area":9162.528214787464,"box":[190,303,297,411],"verdict":"shift is real"},{"id":"tower_mid","asset":"M07","dx":-5,"dy":2,"mag":5.385164807134504,"peak":0.6540940999984741,"area":4057.5104839694013,"box":[592,157,647,266],"verdict":"shift is real"},{"id":"table_mid","asset":"M15","dx":1,"dy":2,"mag":2.23606797749979,"peak":0.7115649580955505,"area":17248.71540005201,"box":[453,242,612,371],"verdict":"shift is real"},{"id":"tower_floorL1","asset":"M08","dx":2,"dy":-3,"mag":3.605551275463989,"peak":0.6689795851707458,"area":1457.1789897972956,"box":[298,334,338,397],"verdict":"shift is real"},{"id":"tower_underR","asset":"M10","dx":40,"dy":15,"mag":42.720018726587654,"peak":0.4441804885864258,"area":2696.9935375920527,"box":[523,316,566,414],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"crt_R3","asset":"M04","dx":40,"dy":35,"mag":53.150729063673246,"peak":0.5130012035369873,"area":1321.1343223753934,"box":[655,195,708,239],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_R1","asset":"M07","dx":40,"dy":33,"mag":51.85556864985669,"peak":0.5498464703559875,"area":783.1396712245952,"box":[658,196,697,237],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_floorL2","asset":"M10","dx":-8,"dy":-40,"mag":40.792156108742276,"peak":0.4295574128627777,"area":924.4756403683045,"box":[334,256,369,308],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"folder_floor","asset":"M41","dx":1,"dy":0,"mag":1,"peak":0.2545194923877716,"area":5769.844465159636,"box":[508,385,568,516],"verdict":"LOW peak - patches may not depict the same thing"},{"id":"chair_fg","asset":"M13","dx":3,"dy":0,"mag":3,"peak":0.5390942096710205,"area":70250.4188562009,"box":[174,299,408,572],"verdict":"already aligned"},{"id":"chair_edge","asset":"M13","dx":0,"dy":-2,"mag":2,"peak":0.6081119775772095,"area":69546.62500670018,"box":[0,286,157,560],"verdict":"already aligned"},{"id":"crt_R1","asset":"M01","dx":3,"dy":3,"mag":4.242640687119285,"peak":0.6902666687965393,"area":5206.26209889678,"box":[757,187,856,259],"verdict":"already aligned"},{"id":"mag_floor","asset":"M29","dx":1,"dy":-2,"mag":2.23606797749979,"peak":0.4608578383922577,"area":4636.797412471136,"box":[143,365,222,447],"verdict":"already aligned"},{"id":"kbd_mid","asset":"M16","dx":4,"dy":-34,"mag":34.23448553724738,"peak":0.6578958034515381,"area":269.30810741352485,"box":[458,241,510,260],"verdict":"too small to correlate"},{"id":"can_mid","asset":"M12","dx":-2,"dy":3,"mag":3.605551275463989,"peak":0.6926658749580383,"area":250.8089521265112,"box":[444,233,467,267],"verdict":"too small to correlate"},{"id":"cup_mid","asset":"M11","dx":2,"dy":2,"mag":2.8284271247461903,"peak":0.7885794043540955,"area":313.43114618733284,"box":[565,233,593,265],"verdict":"too small to correlate"},{"id":"mouse_mid","asset":"A06","dx":2,"dy":-1,"mag":2.23606797749979,"peak":0.5849997997283936,"area":61.86705553621467,"box":[534,244,558,261],"verdict":"too small to correlate"},{"id":"paper_floor","asset":"M27","dx":1,"dy":0,"mag":1,"peak":0.7048727869987488,"area":273.40660689488095,"box":[530,429,556,462],"verdict":"too small to correlate"}],"bedmul":[{"v":"old","ssim":0.3966,"edge":0.575,"ampR":0.0199,"ampL":0.021},{"v":"0.56","ssim":0.3788,"edge":0.613,"ampR":0.0599,"ampL":0.0435},{"v":"0.68","ssim":0.3814,"edge":0.617,"ampR":0.053,"ampL":0.0428},{"v":"0.78","ssim":0.3834,"edge":0.617,"ampR":0.0477,"ampL":0.0418},{"v":"0.88","ssim":0.3855,"edge":0.616,"ampR":0.0433,"ampL":0.0412}],"tonal":{"p":[0.1,1,5,25,50,75,95,99,99.9],"ref":[0.024,0.031,0.047,0.094,0.192,0.369,0.71,0.867,0.992]},"bedmul_ref":{"ampR":0.0494,"ampL":0.0425}}</script>
+<script id="D3" type="application/json">{"milestones":[{"n":1,"img":"steps/step1.jpg","title":"首次端到端","what":"外壳 + 资产实例 + 灯管，EEVEE 冒烟测试。砖纹完全没出来 —— UV 映射错了。","gain":"闭环通了：spec 驱动、五模块各自建、相机对齐、出图、量分。画面难看，但此后每个改动都能被量化。","ssim":0.3857,"edge":0.2597,"prec":0.2034,"hist":0.7332,"exp":0.33,"mae":0.1529},{"n":2,"img":"steps/step2.jpg","title":"转 Cycles","what":"GPU 路径追踪；屏幕改为按纹理饱和度自发光，露出 CRT 自己的画面内容。","gain":"边缘 F 一步 +0.32，结构开始对上。曝光还高 0.64 档。","ssim":0.3369,"edge":0.5843,"prec":0.6082,"hist":0.6153,"exp":0.64,"mae":0.1953},{"n":3,"img":"steps/step3.jpg","title":"海报层","what":"把参考图自身的海报按墙面矫正后贴回去，而不是画一批假海报。","gain":"内容补齐比调色优先 —— 内容会改变所有分区读数，先调色等于白调。","ssim":0.3345,"edge":0.6024,"prec":0.6412,"hist":0.621,"exp":0.6,"mae":0.191},{"n":4,"img":"steps/step4.jpg","title":"线缆管路","what":"黑色缆束、赭黄悬链、立管、地面走线。","gain":"边缘 F 到 0.603。此时仍偏亮 0.44 档，但先不动。","ssim":0.3283,"edge":0.6032,"prec":0.6391,"hist":0.6498,"exp":0.44,"mae":0.177},{"n":5,"img":"steps/step5.jpg","title":"光度定标","what":"按实测直方图与 16 分区表配光调色，不靠眼睛。","gain":"曝光 +0.44 → +0.03 档，对比度 0.206 对参考 0.210。","ssim":0.3828,"edge":0.5909,"prec":0.5985,"hist":0.8089,"exp":0.03,"mae":0.144},{"n":6,"img":"steps/step6.jpg","title":"法线 + 门洞","what":"外壳面法线全部朝房间外（旋转 plane 留下的反向绕序）；顺手删掉一个不该有的门洞。","gain":"单是法线一项值 +0.005 ssim / +0.012 直方图。Cycles 漫反射两面都着色，所以看不出来，但 Bump 链按翻转法线求值。","ssim":0.3895,"edge":0.5768,"prec":0.5944,"hist":0.8145,"exp":0.17,"mae":0.1471},{"n":7,"img":"steps/step7.jpg","title":"并发：海报 + 材质","what":"两个 owner 并行。海报 owner 发现参考图的海报根本不贴在砖上 —— 每面墙有一块无砖缝的公告板。","gain":"按「偏离局部中位数」找海报的像素规则永远看不见板子（板子本身均匀），这是后墙长期偏亮 0.48 档的真因。","ssim":0.3834,"edge":0.6168,"prec":0.6643,"hist":0.8152,"exp":0.15,"mae":0.1419},{"n":8,"img":"steps/step8.jpg","title":"相机偏航修正","what":"投影器 +yaw 右转（复现实测消失点），Blender 绕 +Z 左转。两边都没动，渲染把所有物体放到规格右侧 7.4px。","gain":"这一步只值 +0.015 ssim —— 排在光度定标（+0.055）和最后一步（+0.019）之后，全项目第三。而它修的是几何：整场系统性错位。ssim 给几何的定价远低于给曝光的定价，这正是它不能当目标函数的原因。它能潜伏这么久是因为单帧看不出来 —— 没有一处「看着不对」，只是整体轻微错位。","ssim":0.3982,"edge":0.6198,"prec":0.6679,"hist":0.8171,"exp":0.15,"mae":0.1399},{"n":9,"img":"steps/step9.jpg","title":"并发：逐物体归位","what":"系统性分量先单独定，再四区域并行拟合位置与朝向。","gain":"无匹配物体 7 → 4，已对齐 0 → 4。左墙整排 CRT 的偏航原来是反的：参考图里它们几乎全是侧视。","ssim":0.4172,"edge":0.6499,"prec":0.7008,"hist":0.8116,"exp":0.15,"mae":0.1317}],"regions":{"ceiling":{"rect":[280,0,780,90],"lum_ref":0.3066,"lum_render":0.3488,"lum_delta":0.0422,"stops":0.19,"sat_ref":0.11,"sat_render":0.177,"hue_ref":25.434682846069336,"hue_render":26.869062423706055,"hue_delta":1.4},"wall_left":{"rect":[60,60,330,230],"lum_ref":0.4252,"lum_render":0.4248,"lum_delta":-0.0004,"stops":0,"sat_ref":0.331,"sat_render":0.298,"hue_ref":27.946041107177734,"hue_render":24.250593185424805,"hue_delta":3.7},"wall_right":{"rect":[700,60,980,230],"lum_ref":0.5863,"lum_render":0.5329,"lum_delta":-0.0534,"stops":-0.14,"sat_ref":0.245,"sat_render":0.225,"hue_ref":34.71189880371094,"hue_render":29.735530853271484,"hue_delta":5},"wall_back":{"rect":[390,95,660,260],"lum_ref":0.4392,"lum_render":0.4577,"lum_delta":0.0185,"stops":0.06,"sat_ref":0.257,"sat_render":0.275,"hue_ref":30.171154022216797,"hue_render":24.279802322387695,"hue_delta":5.9},"shelf_left":{"rect":[150,180,400,300],"lum_ref":0.3169,"lum_render":0.3818,"lum_delta":0.065,"stops":0.27,"sat_ref":0.373,"sat_render":0.415,"hue_ref":26.650253295898438,"hue_render":25.166683197021484,"hue_delta":1.5},"shelf_right":{"rect":[650,175,900,290],"lum_ref":0.4684,"lum_render":0.4011,"lum_delta":-0.0673,"stops":-0.22,"sat_ref":0.282,"sat_render":0.325,"hue_ref":35.548763275146484,"hue_render":24.120880126953125,"hue_delta":11.4},"table_island":{"rect":[410,170,660,290],"lum_ref":0.423,"lum_render":0.379,"lum_delta":-0.044,"stops":-0.16,"sat_ref":0.298,"sat_render":0.381,"hue_ref":28.049863815307617,"hue_render":23.955181121826172,"hue_delta":4.1},"floor_near":{"rect":[250,430,800,570],"lum_ref":0.1369,"lum_render":0.1484,"lum_delta":0.0115,"stops":0.12,"sat_ref":0.272,"sat_render":0.256,"hue_ref":30.401784896850586,"hue_render":17.780282974243164,"hue_delta":12.6},"floor_mid":{"rect":[330,300,720,430],"lum_ref":0.1568,"lum_render":0.176,"lum_delta":0.0192,"stops":0.17,"sat_ref":0.25,"sat_render":0.345,"hue_ref":14.483597755432129,"hue_render":18.377092361450195,"hue_delta":3.9},"chair_fg":{"rect":[150,290,400,570],"lum_ref":0.1349,"lum_render":0.1727,"lum_delta":0.0378,"stops":0.36,"sat_ref":0.275,"sat_render":0.336,"hue_ref":8.820976257324219,"hue_render":18.944625854492188,"hue_delta":10.1},"chair_edge":{"rect":[0,280,140,570],"lum_ref":0.1057,"lum_render":0.113,"lum_delta":0.0073,"stops":0.1,"sat_ref":0.314,"sat_render":0.321,"hue_ref":353.0395812988281,"hue_render":12.275567054748535,"hue_delta":19.2},"column":{"rect":[480,0,545,400],"lum_ref":0.2587,"lum_render":0.2657,"lum_delta":0.007,"stops":0.04,"sat_ref":0.232,"sat_render":0.396,"hue_ref":14.775796890258789,"hue_render":19.41188621520996,"hue_delta":4.6},"poster_left":{"rect":[140,25,380,205],"lum_ref":0.4219,"lum_render":0.4179,"lum_delta":-0.004,"stops":-0.01,"sat_ref":0.25,"sat_render":0.24,"hue_ref":31.962886810302734,"hue_render":25.072799682617188,"hue_delta":6.9},"poster_back":{"rect":[385,90,505,190],"lum_ref":0.4089,"lum_render":0.4774,"lum_delta":0.0686,"stops":0.22,"sat_ref":0.205,"sat_render":0.167,"hue_ref":38.68812561035156,"hue_render":28.648380279541016,"hue_delta":10},"poster_right":{"rect":[675,90,765,170],"lum_ref":0.5317,"lum_render":0.476,"lum_delta":-0.0557,"stops":-0.16,"sat_ref":0.248,"sat_render":0.208,"hue_ref":29.119348526000977,"hue_render":24.0029239654541,"hue_delta":5.1},"cables_right":{"rect":[810,10,1015,270],"lum_ref":0.4468,"lum_render":0.5216,"lum_delta":0.0748,"stops":0.22,"sat_ref":0.26,"sat_render":0.234,"hue_ref":32.85200119018555,"hue_render":30.620676040649414,"hue_delta":2.2}},"align":[{"id":"crt_L3","asset":"M03","dx":-39,"dy":19,"mag":43.382023926967726,"peak":0.37331852316856384,"area":1704.874931136887,"box":[359,183,412,237],"verdict":"shift is real"},{"id":"crt_L1","asset":"M06","dx":13,"dy":-3,"mag":13.341664064126334,"peak":0.396323025226593,"area":16789.608510302194,"box":[145,156,308,279],"verdict":"shift is real"},{"id":"tower_floorL3","asset":"M09","dx":-37,"dy":19,"mag":41.593268686170845,"peak":0.5942083597183228,"area":1153.1685852430187,"box":[367,246,414,292],"verdict":"shift is real"},{"id":"tower_floorR1","asset":"M07","dx":-37,"dy":17,"mag":40.718546143004666,"peak":0.6613786220550537,"area":1038.0204772842103,"box":[649,270,692,316],"verdict":"shift is real"},{"id":"cab_floorR","asset":"M38","dx":-19,"dy":-16,"mag":24.839484696748443,"peak":0.63665372133255,"area":2708.031321212639,"box":[647,258,706,328],"verdict":"shift is real"},{"id":"crt_L2","asset":"M02","dx":13,"dy":12,"mag":17.69180601295413,"peak":0.47062399983406067,"area":4965.363432588944,"box":[233,186,323,261],"verdict":"shift is real"},{"id":"box_underL","asset":"M08","dx":4,"dy":16,"mag":16.492422502470642,"peak":0.547794759273529,"area":4942.321713276358,"box":[445,316,516,412],"verdict":"shift is real"},{"id":"chair_R","asset":"M13","dx":5,"dy":8,"mag":9.433981132056603,"peak":0.6007002592086792,"area":13747.576304168164,"box":[699,250,810,399],"verdict":"shift is real"},{"id":"crt_mid","asset":"M02","dx":4,"dy":-17,"mag":17.46424919657298,"peak":0.7650895714759827,"area":3594.9613780307113,"box":[455,187,524,262],"verdict":"shift is real"},{"id":"tower_L2","asset":"M10","dx":-33,"dy":15,"mag":36.24913792078372,"peak":0.6337957978248596,"area":809.5248039198616,"box":[360,194,394,244],"verdict":"shift is real"},{"id":"tower_L1","asset":"M09","dx":-9,"dy":20,"mag":21.93171219946131,"peak":0.5705375671386719,"area":1333.6533915384323,"box":[332,182,370,246],"verdict":"shift is real"},{"id":"crt_floorR1","asset":"M06","dx":7,"dy":-2,"mag":7.280109889280518,"peak":0.7254718542098999,"area":3268.041898580208,"box":[686,292,762,355],"verdict":"shift is real"},{"id":"crt_floorR2","asset":"M04","dx":4,"dy":-5,"mag":6.4031242374328485,"peak":0.5501351952552795,"area":4181.5268585535805,"box":[663,275,745,347],"verdict":"shift is real"},{"id":"crt_R2","asset":"M03","dx":3,"dy":4,"mag":5,"peak":0.35003867745399475,"area":6100.244381908837,"box":[718,175,823,253],"verdict":"shift is real"},{"id":"crt_floorL","asset":"M04","dx":4,"dy":0,"mag":4,"peak":0.5970333814620972,"area":9162.528214787464,"box":[190,303,297,411],"verdict":"shift is real"},{"id":"tower_mid","asset":"M07","dx":-5,"dy":2,"mag":5.385164807134504,"peak":0.6540940999984741,"area":4057.5104839694013,"box":[592,157,647,266],"verdict":"shift is real"},{"id":"table_mid","asset":"M15","dx":1,"dy":2,"mag":2.23606797749979,"peak":0.7115649580955505,"area":17248.71540005201,"box":[453,242,612,371],"verdict":"shift is real"},{"id":"tower_floorL1","asset":"M08","dx":2,"dy":-3,"mag":3.605551275463989,"peak":0.6689795851707458,"area":1457.1789897972956,"box":[298,334,338,397],"verdict":"shift is real"},{"id":"tower_underR","asset":"M10","dx":40,"dy":15,"mag":42.720018726587654,"peak":0.4441804885864258,"area":2696.9935375920527,"box":[523,316,566,414],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"crt_R3","asset":"M04","dx":40,"dy":35,"mag":53.150729063673246,"peak":0.5130012035369873,"area":1321.1343223753934,"box":[655,195,708,239],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_R1","asset":"M07","dx":40,"dy":33,"mag":51.85556864985669,"peak":0.5498464703559875,"area":783.1396712245952,"box":[658,196,697,237],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"tower_floorL2","asset":"M10","dx":-8,"dy":-40,"mag":40.792156108742276,"peak":0.4295574128627777,"area":924.4756403683045,"box":[334,256,369,308],"verdict":"NO MATCH within search - wrong asset, occluded, or badly placed"},{"id":"folder_floor","asset":"M41","dx":1,"dy":0,"mag":1,"peak":0.2545194923877716,"area":5769.844465159636,"box":[508,385,568,516],"verdict":"LOW peak - patches may not depict the same thing"},{"id":"chair_fg","asset":"M13","dx":3,"dy":0,"mag":3,"peak":0.5390942096710205,"area":70250.4188562009,"box":[174,299,408,572],"verdict":"already aligned"},{"id":"chair_edge","asset":"M13","dx":0,"dy":-2,"mag":2,"peak":0.6081119775772095,"area":69546.62500670018,"box":[0,286,157,560],"verdict":"already aligned"},{"id":"crt_R1","asset":"M01","dx":3,"dy":3,"mag":4.242640687119285,"peak":0.6902666687965393,"area":5206.26209889678,"box":[757,187,856,259],"verdict":"already aligned"},{"id":"mag_floor","asset":"M29","dx":1,"dy":-2,"mag":2.23606797749979,"peak":0.4608578383922577,"area":4636.797412471136,"box":[143,365,222,447],"verdict":"already aligned"},{"id":"kbd_mid","asset":"M16","dx":4,"dy":-34,"mag":34.23448553724738,"peak":0.6578958034515381,"area":269.30810741352485,"box":[458,241,510,260],"verdict":"too small to correlate"},{"id":"can_mid","asset":"M12","dx":-2,"dy":3,"mag":3.605551275463989,"peak":0.6926658749580383,"area":250.8089521265112,"box":[444,233,467,267],"verdict":"too small to correlate"},{"id":"cup_mid","asset":"M11","dx":2,"dy":2,"mag":2.8284271247461903,"peak":0.7885794043540955,"area":313.43114618733284,"box":[565,233,593,265],"verdict":"too small to correlate"},{"id":"mouse_mid","asset":"A06","dx":2,"dy":-1,"mag":2.23606797749979,"peak":0.5849997997283936,"area":61.86705553621467,"box":[534,244,558,261],"verdict":"too small to correlate"},{"id":"paper_floor","asset":"M27","dx":1,"dy":0,"mag":1,"peak":0.7048727869987488,"area":273.40660689488095,"box":[530,429,556,462],"verdict":"too small to correlate"}],"bedmul":[{"v":"old","ssim":0.3966,"edge":0.575,"ampR":0.0199,"ampL":0.021},{"v":"0.56","ssim":0.3788,"edge":0.613,"ampR":0.0599,"ampL":0.0435},{"v":"0.68","ssim":0.3814,"edge":0.617,"ampR":0.053,"ampL":0.0428},{"v":"0.78","ssim":0.3834,"edge":0.617,"ampR":0.0477,"ampL":0.0418},{"v":"0.88","ssim":0.3855,"edge":0.616,"ampR":0.0433,"ampL":0.0412}],"tonal":{"p":[0.1,1,5,25,50,75,95,99,99.9],"ref":[0.024,0.031,0.047,0.094,0.192,0.369,0.71,0.867,0.992]},"bedmul_ref":{"ampR":0.0494,"ampL":0.0425}}</script>
 <script src="assets/kit.js"></script>
 <script>
 (function () {
