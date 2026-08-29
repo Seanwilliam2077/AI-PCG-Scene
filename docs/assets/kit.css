@@ -1,6 +1,7 @@
 /* Shared interactive kit for the AI-PCG-Scene documents.
-   Design matches docs/还原度闭环迭代.html, which was built first and is the
-   reference. Load with:  <link rel="stylesheet" href="assets/kit.css">        */
+   The design was set by the Blender metric-loop write-up, built first; that
+   document now lives inside docs/单图重建-资产库匹配与度量闭环.html.
+   Load with:  <link rel="stylesheet" href="assets/kit.css">                   */
 
 :root{
   --bg:#faf8f5;--panel:#fff;--ink:#191714;--dim:#5f5852;--faint:#8c847c;
